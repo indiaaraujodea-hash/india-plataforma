@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quanto vale a minha sessão?</title>
+<style>
+  @font-face {
+    font-family: 'Cambria';
+    src: local('Cambria');
+  }
+  :root{
+    --verde: #1D6B4E;
+    --verde-escuro: #12432F;
+    --terracota: #B5613C;
+    --creme: #FAFAF7;
+    --creme-linha: #EDE8DE;
+    --tinta: #22281F;
+    --tinta-suave: #5B6357;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--creme);
+    color:var(--tinta);
+    font-family: 'Calibri', 'Trebuchet MS', sans-serif;
+    line-height:1.5;
+  }
+  h1,h2,h3,.serif{
+    font-family: 'Cambria', 'Georgia', serif;
+  }
+  .wrap{
+    max-width:880px;
+    margin:0 auto;
+    padding: 28px 20px 80px;
+  }
+  header{
+    border-bottom: 1px solid var(--creme-linha);
+    padding-bottom: 22px;
+    margin-bottom: 30px;
+  }
+  .eyebrow{
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    font-size: 11px;
+    color: var(--terracota);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  h1{
+    font-size: 30px;
+    margin: 0 0 8px;
+    color: var(--verde-escuro);
+    font-weight: 700;
+  }
+  .sub{
+    color: var(--tinta-suave);
+    font-size: 15px;
+    max-width: 60ch;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  .card{
+    background:#fff;
+    border: 1px solid var(--creme-linha);
+    border-radius: 4px;
+    padding: 22px 22px 8px;
+  }
+  .card h2{
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--verde-escuro);
+    margin: 0 0 4px;
+  }
+  .card .hint{
+    font-size: 13px;
+    color: var(--tinta-suave);
+    margin: 0 0 18px;
+  }
+  .field{
+    margin-bottom: 18px;
+  }
+  .field label{
+    display:flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--tinta);
+  }
+  .field .note{
+    font-weight: 400;
+    color: var(--tinta-suave);
+    font-size: 12.5px;
+  }
+  input[type=range]{
+    width:100%;
+    accent-color: var(--verde);
+    height: 4px;
+  }
+  .sliderow{
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .sliderow input[type=range]{
+    flex:1;
+  }
+  .sliderow .numrow{
+    flex-shrink:0;
+  }
+  .sliderow input[type=number]{
+    width: 68px;
+  }
+  .numrow{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  input[type=number]{
+    width: 110px;
+    padding: 7px 9px;
+    border: 1px solid var(--creme-linha);
+    border-radius: 3px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--tinta);
+    background: var(--creme);
+  }
+  input[type=number]:focus, input[type=range]:focus{
+    outline: 2px solid var(--verde);
+    outline-offset: 1px;
+  }
+  .unit{
+    font-size: 13px;
+    color: var(--tinta-suave);
+  }
+  .result-card{
+    background: var(--verde-escuro);
+    color: var(--creme);
+    border-radius: 4px;
+    padding: 26px 24px;
+    position: sticky;
+    top: 16px;
+  }
+  .result-card h2{
+    color: var(--creme);
+    opacity: .75;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin: 0 0 18px;
+  }
+  .hero-number{
+    display:flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+  .hero-number .val{
+    font-family: 'Cambria', serif;
+    font-size: 44px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .hero-number .lab{
+    font-size: 14px;
+    color: var(--creme);
+    opacity: .8;
+  }
+  .hero-caption{
+    font-size: 13px;
+    opacity: .75;
+    margin-bottom: 22px;
+  }
+  .breakdown{
+    display:grid;
+    grid-template-columns: 1fr auto;
+    row-gap: 9px;
+    column-gap: 12px;
+    font-size: 13.5px;
+    border-top: 1px solid rgba(250,250,247,0.18);
+    padding-top: 16px;
+  }
+  .breakdown .k{ opacity: .85; }
+  .breakdown .v{ text-align:right; font-variant-numeric: tabular-nums; }
+  .breakdown .total{
+    font-weight: 700;
+    color: var(--terracota);
+    border-top: 1px solid rgba(250,250,247,0.25);
+    padding-top: 9px;
+    margin-top: 4px;
+  }
+  .breakdown .total .k{opacity:1; color:#fff;}
+  .thermo-row{
+    margin-top: 22px;
+  }
+  .thermo-label{
+    display:flex;
+    justify-content:space-between;
+    font-size:12px;
+    opacity:.8;
+    margin-bottom:6px;
+  }
+  .thermo{
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(250,250,247,0.15);
+    overflow:hidden;
+  }
+  .thermo-fill{
+    height:100%;
+    background: var(--terracota);
+    border-radius:4px;
+    transition: width .25s ease;
+  }
+  .alert{
+    margin-top: 18px;
+    font-size: 12.5px;
+    padding: 10px 12px;
+    border-radius: 3px;
+    background: rgba(181,97,60,0.18);
+    border: 1px solid rgba(181,97,60,0.4);
+    color: #FCEFE9;
+  }
+  .footnote{
+    margin-top: 40px;
+    padding-top:18px;
+    border-top: 1px solid var(--creme-linha);
+    font-size: 12.5px;
+    color: var(--tinta-suave);
+  }
+  .footnote strong{color:var(--verde-escuro);}
+  @media(min-width:760px){
+    .grid{ grid-template-columns: 1.15fr 0.85fr; align-items:start;}
+  }
+  .toggle-row{
+    display:flex;
+    gap:8px;
+    margin-bottom: 18px;
+  }
+  .toggle-row button{
+    flex:1;
+    padding:9px 6px;
+    border:1px solid var(--creme-linha);
+    background:var(--creme);
+    border-radius:3px;
+    font-family:inherit;
+    font-size:13px;
+    cursor:pointer;
+    color: var(--tinta-suave);
+  }
+  .toggle-row button.active{
+    background:var(--verde);
+    border-color:var(--verde);
+    color:#fff;
+    font-weight:600;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Psicóloga de Valor · Ferramenta</div>
+    <h1>Quanto vale a minha sessão?</h1>
+    <p class="sub">Adaptado do modelo clássico de valor-hora para a realidade de quem atende: tempo não-clínico, faltas de pacientes, encargos de autônomo e reserva técnica entram na conta — não só o "tempo de cadeira".</p>
+  </header>
+
+  <div class="grid">
+    <div>
+
+      <div class="card">
+        <h2>1. Quanto você precisa receber</h2>
+        <p class="hint">O pró-labore é o que sustenta sua vida — não é "o que sobra".</p>
+
+        <div class="field">
+          <label>Pró-labore mensal desejado <span class="note">seu salário, líquido de custos do negócio</span></label>
+          <div class="numrow">
+            <span class="unit">R$</span>
+            <input type="number" id="prolabore" value="8000" step="100" min="0">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Provisão de 13º <span class="note">1/12 do pró-labore, reservado todo mês</span></label>
+          <div class="sliderow">
+            <input type="range" id="decimoTerceiro" min="0" max="15" value="8.33" step="0.01">
+            <div class="numrow"><input type="number" id="decimoTerceiroNum" value="8.33" min="0" max="15" step="0.01"><span class="unit">%</span></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Provisão de férias <span class="note">1/12 + 1/3, padrão CLT</span></label>
+          <div class="sliderow">
+            <input type="range" id="ferias" min="0" max="20" value="11.11" step="0.01">
+            <div class="numrow"><input type="number" id="feriasNum" value="11.11" min="0" max="20" step="0.01"><span class="unit">%</span></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Custos fixos do negócio / mês <span class="note">consultório, plataforma, contador, materiais, supervisão</span></label>
+          <div class="numrow">
+            <span class="unit">R$</span>
+            <input type="number" id="custosFixos" value="1800" step="50" min="0">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Reserva técnica (impostos + INSS autônomo)</label>
+          <div class="sliderow">
+            <input type="range" id="reserva" min="0" max="35" value="18">
+            <div class="numrow"><input type="number" id="reservaNum" value="18" min="0" max="35" step="1"><span class="unit">%</span></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Caixa da empresa <span class="note">reserva de segurança / reinvestimento — separado do seu pró-labore</span></label>
+          <div class="sliderow">
+            <input type="range" id="margem" min="0" max="30" value="10">
+            <div class="numrow"><input type="number" id="margemNum" value="10" min="0" max="30" step="1"><span class="unit">%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>2. Quanto tempo você realmente tem</h2>
+        <p class="hint">Nem toda hora de trabalho é hora atendida. Supervisão, gestão, formação e captação também custam tempo — e precisam estar embutidos no preço.</p>
+
+        <div class="field">
+          <label>Sessões clínicas atendidas por semana</label>
+          <div class="sliderow">
+            <input type="range" id="sessoesSemana" min="4" max="40" value="18">
+            <div class="numrow"><input type="number" id="sessoesSemanaNum" value="18" min="4" max="40" step="1"><span class="unit">sessões</span></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Duração da sessão</label>
+          <div class="sliderow">
+            <input type="range" id="duracao" min="30" max="90" value="50" step="5">
+            <div class="numrow"><input type="number" id="duracaoNum" value="50" min="30" max="90" step="5"><span class="unit">min</span></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Faltas / desmarques não pagos</label>
+          <div class="sliderow">
+            <input type="range" id="faltas" min="0" max="30" value="8">
+            <div class="numrow"><input type="number" id="faltasNum" value="8" min="0" max="30" step="1"><span class="unit">%</span></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Semanas trabalhadas por ano</label>
+          <div class="sliderow">
+            <input type="range" id="semanas" min="35" max="50" value="46">
+            <div class="numrow"><input type="number" id="semanasNum" value="46" min="35" max="50" step="1"><span class="unit">semanas</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div>
+      <div class="result-card">
+        <h2>Sua sessão precisa valer</h2>
+        <div class="hero-number">
+          <span class="val" id="valorSessao">R$ 0</span>
+          <span class="lab">/ sessão</span>
+        </div>
+        <div class="hero-caption" id="valorHoraCaption">R$ 0/hora · considerando faltas e tempo não-clínico</div>
+
+        <div class="breakdown">
+          <div class="k">Pró-labore</div><div class="v" id="bd-prolabore">R$ 0</div>
+          <div class="k">Provisão 13º</div><div class="v" id="bd-decimo">R$ 0</div>
+          <div class="k">Provisão férias</div><div class="v" id="bd-ferias">R$ 0</div>
+          <div class="k">Custos fixos</div><div class="v" id="bd-custos">R$ 0</div>
+          <div class="k">Reserva técnica</div><div class="v" id="bd-reserva">R$ 0</div>
+          <div class="k">Caixa da empresa</div><div class="v" id="bd-margem">R$ 0</div>
+          <div class="k total">Faturamento mínimo/mês</div><div class="v total" id="bd-total">R$ 0</div>
+        </div>
+
+        <div class="thermo-row">
+          <div class="thermo-label"><span>Sessões pagas / mês</span><span id="sessoesPagasLabel">0</span></div>
+          <div class="thermo"><div class="thermo-fill" id="thermoFill" style="width:0%"></div></div>
+        </div>
+
+        <div class="alert" id="alertBox" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footnote">
+    <strong>Como a conta é feita:</strong> pró-labore + provisão de 13º + provisão de férias + custos fixos, tudo dividido por (1 − reserva técnica − caixa da empresa) = faturamento mínimo mensal. Esse valor é dividido pelo nº de sessões realmente pagas no mês (já descontando faltas), gerando o valor mínimo por sessão. Reserva técnica é imposto/INSS; caixa da empresa é a reserva de segurança do negócio, separada do seu pró-labore.
+  </div>
+</div>
+
+<script>
+const ids = ['prolabore','custosFixos','reserva','margem','decimoTerceiro','ferias','sessoesSemana','duracao','faltas','semanas'];
+const pairedIds = ['reserva','margem','decimoTerceiro','ferias','sessoesSemana','duracao','faltas','semanas'];
+const el = {};
+ids.forEach(id => el[id] = document.getElementById(id));
+
+// Keep each slider and its numeric twin in sync in both directions
+pairedIds.forEach(id => {
+  const slider = document.getElementById(id);
+  const num = document.getElementById(id + 'Num');
+  slider.addEventListener('input', () => { num.value = slider.value; calc(); });
+  num.addEventListener('input', () => {
+    let v = parseFloat(num.value);
+    if (isNaN(v)) return;
+    const min = parseFloat(slider.min), max = parseFloat(slider.max);
+    if (v < min) v = min;
+    if (v > max) v = max;
+    slider.value = v;
+    calc();
+  });
+});
+
+const fmt = n => 'R$ ' + n.toLocaleString('pt-BR', {maximumFractionDigits:0});
+
+function calc(){
+  const prolabore = parseFloat(el.prolabore.value) || 0;
+  const custosFixos = parseFloat(el.custosFixos.value) || 0;
+  const reserva = parseFloat(el.reserva.value) / 100;
+  const margem = parseFloat(el.margem.value) / 100;
+  const decimoTerceiro = parseFloat(el.decimoTerceiro.value) / 100;
+  const ferias = parseFloat(el.ferias.value) / 100;
+  const sessoesSemana = parseFloat(el.sessoesSemana.value) || 0;
+  const duracao = parseFloat(el.duracao.value) || 50;
+  const faltas = parseFloat(el.faltas.value) / 100;
+  const semanas = parseFloat(el.semanas.value) || 46;
+
+  const valorDecimo = prolabore * decimoTerceiro;
+  const valorFerias = prolabore * ferias;
+  const prolaboreTotal = prolabore + valorDecimo + valorFerias;
+
+  const denom = 1 - reserva - margem;
+  const faturamentoMinimo = denom > 0 ? (prolaboreTotal + custosFixos) / denom : Infinity;
+
+  const sessoesMesAgendadas = (sessoesSemana * semanas) / 12;
+  const sessoesMesPagas = sessoesMesAgendadas * (1 - faltas);
+
+  const valorSessao = sessoesMesPagas > 0 ? faturamentoMinimo / sessoesMesPagas : 0;
+  const valorHora = valorSessao / (duracao/60);
+
+  const valorReserva = faturamentoMinimo * reserva;
+  const valorMargem = faturamentoMinimo * margem;
+
+  document.getElementById('valorSessao').textContent = isFinite(valorSessao) ? fmt(valorSessao) : '—';
+  document.getElementById('valorHoraCaption').textContent = (isFinite(valorHora) ? fmt(valorHora) : '—') + '/hora · considerando faltas e tempo não-clínico';
+
+  document.getElementById('bd-prolabore').textContent = fmt(prolabore);
+  document.getElementById('bd-decimo').textContent = fmt(valorDecimo);
+  document.getElementById('bd-ferias').textContent = fmt(valorFerias);
+  document.getElementById('bd-custos').textContent = fmt(custosFixos);
+  document.getElementById('bd-reserva').textContent = fmt(valorReserva);
+  document.getElementById('bd-margem').textContent = fmt(valorMargem);
+  document.getElementById('bd-total').textContent = isFinite(faturamentoMinimo) ? fmt(faturamentoMinimo) : '—';
+
+  document.getElementById('sessoesPagasLabel').textContent = sessoesMesPagas.toFixed(0) + ' de ' + sessoesMesAgendadas.toFixed(0) + ' agendadas';
+  const pct = sessoesMesAgendadas > 0 ? Math.min(100, (sessoesMesPagas/sessoesMesAgendadas)*100) : 0;
+  document.getElementById('thermoFill').style.width = pct + '%';
+
+  const alertBox = document.getElementById('alertBox');
+  if (denom <= 0){
+    alertBox.style.display = 'block';
+    alertBox.textContent = 'Reserva técnica + margem somam 100% ou mais — não sobra faturamento pra cobrir pró-labore e custos. Reduza um dos dois sliders.';
+  } else if (valorSessao > 600) {
+    alertBox.style.display = 'block';
+    alertBox.textContent = 'Esse valor de sessão está bem acima da média de mercado — vale revisar se a agenda (nº de sessões/semana) está subaproveitada ou se o pró-labore/custos precisam de outro modelo (grupos, mentoria, produtos escaláveis).';
+  } else {
+    alertBox.style.display = 'none';
+  }
+}
+
+ids.forEach(id => el[id].addEventListener('input', calc));
+calc();
+</script>
+</body>
+</html>

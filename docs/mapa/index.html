@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>INDIA · Clínica de Valor — Diagnóstico Estratégico</title>
+<meta name="description" content="Diagnóstico estratégico para clínicas de psicologia: estrutura, sustentabilidade, posicionamento, captação e próximos movimentos.">
+<style>
+:root{
+  --wine:#4f2028;
+  --wine2:#71313a;
+  --rose:#9a5057;
+  --cream:#f4f0e9;
+  --paper:#fbfaf7;
+  --ink:#242222;
+  --muted:#746d67;
+  --line:#ddd3c6;
+  --gold:#c5a15a;
+  --green:#4e7c62;
+  --yellow:#b67a22;
+  --red:#a43b45;
+  --shadow:0 16px 40px rgba(74,35,39,.10);
+  --radius:22px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--cream);color:var(--ink)}
+button,input,select{font:inherit}
+a{color:inherit}
+.wrap{width:min(1160px,calc(100% - 36px));margin:auto}
+.hero{background:
+radial-gradient(circle at 90% 15%,rgba(255,255,255,.11) 0 10%,transparent 11% 18%,rgba(255,255,255,.07) 19% 27%,transparent 28%),
+linear-gradient(135deg,#211f1f 0%,#3c2528 55%,#5a2931 100%); color:#fff; padding:28px 0 72px}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:8px 0 42px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.02em}
+.mark{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--gold);color:var(--wine);font-family:Georgia,serif;font-size:22px}
+.badge{border:1px solid rgba(255,255,255,.45);border-radius:999px;padding:9px 14px;font-size:12px}
+.hero-grid{display:grid;grid-template-columns:1.4fr .6fr;gap:50px;align-items:end}
+.eyebrow{text-transform:uppercase;letter-spacing:.16em;font-size:12px;font-weight:800;color:#d8bc7a}
+h1{font-family:Georgia,'Times New Roman',serif;font-weight:500;font-size:clamp(42px,6vw,76px);line-height:.98;margin:16px 0 22px;max-width:900px}
+.hero p{font-size:18px;line-height:1.6;max-width:720px;color:#f5e7e4}
+.hero-card{border-left:1px solid rgba(255,255,255,.35);padding-left:28px}
+.hero-card b{display:block;font-family:Georgia,serif;font-size:56px;color:#d5b66f}
+.hero-card span{font-size:14px;color:#f5e7e4}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.btn{border:0;border-radius:14px;padding:14px 18px;cursor:pointer;font-weight:800;transition:.18s}
+.btn-primary{background:var(--gold);color:#201f1d}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.12)}
+.btn-secondary{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5)}
+main{margin-top:-32px;padding-bottom:80px}
+.panel{background:var(--paper);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(112,70,70,.08);overflow:hidden}
+.progress-wrap{padding:24px 28px;border-bottom:1px solid var(--line);background:#fff}
+.progress-head{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:10px}
+.progress-head strong{font-size:14px}
+.progress-head span{font-size:12px;color:var(--muted)}
+.progress{height:8px;background:#eee5e1;border-radius:999px;overflow:hidden}
+.progress i{display:block;height:100%;width:12.5%;background:linear-gradient(90deg,var(--gold),#ddc481);border-radius:999px;transition:.25s}
+.step{display:none;padding:34px 34px 38px}
+.step.active{display:block}
+.step h2{font-family:Georgia,serif;font-weight:500;font-size:38px;margin:0 0 8px}
+.step .intro{color:var(--muted);line-height:1.6;margin:0 0 26px;max-width:800px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.field{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px}
+.field label{display:block;font-size:13px;font-weight:800;margin-bottom:9px}
+.field small{display:block;color:var(--muted);line-height:1.4;margin-top:8px}
+.field input,.field select{width:100%;border:1px solid #dbcac3;border-radius:10px;padding:12px;background:#fff;color:var(--ink);outline:none}
+.field input:focus,.field select:focus{border-color:var(--wine2);box-shadow:0 0 0 3px rgba(141,56,69,.10)}
+.choice-list{display:grid;gap:10px}
+.choice{display:flex;align-items:flex-start;gap:11px;border:1px solid var(--line);padding:13px 14px;border-radius:13px;background:#fff}
+.choice input{margin-top:3px;accent-color:var(--wine)}
+.rating{display:grid;grid-template-columns:1fr 115px;gap:16px;align-items:center;border-bottom:1px solid var(--line);padding:14px 0}
+.rating:last-child{border-bottom:0}
+.rating label{font-size:14px;line-height:1.45}
+.rating select{padding:10px;border-radius:10px;border:1px solid #dbcac3;background:#fff}
+.actions{display:flex;justify-content:space-between;gap:12px;margin-top:30px}
+.actions .btn{min-width:120px}
+.back{background:#efe6e0;color:var(--ink)}
+.next{background:var(--wine);color:#fff}
+.note{margin-top:18px;padding:14px 16px;background:#fff5e9;border:1px solid #f0d4b4;border-radius:14px;font-size:13px;line-height:1.5;color:#69543f}
+.results{display:none}
+.results.show{display:block}
+.result-hero{padding:34px;background:linear-gradient(135deg,#201f1f,#4f252b);color:#fff}
+.result-hero .kicker{font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:#d7ba77;font-weight:800}
+.result-hero h2{font-family:Georgia,serif;font-weight:500;font-size:44px;margin:10px 0 8px}
+.result-hero p{color:#f3dedb;line-height:1.6;max-width:780px}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:24px}
+.metric{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:14px}
+.metric b{display:block;font-size:22px;margin-bottom:4px}
+.metric span{font-size:11px;color:#f2dcd8}
+.result-body{padding:28px}
+.priority-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
+.big-card,.side-card{border:1px solid var(--line);background:#fff;border-radius:18px;padding:22px}
+.tag{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.06em}
+.tag.red{background:#f7e6e8;color:var(--red)}
+.tag.yellow{background:#fff0da;color:var(--yellow)}
+.tag.green{background:#e7f1ea;color:var(--green)}
+.big-card h3{font-family:Georgia,serif;font-size:34px;font-weight:500;margin:13px 0 9px}
+.big-card p,.side-card p{color:var(--muted);line-height:1.55}
+.score-list{display:grid;gap:10px;margin-top:18px}
+.score-row{display:grid;grid-template-columns:170px 1fr 56px;gap:12px;align-items:center;font-size:13px}
+.bar{height:9px;background:#f0e8e4;border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),#ddc481);border-radius:999px}
+.movement{margin-top:20px;border-top:1px solid var(--line);padding-top:20px}
+.movement h4{margin:0 0 6px;font-size:15px}
+.resource-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.resource{border:1px solid var(--line);border-radius:15px;padding:16px;background:#fff}
+.resource b{display:block;margin-bottom:7px}
+.resource span{display:block;color:var(--muted);font-size:13px;line-height:1.45;min-height:56px}
+.resource button{margin-top:12px;width:100%;background:#f3e8e4;color:var(--wine);border:0;border-radius:10px;padding:10px;font-weight:800;cursor:pointer}
+.report-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+.report-actions .btn{background:var(--wine);color:#fff}
+.report-actions .light{background:#eee4df;color:var(--ink)}
+.footnote{font-size:12px;color:var(--muted);line-height:1.5;margin-top:22px}
+footer{padding:28px 0 50px;color:var(--muted);font-size:12px}
+.hidden{display:none!important}
+@media(max-width:850px){
+ .hero-grid,.priority-grid{grid-template-columns:1fr}
+ .hero-card{border-left:0;border-top:1px solid rgba(255,255,255,.3);padding:20px 0 0}
+ .grid2,.grid3,.metrics,.resource-grid{grid-template-columns:1fr}
+ .score-row{grid-template-columns:120px 1fr 48px}
+ .step{padding:26px 20px}
+ .progress-wrap{padding:20px}
+}
+@media print{
+ .hero,.progress-wrap,.report-actions,footer,.actions{display:none!important}
+ body{background:#fff}
+ main{margin:0}
+ .panel{box-shadow:none;border:0}
+ .results{display:block!important}
+ .result-hero{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+}
+</style>
+
+<style>
+/* Premium consulting layer */
+.panel{border-top:3px solid var(--gold)}
+.hero:after{content:"";display:block;width:min(1160px,calc(100% - 36px));height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:48px auto -48px;opacity:.75}
+.eyebrow:before{content:"";display:inline-block;width:34px;height:1px;background:var(--gold);vertical-align:middle;margin-right:10px}
+.step h2:after,.big-card h3:after{content:"";display:block;width:54px;height:2px;background:var(--gold);margin-top:13px}
+.field,.choice,.big-card,.side-card,.resource{box-shadow:none}
+.field:hover,.choice:hover{border-color:#c9b487}
+.tag{border:1px solid rgba(197,161,90,.45)}
+.tag.red,.tag.yellow,.tag.green{background:#f6f0e3;color:#6c572c}
+.metric{border-top:1px solid rgba(213,182,111,.7)}
+.metric b{font-family:Georgia,serif;color:#e0c57f}
+.score-row b{font-family:Georgia,serif;color:#765d2e}
+.resource button{background:#f0eadf;color:#5a4828;border:1px solid #dfcfad}
+.resource button:hover{background:#e8dcc5}
+.next,.report-actions .btn{background:#272424;color:#fff;border:1px solid #7f6b42}
+.next:hover,.report-actions .btn:hover{background:#3a3230}
+.back,.report-actions .light{background:#f0ece5;border:1px solid #ddd2c3}
+.progress i{background:linear-gradient(90deg,var(--gold),#dfc786)}
+.mark{box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+</style>
+
+<style>
+body{padding-top:0!important;background:#f4f0e9!important}
+main.wrap{margin-top:0!important;padding-top:0!important}
+#diagnostico{margin-top:0!important}
+.panel{margin-top:0!important;border-top-left-radius:0!important;border-top-right-radius:0!important}
+@media (max-width:700px){main.wrap{width:100%!important}.panel{border-radius:0!important}}
+</style>
+</head>
+<body><a href="../index.html" style="position:fixed;z-index:50;right:14px;top:14px;background:#fff;color:#173f31;border:1px solid #e5ded1;border-radius:999px;padding:8px 12px;text-decoration:none;font:12px Arial">← Clínica de Valor</a>
+<main class="wrap" id="diagnostico">
+<section class="panel" id="wizard">
+  <div class="progress-wrap">
+    <div class="progress-head"><strong id="stepTitle">1. A clínica que você quer construir</strong><span id="stepCounter">Etapa 1 de 8</span></div>
+    <div class="progress"><i id="progressBar"></i></div>
+  </div>
+
+  <form id="diagForm">
+    <section class="step active" data-title="A clínica que você quer construir">
+      <h2>Primeiro, a direção.</h2>
+      <p class="intro">Antes de dizer o que falta, precisamos saber qual clínica você quer sustentar. O mesmo cenário pode ser saudável para uma profissional e insuficiente para outra.</p>
+      <div class="grid2">
+        <div class="field"><label>Seu nome</label><input id="respondentName" type="text" placeholder="Ex.: Ana Souza" required></div>
+        <div class="field"><label>Seu melhor e-mail</label><input id="respondentEmail" type="email" placeholder="Ex.: ana@email.com" required><small>Usado para identificar seu diagnóstico e permitir o acompanhamento estratégico.</small></div>
+        <div class="field"><label>Quanto você quer faturar por mês?</label><input id="goalRevenue" type="number" min="0" step="100" placeholder="Ex.: 12000" required><small>Faturamento da clínica, antes da retirada pessoal.</small></div>
+        <div class="field"><label>Quanto deseja retirar para você por mês?</label><input id="goalTakehome" type="number" min="0" step="100" placeholder="Ex.: 8000"></div>
+        <div class="field"><label>Quantos atendimentos individuais por semana você quer sustentar no máximo?</label><input id="maxPatients" type="number" min="1" max="80" placeholder="Ex.: 20" required></div>
+        <div class="field"><label>Qual modelo você deseja hoje?</label><select id="desiredModel"><option value="individual">Viver majoritariamente da clínica individual</option><option value="mixed">Clínica + outros serviços</option><option value="open">Ainda não sei / quero avaliar possibilidades</option></select></div>
+      </div>
+      <div class="note">Ao concluir o Mapa, suas respostas e o resultado estratégico serão registrados para acompanhamento. Não inclua nomes, relatos ou dados clínicos de pacientes.</div>
+      <div class="actions"><span></span><button type="button" class="btn next" onclick="nextStep()">Continuar</button></div>
+    </section>
+
+    <section class="step" data-title="Sua realidade econômica hoje">
+      <h2>Agora, a realidade do mês.</h2>
+      <p class="intro">Use números reais. A intenção é comparar capacidade, ocupação, preço e meta — não criar uma fotografia idealizada.</p>
+      <div class="grid3">
+        <div class="field"><label>Faturamento mensal atual</label><input id="currentRevenue" type="number" min="0" step="100" placeholder="Ex.: 6500" required></div>
+        <div class="field"><label>Pacientes / atendimentos semanais atuais</label><input id="currentPatients" type="number" min="0" max="80" placeholder="Ex.: 12" required></div>
+        <div class="field"><label>Valor médio por sessão</label><input id="avgPrice" type="number" min="0" step="5" placeholder="Ex.: 150" required></div>
+        <div class="field"><label>Custos mensais da clínica</label><input id="monthlyCosts" type="number" min="0" step="50" placeholder="Ex.: 1800"></div>
+        <div class="field"><label>Percentual da receita vindo dos 3 maiores pacientes</label><input id="top3Concentration" type="number" min="0" max="100" placeholder="Ex.: 35"></div>
+        <div class="field"><label>Percentual de novos pacientes vindo do principal canal</label><input id="channelConcentration" type="number" min="0" max="100" placeholder="Ex.: 80"></div>
+      </div>
+      <div class="note">A estimativa de capacidade usa 4,33 semanas por mês. Quando você enviar sua calculadora original, este bloco pode ser substituído pela sua fórmula exata.</div>
+      <div class="actions"><button type="button" class="btn back" onclick="prevStep()">Voltar</button><button type="button" class="btn next" onclick="nextStep()">Continuar</button></div>
+    </section>
+
+    <section class="step" data-title="Estrutura da clínica">
+      <h2>Sua base está montada?</h2>
+      <p class="intro">Marque apenas o que existe de forma clara e utilizável — não o que está “mais ou menos” ou depende de improviso.</p>
+      <div class="choice-list" id="structureChecks">
+        <label class="choice"><input type="checkbox"><span><b>Contrato / acordo terapêutico estruturado</b><br><small>Inclui pagamento, faltas, atrasos, reajuste e condições do atendimento.</small></span></label>
+        <label class="choice"><input type="checkbox"><span><b>Prontuário com rotina sustentável</b><br><small>Registro objetivo e atualizado sem acúmulo recorrente.</small></span></label>
+        <label class="choice"><input type="checkbox"><span><b>Cadastro inicial padronizado</b><br><small>Dados essenciais organizados antes ou no início do processo.</small></span></label>
+        <label class="choice"><input type="checkbox"><span><b>Política de cancelamento e reagendamento clara</b></span></label>
+        <label class="choice"><input type="checkbox"><span><b>Regra de reajuste definida</b></span></label>
+        <label class="choice"><input type="checkbox"><span><b>Agenda inclui prontuário, supervisão e estudo</b></span></label>
+        <label class="choice"><input type="checkbox"><span><b>Protocolos para situações recorrentes</b><br><small>Faltas, reajuste, encaminhamento, revisão da agenda etc.</small></span></label>
+      </div>
+      <div class="actions"><button type="button" class="btn back" onclick="prevStep()">Voltar</button><button type="button" class="btn next" onclick="nextStep()">Continuar</button></div>
+    </section>
+
+    <section class="step" data-title="Sustentabilidade financeira">
+      <h2>O negócio se sustenta por dentro?</h2>
+      <p class="intro">Aqui avaliamos previsibilidade e separação entre o dinheiro da clínica e o dinheiro da vida pessoal.</p>
+      <div class="choice-list" id="financeChecks">
+        <label class="choice"><input type="checkbox"><span><b>Contas pessoais e da clínica estão separadas</b></span></label>
+        <label class="choice"><input type="checkbox"><span><b>Você sabe o custo mensal real da clínica</b></span></label>
+        <label class="choice"><input type="checkbox"><span><b>Existe retirada / pró-labore minimamente previsível</b></span></label>
+        <label class="choice"><input type="checkbox"><span><b>Existe reserva financeira da clínica</b></span></label>
+        <label class="choice"><input type="checkbox"><span><b>Você acompanha faturamento, ticket e ocupação mensalmente</b></span></label>
+        <label class="choice"><input type="checkbox"><span><b>Você conhece seu ponto de equilíbrio</b></span></label>
+      </div>
+      <div class="actions"><button type="button" class="btn back" onclick="prevStep()">Voltar</button><button type="button" class="btn next" onclick="nextStep()">Continuar</button></div>
+    </section>
+
+    <section class="step" data-title="Posicionamento e narrativa">
+      <h2>O valor do seu trabalho é compreendido?</h2>
+      <p class="intro">Dê uma nota de 0 a 4. Não estamos avaliando “beleza do Instagram”, mas clareza de percepção: quem é você, para quem faz sentido e por que alguém escolheria sua forma de trabalhar.</p>
+      <div id="positionRatings">
+        <div class="rating"><label>Tenho clareza de quem atendo melhor e em quais contextos meu trabalho faz mais sentido.</label><select><option value="0">0 — não</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4 — muito claro</option></select></div>
+        <div class="rating"><label>Consigo nomear meus diferenciais sem depender apenas de formação ou abordagem.</label><select><option value="0">0 — não</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4 — muito claro</option></select></div>
+        <div class="rating"><label>Minha presença profissional comunica de forma coerente quem sou e para quem trabalho.</label><select><option value="0">0 — não</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4 — muito claro</option></select></div>
+        <div class="rating"><label>Quem chega entende por que poderia me procurar agora, sem eu precisar explicar tudo no privado.</label><select><option value="0">0 — não</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4 — muito claro</option></select></div>
+        <div class="rating"><label>Minha comunicação ajuda a pessoa a perceber adequação e valor, em vez de comparar apenas preço.</label><select><option value="0">0 — não</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4 — muito claro</option></select></div>
+      </div>
+      <div class="actions"><button type="button" class="btn back" onclick="prevStep()">Voltar</button><button type="button" class="btn next" onclick="nextStep()">Continuar</button></div>
+    </section>
+
+    <section class="step" data-title="Captação e canais">
+      <h2>As pessoas certas conseguem chegar até você?</h2>
+      <p class="intro">Aqui a pergunta não é “você posta?”. É se existe um caminho minimamente previsível entre ser encontrada, gerar segurança e receber novos contatos.</p>
+      <div class="choice-list" id="acquisitionChecks">
+        <label class="choice"><input type="checkbox"><span><b>Sei de onde vieram meus últimos 10 pacientes / contatos</b></span></label>
+        <label class="choice"><input type="checkbox"><span><b>Tenho pelo menos 2 canais ativos de descoberta ou indicação</b></span></label>
+        <label class="choice"><input type="checkbox"><span><b>Minha presença online permite entender rapidamente o que ofereço</b></span></label>
+        <label class="choice"><input type="checkbox"><span><b>Tenho uma rotina de relacionamento / parcerias / presença, não apenas postagens pontuais</b></span></label>
+        <label class="choice"><input type="checkbox"><span><b>Meu primeiro contato é organizado e reduz dúvidas sobre funcionamento, formato e próximos passos</b></span></label>
+        <label class="choice"><input type="checkbox"><span><b>A entrada de novos pacientes não depende quase totalmente de uma única pessoa ou fonte</b></span></label>
+      </div>
+      <div class="actions"><button type="button" class="btn back" onclick="prevStep()">Voltar</button><button type="button" class="btn next" onclick="nextStep()">Continuar</button></div>
+    </section>
+
+    <section class="step" data-title="Modelo, oferta e crescimento">
+      <h2>Seu modelo comporta a sua meta?</h2>
+      <p class="intro">Diversificar não é automaticamente melhor. Esta etapa verifica se outro serviço é uma necessidade estrutural, uma escolha estratégica ou apenas uma distração.</p>
+      <div id="modelRatings">
+        <div class="rating"><label>Meu serviço principal está claro em formato, público e condições de atendimento.</label><select><option value="0">0 — não</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4 — muito claro</option></select></div>
+        <div class="rating"><label>O preço praticado hoje é sustentado por critérios, e não apenas pelo que “acho que o mercado aceita”.</label><select><option value="0">0 — não</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4 — muito claro</option></select></div>
+        <div class="rating"><label>Se eu criar outro serviço, sei qual problema de modelo ele resolverá.</label><select><option value="0">0 — não</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4 — muito claro</option></select></div>
+        <div class="rating"><label>Minha agenda e energia atuais comportam expansão sem comprometer o serviço principal.</label><select><option value="0">0 — não</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4 — muito claro</option></select></div>
+      </div>
+      <div class="actions"><button type="button" class="btn back" onclick="prevStep()">Voltar</button><button type="button" class="btn next" onclick="nextStep()">Continuar</button></div>
+    </section>
+
+    <section class="step" data-title="Fechamento do diagnóstico">
+      <h2>Última leitura: sua energia clínica.</h2>
+      <p class="intro">O negócio não pode ser analisado apenas pela planilha. Considere o custo de sustentar a agenda atual.</p>
+      <div class="grid2">
+        <div class="field"><label>Como está seu desgaste com a agenda atual?</label><select id="energy"><option value="100">Baixo — sustentável</option><option value="70">Moderado — exige atenção</option><option value="40">Alto — já pesa no funcionamento</option><option value="20">Muito alto — difícil sustentar assim</option></select></div>
+        <div class="field"><label>Hoje, qual sensação mais descreve sua clínica?</label><select id="feeling"><option>Tenho direção, mas preciso organizar prioridades</option><option>Atendo, mas não sei se o modelo fecha</option><option>Preciso de mais pacientes</option><option>Estou cheia, mas não ganho o que gostaria</option><option>Quero crescer sem aumentar atendimentos</option><option>Tenho muitas frentes e pouca clareza</option></select></div>
+      </div>
+      <div class="note"><b>Importante:</b> o resultado abaixo é uma ferramenta de decisão gerencial. Ele não substitui análise contábil, jurídica ou normativa específica. Os pesos desta versão são regras estratégicas iniciais — úteis para uso e teste, mas ainda não são um modelo estatístico validado.</div>
+      <div class="actions"><button type="button" class="btn back" onclick="prevStep()">Voltar</button><button type="button" class="btn next" onclick="calculate()">Gerar meu norte</button></div>
+    </section>
+  </form>
+
+  <section class="results" id="results">
+    <div class="result-hero">
+      <div class="kicker">Seu norte estratégico</div>
+      <h2 id="primaryTitle">—</h2>
+      <p id="primaryText"></p>
+      <div class="metrics">
+        <div class="metric"><b id="mOccupancy">—</b><span>ocupação da capacidade desejada</span></div>
+        <div class="metric"><b id="mCapacity">—</b><span>faturamento potencial no teto informado</span></div>
+        <div class="metric"><b id="mGap">—</b><span>gap entre capacidade e meta</span></div>
+        <div class="metric"><b id="mMargin">—</b><span>margem operacional aproximada</span></div>
+      </div>
+    </div>
+    <div class="result-body">
+      <div class="priority-grid">
+        <div class="big-card">
+          <span class="tag red">Movimento principal</span>
+          <h3 id="primaryMove">—</h3>
+          <p id="primaryWhy"></p>
+          <div class="movement">
+            <h4>Movimento de suporte</h4>
+            <p id="supportMove"></p>
+            <h4>Não priorizar agora</h4>
+            <p id="notNow"></p>
+          </div>
+        </div>
+        <div class="side-card">
+          <span class="tag yellow">Leitura das dimensões</span>
+          <div class="score-list" id="scoreList"></div>
+        </div>
+      </div>
+      <div id="nextPath" class="movement" style="margin-top:24px;padding:22px;border:1px solid #e5ded1;border-radius:14px;background:#fffdf9"><span class="tag" style="background:#173f31;color:white">Seu caminho agora</span><h4 id="pathTitle" style="font-size:22px;margin-top:14px">—</h4><p id="pathText">—</p><div id="pathActions" class="report-actions" style="margin-top:14px"></div></div><div class="report-actions">
+        <button class="btn" type="button" onclick="savePdf()">Salvar resultado em PDF</button>
+        <button class="btn light" onclick="restart()">Refazer meu mapa</button>
+      </div>
+      <p class="footnote" id="saveStatus">Seu diagnóstico será registrado automaticamente ao concluir o Mapa.</p>
+    </div>
+  </section>
+</section>
+</main>
+<script>
+let currentStep=0;
+const steps=[...document.querySelectorAll('.step')];
+const SHEETS_ENDPOINT='https://script.google.com/macros/s/AKfycbxKbxCBeGMicT_NdUFqCp3vZQm0O7MxLUD64eI0hldwqhE2daE3ghUIZJ58xQ7TS-T_sw/exec';
+const brl = n => (isFinite(n)?n:0).toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
+function updateProgress(){
+  steps.forEach((s,i)=>s.classList.toggle('active',i===currentStep));
+  document.getElementById('stepTitle').textContent=(currentStep+1)+'. '+steps[currentStep].dataset.title;
+  document.getElementById('stepCounter').textContent=`Etapa ${currentStep+1} de ${steps.length}`;
+  document.getElementById('progressBar').style.width=((currentStep+1)/steps.length*100)+'%';
+  window.scrollTo({top:document.getElementById('wizard').offsetTop-10,behavior:'smooth'});
+}
+function validStep(){
+  const req=[...steps[currentStep].querySelectorAll('[required]')];
+  for(const el of req){if(!el.value){el.focus();el.reportValidity();return false}}
+  return true;
+}
+function nextStep(){if(validStep() && currentStep<steps.length-1){currentStep++;updateProgress()}}
+function prevStep(){if(currentStep>0){currentStep--;updateProgress()}}
+function pctChecks(id){const xs=[...document.querySelectorAll('#'+id+' input[type=checkbox]')];return Math.round(xs.filter(x=>x.checked).length/xs.length*100)}
+function pctRatings(id){const xs=[...document.querySelectorAll('#'+id+' select')].map(x=>+x.value);return Math.round(xs.reduce((a,b)=>a+b,0)/(xs.length*4)*100)}
+function clamp(n,a=0,b=100){return Math.max(a,Math.min(b,n))}
+function descriptor(score){return score<50?'crítica':score<70?'atenção':'consistente'}
+const messages={
+'Estruturar':'Sua clínica precisa de base operacional antes de acelerar outras frentes.',
+'Organizar finanças':'A prioridade é transformar faturamento em previsibilidade e sustentação real.',
+'Captar':'Seu modelo tem espaço econômico e de agenda; o gargalo principal está em ocupação e entrada de novos pacientes.',
+'Posicionar e narrar valor':'Há sinais de que o trabalho pode estar sendo pouco compreendido ou comparado apenas por preço.',
+'Rever preço e modelo':'Sua meta pressiona o teto econômico do formato atual. Antes de captar mais, é preciso revisar preço, capacidade e desenho do modelo.',
+'Crescer / diversificar':'A expansão pode fazer sentido porque a meta desejada ultrapassa o que o atendimento individual comporta no teto informado.',
+'Proteger capacidade e energia':'A agenda atual cobra um custo de energia alto; sustentar o negócio exige rever capacidade antes de adicionar volume.'
+};
+
+const pathMap={
+'Estruturar':{title:'Estruturar a base da clínica',text:'Antes de acelerar, organize os elementos que reduzem improviso e risco na operação.',manual:6},
+'Organizar finanças':{title:'Organizar a sustentabilidade financeira',text:'Transforme faturamento em previsibilidade: custos, caixa, retirada e indicadores.',manual:15,tool:'../ferramentas/sessao.html',toolLabel:'Calcular minha sessão'},
+'Captar':{title:'Fortalecer captação e jornada de entrada',text:'Há espaço no modelo atual; agora o foco é tornar a entrada de novos pacientes mais previsível.',manual:12},
+'Posicionar e narrar valor':{title:'Tornar o valor do trabalho mais compreensível',text:'Antes de mexer no preço, trabalhe posicionamento, diferenciação e comunicação.',manual:9},
+'Rever preço e modelo':{title:'Rever preço e capacidade do modelo',text:'Compare o preço necessário com a capacidade real da agenda antes de buscar mais volume.',manual:14,tool:'../ferramentas/sessao.html',toolLabel:'Calcular minha sessão'},
+'Crescer / diversificar':{title:'Redesenhar o modelo de crescimento',text:'A expansão pode exigir uma nova fonte de receita ou formato além do atendimento individual.',manual:20,tool:'../ferramentas/grupo.html',toolLabel:'Simular serviço em grupo'},
+'Proteger capacidade e energia':{title:'Proteger capacidade antes de crescer',text:'A prioridade é tornar a agenda sustentável antes de adicionar volume ou novas frentes.',manual:3}
+};
+function renderPath(primary){const x=pathMap[primary]||pathMap['Estruturar'];document.getElementById('pathTitle').textContent=x.title;document.getElementById('pathText').textContent=x.text;let a='';if(x.tool)a+=`<a class="btn btn-primary" href="${x.tool}">${x.toolLabel} →</a> `;a+=`<a class="btn" href="../manual/index.html?cap=${x.manual}">Abrir capítulo recomendado →</a> <a class="btn" href="../plano/index.html">Ir para meu plano →</a>`;document.getElementById('pathActions').innerHTML=a;}
+
+async function sendDiagnosis(payload){
+  const status=document.getElementById('saveStatus');
+  try{
+    // text/plain + no-cors avoids cross-origin preflight with Google Apps Script.
+    await fetch(SHEETS_ENDPOINT,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=UTF-8'},
+      body:JSON.stringify(payload)
+    });
+    if(status) status.textContent='Diagnóstico enviado para registro.';
+  }catch(err){
+    console.error('Falha ao registrar diagnóstico:',err);
+    if(status) status.textContent='O resultado foi gerado, mas não foi possível confirmar o registro automático. Tente novamente em instantes.';
+  }
+}
+function calculate(){
+  if(!validStep())return;
+  const nome=document.getElementById('respondentName').value.trim();
+  const email=document.getElementById('respondentEmail').value.trim();
+  const goal=+document.getElementById('goalRevenue').value||0;
+  const take=+document.getElementById('goalTakehome').value||0;
+  const maxP=+document.getElementById('maxPatients').value||1;
+  const model=document.getElementById('desiredModel').value;
+  const revenue=+document.getElementById('currentRevenue').value||0;
+  const curP=+document.getElementById('currentPatients').value||0;
+  const price=+document.getElementById('avgPrice').value||0;
+  const costs=+document.getElementById('monthlyCosts').value||0;
+  const patientConc=+document.getElementById('top3Concentration').value||0;
+  const channelConc=+document.getElementById('channelConcentration').value||0;
+  const energy=+document.getElementById('energy').value||100;
+
+  const capacity=maxP*price*4.33;
+  const occupancy=clamp(curP/maxP*100);
+  const margin=revenue>0?clamp((revenue-costs)/revenue*100,-100,100):0;
+  const gap=capacity-goal;
+
+  const structure=pctChecks('structureChecks');
+  const financeBase=pctChecks('financeChecks');
+  const finance=clamp(financeBase + (margin>=30?8:margin<10?-12:0) + (take && revenue-costs>=take?8:0));
+  const positioning=pctRatings('positionRatings');
+  const acquisitionBase=pctChecks('acquisitionChecks');
+  const acquisition=clamp(acquisitionBase - (channelConc>=75?18:channelConc>=55?8:0));
+  const modelScore=pctRatings('modelRatings');
+  const energyScore=energy;
+
+  let scores={
+    'Estrutura':structure,
+    'Finanças':finance,
+    'Posicionamento e narrativa':positioning,
+    'Captação':acquisition,
+    'Preço e modelo':modelScore,
+    'Capacidade e energia':Math.round((clamp(100-Math.max(0,occupancy-85)*2.2)+energyScore)/2)
+  };
+
+  // Priority = deficiency + strategic modifiers. Not a validated statistical model.
+  let p={
+    'Estruturar':(100-structure)*0.85,
+    'Organizar finanças':(100-finance)*0.9,
+    'Captar':(100-acquisition)*0.78,
+    'Posicionar e narrar valor':(100-positioning)*0.72,
+    'Rever preço e modelo':(100-modelScore)*0.78,
+    'Crescer / diversificar':15,
+    'Proteger capacidade e energia':(100-energyScore)*0.8
+  };
+
+  if(structure<50){p['Estruturar']+=28;p['Crescer / diversificar']-=10}
+  if(finance<50){p['Organizar finanças']+=28;p['Crescer / diversificar']-=10}
+  if(patientConc>=45){p['Organizar finanças']+=10}
+  if(channelConc>=70){p['Captar']+=20}
+  if(positioning<55){p['Posicionar e narrar valor']+=18}
+  if(energyScore<=40){p['Proteger capacidade e energia']+=34;p['Captar']-=18;p['Crescer / diversificar']-=12}
+  if(occupancy<70 && gap>=0){p['Captar']+=30}
+  if(occupancy>=88 && goal>revenue){p['Rever preço e modelo']+=24;p['Captar']-=18}
+  if(gap<0){
+    p['Rever preço e modelo']+=34;
+    if(model!=='individual')p['Crescer / diversificar']+=30;
+    else p['Crescer / diversificar']+=12;
+    p['Captar']-=12;
+  } else if(gap>=0 && model==='individual'){
+    p['Crescer / diversificar']-=22;
+  }
+  if(gap<0 && occupancy>=85 && structure>=60 && finance>=60){p['Crescer / diversificar']+=22}
+  if(model==='mixed' && structure>=60 && finance>=60 && modelScore>=55){p['Crescer / diversificar']+=10}
+
+  Object.keys(p).forEach(k=>p[k]=Math.max(0,p[k]));
+  const ranked=Object.entries(p).sort((a,b)=>b[1]-a[1]);
+  const primary=ranked[0][0], support=ranked[1][0];
+  const lowPriority=[...ranked].reverse().find(x=>x[0]!==primary && x[0]!==support)[0];
+
+  document.getElementById('mOccupancy').textContent=Math.round(occupancy)+'%';
+  document.getElementById('mCapacity').textContent=brl(capacity);
+  document.getElementById('mGap').textContent=(gap>=0?'+ ':'- ')+brl(Math.abs(gap));
+  document.getElementById('mMargin').textContent=Math.round(margin)+'%';
+
+  document.getElementById('primaryTitle').textContent=primary;
+  renderPath(primary);
+  document.getElementById('primaryText').textContent=messages[primary];
+  document.getElementById('primaryMove').textContent=primary;
+  let why='';
+  if(primary==='Captar') why=`Com ${Math.round(occupancy)}% da capacidade ocupada e uma capacidade estimada de ${brl(capacity)}, existe espaço para crescer dentro do modelo antes de adicionar complexidade.`;
+  else if(primary==='Rever preço e modelo') why=`No teto informado, o atendimento individual gera cerca de ${brl(capacity)} por mês. Sua meta é ${brl(goal)}; isso exige rever preço, capacidade ou desenho do modelo antes de simplesmente buscar mais volume.`;
+  else if(primary==='Estruturar') why=`A estrutura recebeu ${structure}/100. Lacunas de contrato, prontuário, agenda e protocolos aumentam instabilidade e devem ser tratadas como base, não como detalhe.`;
+  else if(primary==='Organizar finanças') why=`A sustentabilidade financeira recebeu ${finance}/100. O objetivo é saber o que a clínica gera, custa e consegue sustentar de retirada com previsibilidade.`;
+  else if(primary==='Posicionar e narrar valor') why=`Posicionamento e narrativa receberam ${positioning}/100. Antes de mexer no preço, vale verificar se o trabalho está sendo compreendido e percebido como adequado por quem chega.`;
+  else if(primary==='Proteger capacidade e energia') why=`Seu nível de desgaste sinaliza que aumentar volume pode piorar o sistema. A prioridade é recuperar sustentabilidade da agenda antes de acelerar.`;
+  else why=`A análise indica que a meta desejada pressiona o teto do formato atual e que a base já permite estudar uma nova fonte de receita de forma intencional.`;
+  document.getElementById('primaryWhy').textContent=why;
+  document.getElementById('supportMove').textContent=`${support}. Ele aparece como a segunda alavanca porque pode sustentar o movimento principal sem dispersar a execução.`;
+  document.getElementById('notNow').textContent=`${lowPriority}. Neste cenário, esta frente tem menor impacto imediato. Não significa “nunca”; significa “não agora”.`;
+
+  const scoreList=document.getElementById('scoreList'); scoreList.innerHTML='';
+  Object.entries(scores).sort((a,b)=>a[1]-b[1]).forEach(([name,score])=>{
+    scoreList.insertAdjacentHTML('beforeend',`<div class="score-row"><span>${name}</span><div class="bar"><i style="width:${clamp(score)}%"></i></div><b>${Math.round(score)}</b></div>`);
+  });
+
+  document.getElementById('diagForm').classList.add('hidden');
+  document.querySelector('.progress-wrap').classList.add('hidden');
+  document.getElementById('results').classList.add('show');
+  try{localStorage.setItem('clinicaDiag',JSON.stringify({nome,email,goal,take,maxP,model,revenue,curP,price,costs,capacity,occupancy,margin,gap,scores,primary,support,lowPriority}))}catch(e){}
+
+  const resultadoCompleto=[
+    `Movimento principal: ${primary}`,
+    `Por quê: ${why}`,
+    `Movimento de apoio: ${support}`,
+    `Não priorizar agora: ${lowPriority}`,
+    `Ocupação: ${Math.round(occupancy)}%`,
+    `Capacidade estimada: ${brl(capacity)}`,
+    `Gap capacidade x meta: ${(gap>=0?'+ ':'- ')+brl(Math.abs(gap))}`,
+    `Margem operacional aproximada: ${Math.round(margin)}%`
+  ].join(' | ');
+
+  sendDiagnosis({
+    nome,
+    email,
+    metaFaturamento:goal,
+    receitaAtual:revenue,
+    precoSessao:price,
+    pacientesAtuais:curP,
+    capacidadeMaxima:maxP,
+    estrutura:structure,
+    financeiro:finance,
+    posicionamento:positioning,
+    captacao:acquisition,
+    modelo:modelScore,
+    energia:energyScore,
+    movimentoPrincipal:primary,
+    movimentoApoio:support,
+    naoPriorizar:lowPriority,
+    resultadoCompleto
+  });
+  window.scrollTo({top:document.getElementById('wizard').offsetTop-10,behavior:'smooth'});
+}
+function savePdf(){
+  const results=document.getElementById('results');
+  const popup=window.open('', '_blank', 'width=1000,height=800');
+  if(!popup){
+    alert('O navegador bloqueou a janela do PDF. Permita pop-ups para este site e tente novamente.');
+    return;
+  }
+  const styles=[...document.querySelectorAll('style')].map(s=>s.outerHTML).join('');
+  const clone=results.cloneNode(true);
+  clone.classList.add('show');
+  const actions=clone.querySelector('.report-actions'); if(actions) actions.remove();
+  const foot=clone.querySelector('#saveStatus'); if(foot) foot.remove();
+  popup.document.open();
+  popup.document.write(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Mapa da Clínica de Valor — Resultado</title>${styles}<style>body{background:#fff!important;padding:24px}.results{display:block!important}.panel{max-width:980px;margin:auto}.hero,.progress-wrap,footer,.actions{display:none!important}@media print{body{padding:0}.panel{border:0;box-shadow:none}}</style></head><body><main>${clone.outerHTML}</main><script>window.addEventListener('load',()=>setTimeout(()=>window.print(),250));<\/script></body></html>`);
+  popup.document.close();
+}
+function restart(){
+  document.getElementById('diagForm').reset();
+  document.getElementById('diagForm').classList.remove('hidden');
+  document.querySelector('.progress-wrap').classList.remove('hidden');
+  document.getElementById('results').classList.remove('show');
+  currentStep=0;updateProgress();
+}
+updateProgress();
+</script>
+</body>
+</html>
