@@ -98,7 +98,7 @@ import { supabase, avisarSupabaseNaoConfigurado } from './assets/js/supabase-cli
 avisarSupabaseNaoConfigurado();
 
 const params = new URLSearchParams(location.search);
-const redirect = params.get('redirect') || 'mapa/index.html';
+const redirect = params.get('redirect') || 'inicio/index.html';
 
 const msgBox = document.getElementById('msgBox');
 function showMsg(text, type = 'error') {

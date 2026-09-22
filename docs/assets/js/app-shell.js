@@ -16,7 +16,7 @@ const ICONS = {
 };
 
 const NAV_ITEMS = [
-  { key: 'inicio', label: 'Início', icon: 'home', href: (r) => `${r}/index.html` },
+  { key: 'inicio', label: 'Início', icon: 'home', href: (r) => `${r}/inicio/index.html` },
   { key: 'plano', label: 'Meu Plano', icon: 'plan', href: (r) => `${r}/plano/index.html` },
   { key: 'mapa', label: 'Meu Diagnóstico', icon: 'diag', href: (r) => `${r}/mapa/index.html` },
   { key: 'relatorio', label: 'Meus Relatórios', icon: 'report', href: (r) => `${r}/relatorio/index.html` },

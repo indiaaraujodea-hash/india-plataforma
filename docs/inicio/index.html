@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>INDIA | Negócios que geram valor</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../assets/css/shell.css">
+</head>
+<body>
+<div class="landing-hero">
+  <div class="grain"></div>
+  <nav class="landing-nav">
+    <div class="brand-mark"><b>INDIA</b><span>CAFÉ · PESSOAS · NEGÓCIOS</span></div>
+    <div class="landing-links">
+      <a href="#sobre">Sobre</a>
+      <a href="#produtos">Produtos</a>
+      <a href="#ajuda">Ajuda</a>
+      <a href="#contato">Contato</a>
+      <a class="btn-entrar" href="#" id="btnSair">Sair</a>
+    </div>
+  </nav>
+
+  <div class="landing-copy">
+    <div class="eyebrow" style="color:#e7d9bd">Clínica de Valor</div>
+    <h1>Negócios que geram valor.</h1>
+    <p>Ousadia para agir. Estratégias sustentáveis para seus resultados reais.</p>
+  </div>
+
+  <div class="landing-cards" id="produtos">
+    <div class="product-card clinica">
+      <div class="photo p1"></div>
+      <div class="body">
+        <div class="kicker">Para psicólogas</div>
+        <h3>Minha Clínica de Valor</h3>
+        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Construa uma clínica ACP sustentável, com clareza, estratégia e autonomia.</p>
+        <ul>
+          <li>Diagnóstico personalizado</li>
+          <li>Mapa de desenvolvimento</li>
+          <li>Ferramentas e manual</li>
+          <li>Plano de ação e acompanhamento</li>
+        </ul>
+        <a class="cta" href="../mapa/index.html">Entrar na Clínica de Valor →</a>
+      </div>
+    </div>
+
+    <div class="product-card empresa">
+      <div class="photo p2"></div>
+      <div class="body">
+        <div class="kicker">Para empresas</div>
+        <h3>Diagnóstico Empresarial</h3>
+        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Entenda seu cenário, identifique oportunidades e organize o próximo passo.</p>
+        <ul>
+          <li>Diagnóstico do negócio</li>
+          <li>Mapa de oportunidades</li>
+          <li>Plano de ação</li>
+          <li>Acompanhamento de resultados</li>
+        </ul>
+        <a class="cta" href="#" id="ctaEmpresarial">Entrar no Diagnóstico Empresarial →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="landing-footer">
+  <b>INDIA</b>
+  <span>CAFÉ · PESSOAS · NEGÓCIOS</span>
+  <div class="flinks">
+    <a href="#">Termos de uso</a>
+    <a href="#">Privacidade</a>
+    <a href="#contato">Contato</a>
+  </div>
+  <span>© 2026 INDIA. Todos os direitos reservados.</span>
+</footer>
+
+<script type="module">
+import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
+import { requireAuth } from '../assets/js/auth.js';
+
+avisarSupabaseNaoConfigurado();
+
+(async () => {
+  const session = await requireAuth('../index.html');
+  if (!session) return;
+})();
+
+document.getElementById('btnSair').addEventListener('click', async (e) => {
+  e.preventDefault();
+  await supabase.auth.signOut();
+  location.href = '../index.html';
+});
+
+document.getElementById('ctaEmpresarial').addEventListener('click', function (e) {
+  e.preventDefault();
+  alert('Diagnóstico Empresarial ainda não está disponível nesta versão.');
+});
+</script>
+</body>
+</html>

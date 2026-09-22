@@ -47,7 +47,7 @@ document.getElementById('formNovaSenha').addEventListener('submit', async (e) =>
   const { error } = await supabase.auth.updateUser({ password: senha });
   if (error) { showMsg('Não foi possível salvar: ' + error.message); return; }
   showMsg('Senha atualizada. Redirecionando…', 'info');
-  setTimeout(() => { location.href = 'mapa/index.html'; }, 1500);
+  setTimeout(() => { location.href = 'inicio/index.html'; }, 1500);
 });
 </script>
 </body>
