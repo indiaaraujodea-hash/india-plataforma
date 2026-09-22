@@ -1,12 +1,107 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ferramentas | Clínica de Valor</title><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/css/shell.css"></head><body>
-<main class="wrap"><section class="section"><div class="eyebrow">Ferramentas</div><h1 class="serif" style="font-size:46px;color:var(--green);margin:8px 0">Use a ferramenta certa para a decisão certa.</h1><p class="lead">Se você veio do Mapa, comece pelo recurso indicado no seu resultado.</p><div class="grid2" style="margin-top:28px"><a class="tool" href="sessao.html"><div><strong>Quanto vale minha sessão?</strong><div class="small">Preço sustentável, capacidade, faltas, custos e pró-labore.</div></div><b>→</b></a><a class="tool" href="grupo.html"><div><strong>Quanto vale meu serviço em grupo?</strong><div class="small">Simule mensalidade, tamanho do grupo e faturamento necessário.</div></div><b>→</b></a></div></section></main><footer>INDIA · CAFÉ, PESSOAS E NEGÓCIOS DE VALOR · Clínica de Valor</footer>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ferramentas | Clínica de Valor</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+.kicker{color:var(--gold,#c5a15a);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin:24px 0 10px}
+.modo-admin-tag{display:inline-block;background:#f0ece5;color:var(--muted);border-radius:999px;padding:6px 14px;font-size:12px;font-weight:700;margin:10px 0}
+.ferramenta-card{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:12px}
+.ferramenta-card b{display:block;color:var(--green);font-size:17px;margin-bottom:4px}
+.ferramenta-card .motivo{font-size:12px;color:var(--muted);margin-top:6px}
+</style>
+<link rel="stylesheet" href="../assets/css/shell.css">
+</head>
+<body>
+<main class="wrap">
+  <section class="section">
+    <div class="eyebrow">Ferramentas</div>
+    <h1 class="serif" style="font-size:46px;color:var(--green);margin:8px 0">Use a ferramenta certa para a decisão certa.</h1>
+    <div id="modoTag"></div>
+    <div id="conteudo"><p class="lead">Carregando…</p></div>
+  </section>
+</main>
+<footer>INDIA · CAFÉ, PESSOAS E NEGÓCIOS DE VALOR · Clínica de Valor</footer>
+
 <script type="module">
-import { requireAuth } from '../assets/js/auth.js';
+import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
+import { requireAuth, getProfile } from '../assets/js/auth.js';
 import { mountAppShell } from '../assets/js/app-shell.js';
+
+avisarSupabaseNaoConfigurado();
+
+const TITULOS_PONTO = { captar: 'Captar', precificar: 'Precificar', posicionar: 'Posicionar', produto_mix: 'Produto / Mix', esteira: 'Esteira', escalar: 'Escalar' };
+const TODAS_FERRAMENTAS = {
+  calculadora_sessao: { titulo: 'Quanto vale minha sessão?', desc: 'Preço sustentável, capacidade, faltas, custos e pró-labore.', href: 'sessao.html' },
+  calculadora_grupo: { titulo: 'Quanto vale meu serviço em grupo?', desc: 'Simule mensalidade, tamanho do grupo e faturamento necessário.', href: 'grupo.html' },
+};
+
+function cardFerramenta(chave, ponto) {
+  const f = TODAS_FERRAMENTAS[chave];
+  return `
+    <a class="tool" href="${f.href}" style="margin-bottom:12px">
+      <div>
+        <strong>${f.titulo}</strong>
+        <div class="small">${f.desc}</div>
+        ${ponto ? `<div class="motivo">Motivo: indicada a partir do seu Ponto Latente (${TITULOS_PONTO[ponto]}).</div>` : ''}
+      </div>
+      <b>→</b>
+    </a>`;
+}
+
+async function buscarFerramentaRecomendada(pontoLatente) {
+  if (!pontoLatente) return null;
+  const { data: ferrMap } = await supabase.from('ponto_latente_ferramenta_map').select('ferramenta, status').eq('ponto_latente', pontoLatente).maybeSingle();
+  if (!ferrMap?.ferramenta || ferrMap.status !== 'validado') return null;
+  return ferrMap.ferramenta;
+}
+
 (async () => {
   const session = await requireAuth('../login/index.html');
   if (!session) return;
   await mountAppShell('ferramentas', session, '..');
+
+  const [profile, { data: diagnosticos }] = await Promise.all([
+    getProfile(session.user.id),
+    supabase.from('diagnosticos').select('resultado_calculado').eq('user_id', session.user.id).order('criado_em', { ascending: false }).limit(1),
+  ]);
+  const isAdmin = profile?.role === 'admin';
+  const resultado = diagnosticos?.[0]?.resultado_calculado;
+
+  if (isAdmin) {
+    document.getElementById('modoTag').innerHTML = `<span class="modo-admin-tag">Modo administrador — visualizando todas as ferramentas</span>`;
+  }
+
+  const [ferrPrincipal, ferrComplementar] = await Promise.all([
+    buscarFerramentaRecomendada(resultado?.ponto_latente_principal),
+    buscarFerramentaRecomendada(resultado?.ponto_latente_complementar),
+  ]);
+
+  const recomendadas = new Set([ferrPrincipal, ferrComplementar].filter(Boolean));
+  const conteudo = document.getElementById('conteudo');
+  let html = '';
+
+  if (recomendadas.size > 0) {
+    html += `<div class="kicker">Ferramenta recomendada para você</div>`;
+    if (ferrPrincipal) html += cardFerramenta(ferrPrincipal, resultado.ponto_latente_principal);
+    if (ferrComplementar && ferrComplementar !== ferrPrincipal) html += cardFerramenta(ferrComplementar, resultado.ponto_latente_complementar);
+  } else if (!isAdmin) {
+    html += resultado?.ponto_latente_principal
+      ? `<div class="alert alert-info">Ainda não há uma ferramenta indicada para o seu Ponto Latente.</div>`
+      : `<div class="alert alert-info">Complete seu <a href="../mapa/index.html">diagnóstico</a> para ver a ferramenta recomendada para você.</div>`;
+  }
+
+  // Biblioteca completa: só para quem tem permissão de navegar livremente (hoje, só admin).
+  if (isAdmin) {
+    const outras = Object.keys(TODAS_FERRAMENTAS).filter((k) => !recomendadas.has(k));
+    html += `<div class="kicker">${recomendadas.size > 0 ? 'Outras ferramentas disponíveis' : 'Ferramentas disponíveis'}</div>`;
+    for (const k of (recomendadas.size > 0 ? outras : Object.keys(TODAS_FERRAMENTAS))) html += cardFerramenta(k, null);
+  }
+
+  conteudo.innerHTML = html;
 })();
 </script>
-</body></html>
+</body>
+</html>
