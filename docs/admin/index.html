@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Painel Administrativo | Clínica de Valor</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+.resp-item{border-bottom:1px solid var(--line);padding:8px 0}
+.resp-item .lbl{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+.resp-item .val{font-size:14px;margin-top:2px}
+</style>
+</head>
+<body>
+<header class="top">
+  <nav class="nav">
+    <a class="brand" href="../index.html"><span class="mark">❧</span><b>INDIA</b></a>
+    <div class="navlinks"><a href="../index.html">Início</a></div>
+  </nav>
+</header>
+<main class="wrap" style="max-width:1100px">
+  <section class="section">
+    <div class="eyebrow">Painel Administrativo</div>
+    <h1 class="serif" style="font-size:36px;color:var(--green);margin:8px 0">Clientes</h1>
+    <div id="conteudo"><p>Carregando…</p></div>
+  </section>
+</main>
+<footer>INDIA · CAFÉ, PESSOAS E NEGÓCIOS DE VALOR · Clínica de Valor</footer>
+
+<script type="module">
+import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
+import { requireAdmin } from '../assets/js/auth.js';
+
+avisarSupabaseNaoConfigurado();
+
+const TITULOS_PONTO = { captar: 'Captar', precificar: 'Precificar', posicionar: 'Posicionar', produto_mix: 'Produto / Mix', esteira: 'Esteira', escalar: 'Escalar' };
+const MOMENTO_LABEL = { estruturacao: 'Estruturação', consolidacao: 'Consolidação', crescimento: 'Crescimento' };
+
+function fmtData(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString('pt-BR');
+}
+
+async function carregarLista(conteudo) {
+  const { data: diagnosticos, error } = await supabase
+    .from('diagnosticos')
+    .select('id, criado_em, momento_clinica, resultado_calculado, user_id, profiles(nome_completo, email, telefone, cidade, formacao, ano_formacao, tempo_atuacao)')
+    .order('criado_em', { ascending: false });
+
+  if (error) { conteudo.innerHTML = `<div class="alert alert-error">${error.message}</div>`; return; }
+  if (!diagnosticos || diagnosticos.length === 0) { conteudo.innerHTML = `<div class="alert alert-info">Nenhum diagnóstico concluído ainda.</div>`; return; }
+
+  const rows = diagnosticos.map((d) => {
+    const p = d.profiles || {};
+    const resultado = d.resultado_calculado || {};
+    return `<tr>
+      <td>${p.nome_completo || '—'}</td>
+      <td>${p.email || '—'}</td>
+      <td>${p.telefone || '—'}</td>
+      <td>${p.cidade || '—'}</td>
+      <td>${p.formacao || '—'}</td>
+      <td>${p.ano_formacao || '—'}</td>
+      <td>${p.tempo_atuacao || '—'}</td>
+      <td>${fmtData(d.criado_em)}</td>
+      <td>${d.momento_clinica ? MOMENTO_LABEL[d.momento_clinica] : '<span class="badge badge-pending">a definir</span>'}</td>
+      <td>${resultado.ponto_latente_principal ? TITULOS_PONTO[resultado.ponto_latente_principal] : '—'}</td>
+      <td><a href="#" class="btn alt" data-id="${d.id}" style="padding:6px 12px">Ver</a></td>
+    </tr>`;
+  }).join('');
+
+  conteudo.innerHTML = `
+    <div class="panel" style="overflow:auto">
+      <table class="admin-table">
+        <thead><tr><th>Nome</th><th>E-mail</th><th>Telefone</th><th>Cidade</th><th>Formação</th><th>Ano</th><th>Tempo de atuação</th><th>Data diagnóstico</th><th>Momento</th><th>Ponto Latente Principal</th><th></th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+
+  conteudo.querySelectorAll('a[data-id]').forEach((a) => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      history.pushState({}, '', `?id=${a.dataset.id}`);
+      carregarDetalhe(conteudo, a.dataset.id);
+    });
+  });
+}
+
+async function carregarDetalhe(conteudo, diagnosticoId) {
+  const { data: d, error } = await supabase
+    .from('diagnosticos')
+    .select('*, profiles(nome_completo, email, telefone, cidade, formacao, ano_formacao, tempo_atuacao)')
+    .eq('id', diagnosticoId)
+    .single();
+  if (error) { conteudo.innerHTML = `<div class="alert alert-error">${error.message}</div>`; return; }
+
+  const { data: campos } = await supabase.from('diagnostic_fields').select('*').order('etapa', { ascending: true }).order('ordem', { ascending: true });
+  const { data: plano } = await supabase.from('planos_acao').select('*, planos_acao_itens(*)').eq('diagnostico_id', diagnosticoId).maybeSingle();
+
+  const p = d.profiles || {};
+  const resultado = d.resultado_calculado || {};
+
+  const respostasHtml = (campos || []).map((c) => {
+    const v = d.respostas[c.field_id];
+    let vTxt;
+    if (v === undefined || v === null || v === '') vTxt = '<span class="badge badge-pending">não informado</span>';
+    else if (typeof v === 'boolean') vTxt = v ? 'Sim' : 'Não';
+    else vTxt = String(v);
+    return `<div class="resp-item"><div class="lbl">${c.label}</div><div class="val">${vTxt}</div></div>`;
+  }).join('');
+
+  const scoresHtml = Object.entries(resultado.scores || {}).map(([ponto, s]) => `
+    <tr><td>${TITULOS_PONTO[ponto]}</td><td>${s.valor !== null && s.valor !== undefined ? s.valor.toFixed(1) : '—'}</td><td>${s.status}</td></tr>
+  `).join('');
+
+  const acoesHtml = plano ? (plano.planos_acao_itens || []).sort((a,b)=>a.ordem-b.ordem).map((it) => `<li>${it.descricao} — prazo ${it.prazo || '—'} — <b>${it.status}</b></li>`).join('') : '';
+
+  conteudo.innerHTML = `
+    <a href="#" id="voltarLista" class="small">← Voltar para a lista</a>
+    <div class="panel" style="margin-top:14px">
+      <h2 style="color:var(--green);margin-top:0">${p.nome_completo || '—'}</h2>
+      <div class="small">${p.email || ''} · ${p.telefone || ''} · ${p.cidade || ''}</div>
+      <div class="small">${p.formacao || ''} (${p.ano_formacao || '—'}) · atua há ${p.tempo_atuacao || '—'}</div>
+      <div class="action-row" style="margin-top:14px">
+        <span class="badge badge-ok">Diagnóstico em ${fmtData(d.criado_em)}</span>
+        <span class="badge badge-ok">Principal: ${resultado.ponto_latente_principal ? TITULOS_PONTO[resultado.ponto_latente_principal] : '—'}</span>
+        ${resultado.ponto_latente_complementar ? `<span class="badge badge-ok">Complementar: ${TITULOS_PONTO[resultado.ponto_latente_complementar]}</span>` : ''}
+        ${resultado.metodologia_validada ? '' : '<span class="badge badge-draft">metodologia preliminar</span>'}
+      </div>
+
+      <h3 style="color:var(--green2);margin-top:22px">Momento da Clínica</h3>
+      <div class="action-row">
+        <select id="momentoSelect">
+          <option value="">— a definir —</option>
+          <option value="estruturacao" ${d.momento_clinica === 'estruturacao' ? 'selected' : ''}>Estruturação</option>
+          <option value="consolidacao" ${d.momento_clinica === 'consolidacao' ? 'selected' : ''}>Consolidação</option>
+          <option value="crescimento" ${d.momento_clinica === 'crescimento' ? 'selected' : ''}>Crescimento</option>
+        </select>
+        <button class="btn alt" id="salvarMomento" style="padding:8px 14px">Salvar</button>
+        <span id="momentoMsg" class="small"></span>
+      </div>
+
+      <h3 style="color:var(--green2);margin-top:22px">Scores calculados (${resultado.motor_versao || '—'})</h3>
+      <table class="admin-table"><thead><tr><th>Ponto Latente</th><th>Score</th><th>Status</th></tr></thead><tbody>${scoresHtml || '<tr><td colspan=3>—</td></tr>'}</tbody></table>
+
+      <h3 style="color:var(--green2);margin-top:22px">Plano de Ação</h3>
+      ${plano ? `<div class="small">O que resolver primeiro: ${plano.o_que_resolver_primeiro || '—'}</div><ul>${acoesHtml || '<li>Nenhuma ação registrada ainda</li>'}</ul>` : '<div class="small">Ainda não criado pela cliente.</div>'}
+
+      <h3 style="color:var(--green2);margin-top:22px">Respostas originais (imutáveis)</h3>
+      <div class="panel" style="background:#fff">${respostasHtml}</div>
+    </div>
+  `;
+
+  document.getElementById('voltarLista').addEventListener('click', (e) => {
+    e.preventDefault();
+    history.pushState({}, '', location.pathname);
+    carregarLista(conteudo);
+  });
+
+  document.getElementById('salvarMomento').addEventListener('click', async () => {
+    const valor = document.getElementById('momentoSelect').value || null;
+    const msg = document.getElementById('momentoMsg');
+    const { data: { user } } = await supabase.auth.getUser();
+    const { error } = await supabase.from('diagnosticos').update({
+      momento_clinica: valor,
+      momento_clinica_definido_por: user.id,
+      momento_clinica_definido_em: new Date().toISOString(),
+    }).eq('id', diagnosticoId);
+    msg.textContent = error ? `Erro: ${error.message}` : 'Salvo.';
+  });
+}
+
+(async () => {
+  const ctx = await requireAdmin('../index.html', '../login/index.html');
+  if (!ctx) return;
+  const conteudo = document.getElementById('conteudo');
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id');
+  if (id) carregarDetalhe(conteudo, id);
+  else carregarLista(conteudo);
+})();
+</script>
+</body>
+</html>

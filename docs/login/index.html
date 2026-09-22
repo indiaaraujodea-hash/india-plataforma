@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Entrar | Clínica de Valor</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="top">
+  <nav class="nav">
+    <a class="brand" href="../index.html"><span class="mark">❧</span><b>INDIA</b></a>
+    <div class="navlinks"><a href="../index.html">Início</a></div>
+  </nav>
+</header>
+<main class="wrap" style="max-width:520px">
+  <section class="section">
+    <div class="eyebrow">Clínica de Valor</div>
+    <h1 class="serif" style="font-size:34px;color:var(--green);margin:8px 0">Acesse sua conta</h1>
+    <p class="lead">Entre para fazer seu diagnóstico, ver seu relatório, o Manual e seu plano de ação.</p>
+
+    <div class="panel" style="margin-top:20px">
+      <div class="action-row" style="margin-bottom:18px">
+        <button type="button" class="btn alt" id="tabEntrar" style="flex:1;justify-content:center">Entrar</button>
+        <button type="button" class="btn alt" id="tabCriar" style="flex:1;justify-content:center">Criar conta</button>
+      </div>
+
+      <div id="msgBox"></div>
+
+      <form id="formEntrar">
+        <div class="form-field"><label>E-mail</label><input type="email" id="loginEmail" required></div>
+        <div class="form-field"><label>Senha</label><input type="password" id="loginSenha" required></div>
+        <button class="btn" type="submit" style="width:100%;justify-content:center">Entrar</button>
+      </form>
+
+      <form id="formCriar" class="hidden">
+        <div class="form-field"><label>Nome completo</label><input type="text" id="suNome" required></div>
+        <div class="form-field"><label>E-mail</label><input type="email" id="suEmail" required></div>
+        <div class="form-field"><label>Senha</label><input type="password" id="suSenha" minlength="6" required></div>
+        <div class="grid2">
+          <div class="form-field"><label>Telefone</label><input type="tel" id="suTelefone"></div>
+          <div class="form-field"><label>Cidade</label><input type="text" id="suCidade"></div>
+        </div>
+        <div class="grid2">
+          <div class="form-field"><label>Formação</label><input type="text" id="suFormacao" placeholder="Ex.: Psicologia — UFC"></div>
+          <div class="form-field"><label>Ano de formação</label><input type="number" id="suAnoFormacao" min="1960" max="2100"></div>
+        </div>
+        <div class="form-field"><label>Tempo de atuação</label><input type="text" id="suTempoAtuacao" placeholder="Ex.: 5 anos"></div>
+        <button class="btn" type="submit" style="width:100%;justify-content:center">Criar conta</button>
+      </form>
+    </div>
+  </section>
+</main>
+<footer>INDIA · CAFÉ, PESSOAS E NEGÓCIOS DE VALOR · Clínica de Valor</footer>
+
+<script type="module">
+import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
+
+avisarSupabaseNaoConfigurado();
+
+const params = new URLSearchParams(location.search);
+const redirect = params.get('redirect') || '../index.html';
+
+const msgBox = document.getElementById('msgBox');
+function showMsg(text, type = 'error') {
+  msgBox.innerHTML = `<div class="alert alert-${type}">${text}</div>`;
+}
+
+const formEntrar = document.getElementById('formEntrar');
+const formCriar = document.getElementById('formCriar');
+document.getElementById('tabEntrar').addEventListener('click', () => { formEntrar.classList.remove('hidden'); formCriar.classList.add('hidden'); msgBox.innerHTML=''; });
+document.getElementById('tabCriar').addEventListener('click', () => { formCriar.classList.remove('hidden'); formEntrar.classList.add('hidden'); msgBox.innerHTML=''; });
+
+// já logado? manda direto
+supabase.auth.getSession().then(({ data }) => {
+  if (data.session) location.href = redirect;
+});
+
+formEntrar.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value.trim();
+  const senha = document.getElementById('loginSenha').value;
+  const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
+  if (error) { showMsg('Não foi possível entrar: ' + error.message); return; }
+  location.href = redirect;
+});
+
+formCriar.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('suEmail').value.trim();
+  const senha = document.getElementById('suSenha').value;
+  const nome = document.getElementById('suNome').value.trim();
+  const { data, error } = await supabase.auth.signUp({ email, password: senha });
+  if (error) { showMsg('Não foi possível criar a conta: ' + error.message); return; }
+
+  // O trigger handle_new_user() já criou a linha em profiles (id, email).
+  // Aqui só completamos os campos de cadastro.
+  if (data.user) {
+    await supabase.from('profiles').update({
+      nome_completo: nome,
+      telefone: document.getElementById('suTelefone').value.trim() || null,
+      cidade: document.getElementById('suCidade').value.trim() || null,
+      formacao: document.getElementById('suFormacao').value.trim() || null,
+      ano_formacao: document.getElementById('suAnoFormacao').value ? Number(document.getElementById('suAnoFormacao').value) : null,
+      tempo_atuacao: document.getElementById('suTempoAtuacao').value.trim() || null,
+    }).eq('id', data.user.id);
+  }
+
+  if (!data.session) {
+    showMsg('Conta criada. Verifique seu e-mail para confirmar o cadastro antes de entrar.', 'info');
+    return;
+  }
+  location.href = redirect;
+});
+</script>
+</body>
+</html>

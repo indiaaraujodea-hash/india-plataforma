@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meu Relatório | Clínica de Valor</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+.rel-section{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:26px;margin-top:18px}
+.rel-section h2{color:var(--green);font-size:24px;margin:0 0 10px}
+.rel-section h3{color:var(--green2);font-size:15px;text-transform:uppercase;letter-spacing:.04em;margin:20px 0 8px}
+.evid-list{margin:8px 0 0;padding-left:20px}
+.evid-list li{margin-bottom:4px;font-size:14px}
+.momento-card{display:flex;gap:14px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:10px}
+.momento-card b{font-family:Georgia,serif;font-size:22px;color:var(--green)}
+</style>
+</head>
+<body>
+<header class="top">
+  <nav class="nav">
+    <a class="brand" href="../index.html"><span class="mark">❧</span><b>INDIA</b></a>
+    <div class="navlinks"><a href="../index.html">Início</a><a href="../manual/index.html">Manual</a><a href="../ferramentas/index.html">Ferramentas</a><a href="../plano/index.html">Meu Plano</a></div>
+  </nav>
+</header>
+<main class="wrap" style="max-width:880px">
+  <section class="section">
+    <div class="eyebrow">Meu Relatório</div>
+    <h1 class="serif" style="font-size:40px;color:var(--green);margin:8px 0">Meu Mapa da Clínica</h1>
+    <div id="conteudo"><p class="lead">Carregando seu relatório…</p></div>
+  </section>
+</main>
+<footer>INDIA · CAFÉ, PESSOAS E NEGÓCIOS DE VALOR · Clínica de Valor</footer>
+
+<script type="module">
+import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
+import { requireAuth } from '../assets/js/auth.js';
+
+avisarSupabaseNaoConfigurado();
+
+const TITULOS_PONTO = {
+  captar: 'Captar', precificar: 'Precificar', posicionar: 'Posicionar',
+  produto_mix: 'Produto / Mix', esteira: 'Esteira', escalar: 'Escalar',
+};
+const MOMENTO_LABEL = { estruturacao: 'Estruturação', consolidacao: 'Consolidação', crescimento: 'Crescimento' };
+
+// Campos que sustentam a personalização de cada ponto latente — só evidências
+// realmente respondidas entram no relatório (nunca inferência).
+const EVIDENCIAS_POR_PONTO = {
+  captar: [
+    ['acq_sabe_origem', 'Sabe de onde vieram os últimos 10 pacientes/contatos'],
+    ['acq_dois_canais', 'Tem pelo menos 2 canais ativos de descoberta ou indicação'],
+    ['acq_presenca_clara', 'Presença online permite entender rapidamente o que oferece'],
+    ['acq_rotina_relacionamento', 'Tem rotina de relacionamento/parcerias, não só postagens pontuais'],
+    ['acq_primeiro_contato_organizado', 'Primeiro contato é organizado e reduz dúvidas'],
+    ['acq_nao_depende_uma_fonte', 'Entrada de pacientes não depende quase só de uma fonte'],
+  ],
+  precificar: [
+    ['financas_contas_separadas', 'Contas pessoais e da clínica estão separadas'],
+    ['financas_custo_conhecido', 'Sabe o custo mensal real da clínica'],
+    ['financas_retirada_previsivel', 'Existe retirada/pró-labore minimamente previsível'],
+    ['financas_reserva', 'Existe reserva financeira da clínica'],
+    ['financas_acompanha_indicadores', 'Acompanha faturamento, ticket e ocupação mensalmente'],
+    ['financas_ponto_equilibrio', 'Conhece o ponto de equilíbrio'],
+  ],
+  posicionar: [
+    ['pos_publico_claro', 'Clareza de quem atende melhor e em quais contextos'],
+    ['pos_diferenciais', 'Consegue nomear diferenciais além de formação/abordagem'],
+    ['pos_presenca_coerente', 'Presença profissional comunica quem é e para quem trabalha'],
+    ['pos_entendem_por_que_agora', 'Quem chega entende por que procurá-la agora'],
+    ['pos_comunica_valor', 'Comunicação ajuda a perceber valor, não só preço'],
+  ],
+  produto_mix: [
+    ['mod_servico_claro', 'Serviço principal está claro em formato, público e condições'],
+    ['mod_novo_servico_resolve', 'Sabe qual problema de modelo um novo serviço resolveria'],
+    ['mod_agenda_comporta', 'Agenda e energia atuais comportam expansão'],
+  ],
+  esteira: [],
+  escalar: [],
+};
+
+function evidenciasDoPonto(ponto, respostas) {
+  const campos = EVIDENCIAS_POR_PONTO[ponto] || [];
+  const presentes = [];
+  for (const [fieldId, label] of campos) {
+    const v = respostas[fieldId];
+    if (v === true) presentes.push(label);
+    else if (typeof v === 'number' && v >= 3) presentes.push(`${label} (nota ${v}/4)`);
+  }
+  return presentes;
+}
+
+function potenciasGerais(respostas) {
+  const todasEvidencias = Object.values(EVIDENCIAS_POR_PONTO).flat();
+  const vistos = new Set();
+  const potencias = [];
+  for (const [fieldId, label] of todasEvidencias) {
+    if (vistos.has(fieldId)) continue;
+    vistos.add(fieldId);
+    const v = respostas[fieldId];
+    if (v === true || (typeof v === 'number' && v >= 3)) potencias.push(label);
+  }
+  return potencias.slice(0, 8);
+}
+
+function el(tag, attrs = {}, children = []) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === 'html') e.innerHTML = v; else e.setAttribute(k, v);
+  }
+  for (const c of [].concat(children)) if (c) e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+  return e;
+}
+
+async function carregarLinkCompreenderAplicar(pontoLatente) {
+  const [{ data: capMap }, { data: ferrMap }] = await Promise.all([
+    supabase.from('ponto_latente_capitulo_map').select('capitulo_numero, status, manual_capitulos(titulo)').eq('ponto_latente', pontoLatente).maybeSingle(),
+    supabase.from('ponto_latente_ferramenta_map').select('ferramenta, status').eq('ponto_latente', pontoLatente).maybeSingle(),
+  ]);
+  return { capMap, ferrMap };
+}
+
+function renderBlocoPontoLatente(container, { texto, respostas, pontoLatente, principal }) {
+  const sec = el('section', { class: 'rel-section' });
+  sec.appendChild(el('div', { class: 'badge badge-draft' }, principal ? 'Ponto Latente Principal' : 'Ponto Latente Complementar'));
+  sec.appendChild(el('h2', {}, texto.titulo));
+  sec.appendChild(el('p', {}, texto.sintese));
+
+  if (principal) {
+    sec.appendChild(el('h3', {}, 'O que pode estar por trás'));
+    sec.appendChild(el('p', {}, texto.o_que_por_tras));
+  }
+
+  sec.appendChild(el('h3', {}, 'Como isso aparece na sua clínica'));
+  const evid = evidenciasDoPonto(pontoLatente, respostas);
+  if (evid.length > 0) {
+    const ul = el('ul', { class: 'evid-list' }, evid.map((t) => el('li', {}, t)));
+    sec.appendChild(ul);
+  } else {
+    sec.appendChild(el('p', { class: 'small' }, 'Ainda não há evidências suficientes nas suas respostas para personalizar esta seção.'));
+  }
+
+  if (principal) {
+    sec.appendChild(el('h3', {}, 'Por que olhar para isso agora'));
+    sec.appendChild(el('p', {}, texto.por_que_agora));
+    sec.appendChild(el('h3', {}, 'Caminho de Desenvolvimento'));
+    sec.appendChild(el('p', {}, texto.caminho_desenvolvimento));
+    sec.appendChild(el('h3', {}, 'Para Refletir'));
+    sec.appendChild(el('p', { html: `<em>${texto.para_refletir}</em>` }));
+  }
+
+  container.appendChild(sec);
+  return sec;
+}
+
+async function renderCompreenderAplicar(sec, pontoLatente) {
+  const { capMap, ferrMap } = await carregarLinkCompreenderAplicar(pontoLatente);
+  sec.appendChild(el('h3', {}, 'Para Compreender'));
+  if (capMap && capMap.capitulo_numero && capMap.status === 'validado') {
+    const a = el('a', { href: `../manual/index.html?cap=${capMap.capitulo_numero}`, class: 'btn alt' }, `Abrir capítulo — ${capMap.manual_capitulos?.titulo || ''}`);
+    sec.appendChild(a);
+  } else {
+    sec.appendChild(el('p', { class: 'small' }, 'O capítulo do Manual para este Ponto Latente ainda está em validação metodológica. Você pode navegar livremente pelo Manual completo.'));
+  }
+  sec.appendChild(el('h3', {}, 'Para Aplicar'));
+  const ferramentaHref = { calculadora_sessao: '../ferramentas/sessao.html', calculadora_grupo: '../ferramentas/grupo.html' };
+  if (ferrMap && ferrMap.ferramenta) {
+    const nome = ferrMap.ferramenta === 'calculadora_sessao' ? 'Calculadora de Valor da Sessão' : 'Calculadora de Grupo';
+    sec.appendChild(el('a', { href: ferramentaHref[ferrMap.ferramenta], class: 'btn alt' }, `Abrir ${nome}`));
+  } else {
+    sec.appendChild(el('p', { class: 'small' }, 'A ferramenta recomendada para este Ponto Latente ainda está em validação metodológica.'));
+  }
+}
+
+(async () => {
+  const session = await requireAuth('../login/index.html');
+  if (!session) return;
+  const conteudo = document.getElementById('conteudo');
+
+  const { data: diag, error } = await supabase.from('diagnosticos').select('*').eq('user_id', session.user.id).maybeSingle();
+  if (error) { conteudo.innerHTML = `<div class="alert alert-error">Erro ao carregar seu relatório: ${error.message}</div>`; return; }
+  if (!diag) { location.href = '../mapa/index.html'; return; }
+
+  const resultado = diag.resultado_calculado;
+  if (!resultado || resultado.status === 'dados_insuficientes' || !resultado.ponto_latente_principal) {
+    conteudo.innerHTML = `<div class="alert alert-info">Recebemos seu diagnóstico, mas ainda não há dados suficientes para calcular seu Ponto Latente. Assim que a metodologia for validada, seu relatório completo aparecerá aqui.</div>`;
+    return;
+  }
+
+  conteudo.innerHTML = '';
+
+  if (!resultado.metodologia_validada) {
+    conteudo.appendChild(el('div', { class: 'alert alert-warn' }, 'Resultado preliminar — a metodologia de priorização (pesos) ainda está em validação. Este relatório usa uma configuração provisória e pode mudar quando as regras finais forem aprovadas.'));
+  }
+
+  // Seu Momento Atual
+  const momentoSec = el('section', { class: 'rel-section' });
+  momentoSec.appendChild(el('div', { class: 'eyebrow' }, 'Seu Momento Atual'));
+  const momentoCard = el('div', { class: 'momento-card' });
+  if (diag.momento_clinica) {
+    momentoCard.appendChild(el('b', {}, MOMENTO_LABEL[diag.momento_clinica]));
+  } else {
+    momentoCard.appendChild(el('span', { class: 'badge badge-pending' }, 'A definir'));
+    momentoCard.appendChild(el('span', { class: 'small', style: 'margin-left:10px' }, 'O Momento da Clínica ainda não foi avaliado — é uma dimensão separada do Ponto Latente e será definido conforme a metodologia validada.'));
+  }
+  momentoSec.appendChild(momentoCard);
+  conteudo.appendChild(momentoSec);
+
+  // Potências
+  const potSec = el('section', { class: 'rel-section' });
+  potSec.appendChild(el('h2', {}, 'Potências da sua Clínica'));
+  const potencias = potenciasGerais(diag.respostas);
+  if (potencias.length > 0) {
+    potSec.appendChild(el('ul', { class: 'evid-list' }, potencias.map((t) => el('li', {}, t))));
+  } else {
+    potSec.appendChild(el('p', { class: 'small' }, 'Ainda não identificamos potências confirmadas nas respostas.'));
+  }
+  conteudo.appendChild(potSec);
+
+  // Ponto Latente Principal
+  const { data: textoPrincipal } = await supabase.from('pontos_latentes_textos').select('*').eq('ponto_latente', resultado.ponto_latente_principal).single();
+  const secPrincipal = renderBlocoPontoLatente(conteudo, { texto: textoPrincipal, respostas: diag.respostas, pontoLatente: resultado.ponto_latente_principal, principal: true });
+  await renderCompreenderAplicar(secPrincipal, resultado.ponto_latente_principal);
+
+  // Ponto Latente Complementar
+  if (resultado.ponto_latente_complementar) {
+    const { data: textoComplementar } = await supabase.from('pontos_latentes_textos').select('*').eq('ponto_latente', resultado.ponto_latente_complementar).single();
+    renderBlocoPontoLatente(conteudo, { texto: textoComplementar, respostas: diag.respostas, pontoLatente: resultado.ponto_latente_complementar, principal: false });
+  }
+
+  // Para Avançar
+  const avancarSec = el('section', { class: 'rel-section' });
+  avancarSec.appendChild(el('h2', {}, 'Para Avançar'));
+  avancarSec.appendChild(el('p', {}, 'Meu Plano de Ação de 30 dias.'));
+  avancarSec.appendChild(el('a', { href: '../plano/index.html', class: 'btn' }, 'Ir para Meu Plano de Ação →'));
+  conteudo.appendChild(avancarSec);
+})();
+</script>
+</body>
+</html>

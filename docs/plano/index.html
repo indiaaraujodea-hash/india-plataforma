@@ -1,1 +1,203 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Meu Plano | Clínica de Valor</title><link rel="stylesheet" href="../style.css"></head><body><header class="top"><nav class="nav"><a class="brand" href="../index.html"><span class="mark">❧</span><b>INDIA</b></a><div class="navlinks"><a href="../index.html">Início</a><a href="../mapa/index.html">Meu Mapa</a><a href="../ferramentas/index.html">Ferramentas</a><a href="../manual/index.html">Manual</a><a href="../plano/index.html">Meu Plano</a></div></nav></header><main class="wrap"><section class="section"><div class="eyebrow">Meu Plano</div><h1 class="serif" style="font-size:46px;color:var(--green);margin:8px 0">Transforme o diagnóstico em execução.</h1><p class="lead">Registre um movimento principal, uma ação concreta e um prazo. Esta versão salva o plano neste navegador.</p><form id="p" class="panel" style="max-width:780px;margin-top:26px"><label>Meu movimento principal<input id="mov" required style="width:100%;padding:12px;margin:6px 0 16px;border:1px solid var(--line);border-radius:8px"></label><label>O que vou fazer primeiro<textarea id="acao" required rows="4" style="width:100%;padding:12px;margin:6px 0 16px;border:1px solid var(--line);border-radius:8px"></textarea></label><label>Prazo<input id="prazo" type="date" required style="width:100%;padding:12px;margin:6px 0 16px;border:1px solid var(--line);border-radius:8px"></label><label>Indicador de acompanhamento<input id="indic" style="width:100%;padding:12px;margin:6px 0 16px;border:1px solid var(--line);border-radius:8px" placeholder="Ex.: ticket médio, pacientes ativos, faturamento"></label><button class="btn" type="submit">Salvar meu plano</button><span id="status" class="small" style="margin-left:12px"></span></form></section></main><script>const f=document.getElementById('p');const ids=['mov','acao','prazo','indic'];try{const d=JSON.parse(localStorage.getItem('clinicaPlano')||'{}');ids.forEach(x=>document.getElementById(x).value=d[x]||'');const m=JSON.parse(localStorage.getItem('clinicaDiag')||'{}');if(!document.getElementById('mov').value&&m.primary)document.getElementById('mov').value=m.primary}catch(e){}f.addEventListener('submit',e=>{e.preventDefault();const d={};ids.forEach(x=>d[x]=document.getElementById(x).value);localStorage.setItem('clinicaPlano',JSON.stringify(d));document.getElementById('status').textContent='Plano salvo neste navegador.'})</script><footer>INDIA · CAFÉ, PESSOAS E NEGÓCIOS DE VALOR · Clínica de Valor</footer></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meu Plano | Clínica de Valor</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+.acao-row{border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px;background:#fff}
+.acao-row .grid2{grid-template-columns:2fr 1fr 1fr}
+</style>
+</head>
+<body>
+<header class="top">
+  <nav class="nav">
+    <a class="brand" href="../index.html"><span class="mark">❧</span><b>INDIA</b></a>
+    <div class="navlinks"><a href="../index.html">Início</a><a href="../mapa/index.html">Meu Mapa</a><a href="../ferramentas/index.html">Ferramentas</a><a href="../manual/index.html">Manual</a><a href="../plano/index.html">Meu Plano</a></div>
+  </nav>
+</header>
+<main class="wrap" style="max-width:820px">
+  <section class="section">
+    <div class="eyebrow">Meu Plano</div>
+    <h1 class="serif" style="font-size:42px;color:var(--green);margin:8px 0">Transforme o diagnóstico em execução.</h1>
+    <p class="lead">Até 3 ações concretas, com prazo, status e um jeito de medir o avanço.</p>
+    <div id="conteudo"><p>Carregando…</p></div>
+  </section>
+</main>
+<footer>INDIA · CAFÉ, PESSOAS E NEGÓCIOS DE VALOR · Clínica de Valor</footer>
+
+<script type="module">
+import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
+import { requireAuth } from '../assets/js/auth.js';
+
+avisarSupabaseNaoConfigurado();
+
+const TITULOS_PONTO = { captar: 'Captar', precificar: 'Precificar', posicionar: 'Posicionar', produto_mix: 'Produto / Mix', esteira: 'Esteira', escalar: 'Escalar' };
+const MOMENTO_LABEL = { estruturacao: 'Estruturação', consolidacao: 'Consolidação', crescimento: 'Crescimento' };
+const STATUS_OPCOES = [['nao_iniciado', 'Não iniciado'], ['em_andamento', 'Em andamento'], ['concluido', 'Concluído']];
+
+(async () => {
+  const session = await requireAuth('../login/index.html');
+  if (!session) return;
+  const conteudo = document.getElementById('conteudo');
+
+  const { data: diag, error: diagErr } = await supabase.from('diagnosticos').select('*').eq('user_id', session.user.id).maybeSingle();
+  if (diagErr) { conteudo.innerHTML = `<div class="alert alert-error">${diagErr.message}</div>`; return; }
+  if (!diag) { location.href = '../mapa/index.html'; return; }
+  const resultado = diag.resultado_calculado;
+  if (!resultado || !resultado.ponto_latente_principal) {
+    conteudo.innerHTML = `<div class="alert alert-info">Seu Plano de Ação fica disponível depois que seu diagnóstico tiver um Ponto Latente calculado. Veja <a href="../relatorio/index.html">Meu Relatório</a>.</div>`;
+    return;
+  }
+
+  let { data: plano } = await supabase.from('planos_acao').select('*').eq('diagnostico_id', diag.id).maybeSingle();
+  if (!plano) {
+    const { data: novoPlano, error: criarErr } = await supabase.from('planos_acao').insert({
+      diagnostico_id: diag.id,
+      user_id: session.user.id,
+      momento_atual_snapshot: diag.momento_clinica,
+      ponto_latente_principal_snapshot: resultado.ponto_latente_principal,
+      ponto_latente_complementar_snapshot: resultado.ponto_latente_complementar,
+    }).select().single();
+    if (criarErr) { conteudo.innerHTML = `<div class="alert alert-error">Não foi possível criar seu plano: ${criarErr.message}</div>`; return; }
+    plano = novoPlano;
+  }
+
+  const { data: itens } = await supabase.from('planos_acao_itens').select('*').eq('plano_id', plano.id).order('ordem', { ascending: true });
+  const itensPorOrdem = { 1: null, 2: null, 3: null };
+  for (const it of itens || []) itensPorOrdem[it.ordem] = it;
+
+  conteudo.innerHTML = '';
+
+  const snapshotSec = document.createElement('div');
+  snapshotSec.className = 'panel';
+  snapshotSec.style.marginBottom = '18px';
+  snapshotSec.innerHTML = `
+    <div class="small" style="margin-bottom:6px">Preenchido automaticamente a partir do seu diagnóstico</div>
+    <div class="action-row">
+      <span class="badge badge-pending">Momento: ${plano.momento_atual_snapshot ? MOMENTO_LABEL[plano.momento_atual_snapshot] : 'a definir'}</span>
+      <span class="badge badge-ok">Ponto Latente Principal: ${TITULOS_PONTO[plano.ponto_latente_principal_snapshot] || '—'}</span>
+      ${plano.ponto_latente_complementar_snapshot ? `<span class="badge badge-ok">Complementar: ${TITULOS_PONTO[plano.ponto_latente_complementar_snapshot]}</span>` : ''}
+    </div>`;
+  conteudo.appendChild(snapshotSec);
+
+  const form = document.createElement('form');
+  form.className = 'panel';
+  form.innerHTML = `
+    <div class="form-field"><label>O que vou resolver primeiro?</label><textarea id="oQueResolver" rows="2"></textarea></div>
+    <div class="form-field"><label>Qual resultado quero alcançar nos próximos 30 dias?</label><textarea id="resultado30" rows="2"></textarea></div>
+    <div class="form-field"><label>Como vou medir meu avanço?</label><input type="text" id="comoMedir"></div>
+    <div class="form-field"><label>Qual é meu primeiro passo desta semana?</label><input type="text" id="primeiroPasso"></div>
+    <h3 style="color:var(--green);margin-top:22px">Minhas ações (até 3)</h3>
+    <div id="acoesWrap"></div>
+    <div id="planoMsg"></div>
+    <button type="submit" class="btn">Salvar meu plano</button>
+  `;
+  conteudo.appendChild(form);
+
+  form.querySelector('#oQueResolver').value = plano.o_que_resolver_primeiro || '';
+  form.querySelector('#resultado30').value = plano.resultado_30_dias || '';
+  form.querySelector('#comoMedir').value = plano.como_medir_avanco || '';
+  form.querySelector('#primeiroPasso').value = plano.primeiro_passo_semana || '';
+
+  const acoesWrap = form.querySelector('#acoesWrap');
+  for (let ordem = 1; ordem <= 3; ordem++) {
+    const item = itensPorOrdem[ordem];
+    const row = document.createElement('div');
+    row.className = 'acao-row';
+    row.innerHTML = `
+      <div class="grid2">
+        <div class="form-field"><label>Ação ${ordem}</label><input type="text" id="acaoDesc${ordem}" placeholder="Ex.: Revisar preço da sessão individual"></div>
+        <div class="form-field"><label>Prazo</label><input type="date" id="acaoPrazo${ordem}"></div>
+        <div class="form-field"><label>Status</label><select id="acaoStatus${ordem}">${STATUS_OPCOES.map(([v, l]) => `<option value="${v}">${l}</option>`).join('')}</select></div>
+      </div>`;
+    acoesWrap.appendChild(row);
+    if (item) {
+      row.querySelector(`#acaoDesc${ordem}`).value = item.descricao || '';
+      row.querySelector(`#acaoPrazo${ordem}`).value = item.prazo || '';
+      row.querySelector(`#acaoStatus${ordem}`).value = item.status || 'nao_iniciado';
+    }
+  }
+
+  const planoMsg = form.querySelector('#planoMsg');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    planoMsg.innerHTML = '';
+    const btn = form.querySelector('button[type=submit]');
+    btn.disabled = true;
+
+    const { error: updErr } = await supabase.from('planos_acao').update({
+      o_que_resolver_primeiro: form.querySelector('#oQueResolver').value.trim() || null,
+      resultado_30_dias: form.querySelector('#resultado30').value.trim() || null,
+      como_medir_avanco: form.querySelector('#comoMedir').value.trim() || null,
+      primeiro_passo_semana: form.querySelector('#primeiroPasso').value.trim() || null,
+    }).eq('id', plano.id);
+
+    let erroItens = null;
+    for (let ordem = 1; ordem <= 3; ordem++) {
+      const desc = form.querySelector(`#acaoDesc${ordem}`).value.trim();
+      const prazo = form.querySelector(`#acaoPrazo${ordem}`).value || null;
+      const status = form.querySelector(`#acaoStatus${ordem}`).value;
+      const existente = itensPorOrdem[ordem];
+      if (!desc) {
+        if (existente) {
+          const { error } = await supabase.from('planos_acao_itens').delete().eq('id', existente.id);
+          if (error) erroItens = error;
+        }
+        continue;
+      }
+      if (existente) {
+        const { error } = await supabase.from('planos_acao_itens').update({ descricao: desc, prazo, status, concluido_em: status === 'concluido' ? new Date().toISOString() : null }).eq('id', existente.id);
+        if (error) erroItens = error;
+      } else {
+        const { error } = await supabase.from('planos_acao_itens').insert({ plano_id: plano.id, ordem, descricao: desc, prazo, status });
+        if (error) erroItens = error;
+      }
+    }
+
+    btn.disabled = false;
+    if (updErr || erroItens) {
+      planoMsg.innerHTML = `<div class="alert alert-error">Não foi possível salvar tudo: ${(updErr || erroItens).message}</div>`;
+    } else {
+      planoMsg.innerHTML = `<div class="alert alert-info">Plano salvo.</div>`;
+      montarCompartilhar();
+    }
+  });
+
+  function textoResumo() {
+    const linhas = [
+      `Meu Plano de Ação — Clínica de Valor`,
+      `Momento: ${plano.momento_atual_snapshot ? MOMENTO_LABEL[plano.momento_atual_snapshot] : 'a definir'}`,
+      `Ponto Latente Principal: ${TITULOS_PONTO[plano.ponto_latente_principal_snapshot] || '—'}`,
+      `O que vou resolver primeiro: ${form.querySelector('#oQueResolver').value.trim() || '—'}`,
+      `Resultado em 30 dias: ${form.querySelector('#resultado30').value.trim() || '—'}`,
+    ];
+    for (let ordem = 1; ordem <= 3; ordem++) {
+      const desc = form.querySelector(`#acaoDesc${ordem}`).value.trim();
+      if (desc) linhas.push(`Ação ${ordem}: ${desc} (prazo: ${form.querySelector(`#acaoPrazo${ordem}`).value || '—'})`);
+    }
+    return linhas.join('\n');
+  }
+
+  function montarCompartilhar() {
+    let bar = document.getElementById('compartilharBar');
+    if (!bar) {
+      bar = document.createElement('div');
+      bar.id = 'compartilharBar';
+      bar.className = 'action-row';
+      bar.style.marginTop = '16px';
+      conteudo.appendChild(bar);
+    }
+    const texto = textoResumo();
+    bar.innerHTML = `
+      <a class="btn alt" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(texto)}">Compartilhar no WhatsApp</a>
+      <a class="btn alt" href="mailto:?subject=${encodeURIComponent('Meu Plano de Ação — Clínica de Valor')}&body=${encodeURIComponent(texto)}">Enviar por e-mail</a>
+    `;
+  }
+
+  montarCompartilhar();
+})();
+</script>
+</body>
+</html>
