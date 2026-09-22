@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Redefinir senha | INDIA</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="assets/css/shell.css">
+</head>
+<body>
+<div class="login-shell">
+  <div class="login-right" style="width:100%">
+    <div class="login-card">
+      <h2>Defina sua nova senha</h2>
+      <p class="sub">Escolha uma nova senha para sua conta.</p>
+      <div id="msgBox"></div>
+      <form id="formNovaSenha">
+        <div class="form-field"><label>Nova senha</label><input type="password" id="novaSenha" minlength="6" required></div>
+        <div class="form-field"><label>Confirmar nova senha</label><input type="password" id="confirmarSenha" minlength="6" required></div>
+        <button class="btn btn-primary" type="submit">Salvar nova senha</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { supabase, avisarSupabaseNaoConfigurado } from './assets/js/supabase-client.js';
+
+avisarSupabaseNaoConfigurado();
+
+const msgBox = document.getElementById('msgBox');
+function showMsg(text, type = 'error') {
+  msgBox.innerHTML = `<div class="alert alert-${type}">${text}</div>`;
+}
+
+const { data } = await supabase.auth.getSession();
+if (!data.session) {
+  showMsg('Este link de redefinição é inválido ou expirou. Peça um novo link na tela de login.');
+  document.getElementById('formNovaSenha').classList.add('hidden');
+}
+
+document.getElementById('formNovaSenha').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const senha = document.getElementById('novaSenha').value;
+  const confirmar = document.getElementById('confirmarSenha').value;
+  if (senha !== confirmar) { showMsg('As senhas não coincidem.'); return; }
+  const { error } = await supabase.auth.updateUser({ password: senha });
+  if (error) { showMsg('Não foi possível salvar: ' + error.message); return; }
+  showMsg('Senha atualizada. Redirecionando…', 'info');
+  setTimeout(() => { location.href = 'mapa/index.html'; }, 1500);
+});
+</script>
+</body>
+</html>
