@@ -7,8 +7,9 @@
 <link rel="stylesheet" href="../style.css">
 <link rel="stylesheet" href="../assets/css/shell.css">
 <style>
-.product-card .photo.p3{background:linear-gradient(135deg,#e9dcc3,#c9a24a);display:flex;align-items:center;justify-content:center}
-.product-card .photo.p4{background:linear-gradient(135deg,#1f4a3a,#3d6753);display:flex;align-items:center;justify-content:center}
+.product-card .photo{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.product-card .photo.p3{background:linear-gradient(135deg,#e9dcc3,#c9a24a)}
+.product-card .photo.p4{background:linear-gradient(135deg,#1f4a3a,#3d6753)}
 .product-card .photo .placeholder-label{color:#fff;font-family:Georgia,serif;font-size:15px;text-align:center;padding:0 24px;text-shadow:0 1px 6px rgba(0,0,0,.25)}
 .product-card.manual .cta{background:var(--terracota)}
 .product-card.mentoria .cta{background:var(--ink-green2,#1f4a3a)}
@@ -44,10 +45,10 @@
 
   <div class="landing-cards" id="produtos">
     <div class="product-card clinica">
-      <div class="photo p1"></div>
+      <div class="photo p1"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#7c6a45" stroke-width="1.4" opacity=".55"><path d="M4 21V10l8-6 8 6v11"/><path d="M9 21v-6h6v6"/></svg></div>
       <div class="body">
         <div class="kicker">Para psicólogas</div>
-        <h3>Minha Clínica sustentável</h3>
+        <h3>Clínica Sustentável</h3>
         <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Diagnóstico, ferramentas e direcionamento para construir uma clínica sustentável na ACP.</p>
         <ul>
           <li>Diagnóstico personalizado</li>
@@ -60,9 +61,12 @@
     </div>
 
     <div class="product-card manual">
-      <div class="photo p3" id="manualCapa"><span class="placeholder-label">Manual da Clínica de Valor</span></div>
+      <div class="photo p3" id="manualCapa">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.4" opacity=".85" style="margin-bottom:8px"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span class="placeholder-label">Manual da Clínica de Valor</span>
+      </div>
       <div class="body">
-        <div class="kicker">O livro</div>
+        <div class="kicker">Manual completo</div>
         <h3>Manual da Clínica de Valor</h3>
         <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Estratégias práticas para construir uma clínica sustentável sem perder a essência da Abordagem Centrada na Pessoa.</p>
         <a class="cta" href="#" id="ctaManualLivro">Conheça o Manual →</a>
@@ -70,7 +74,10 @@
     </div>
 
     <div class="product-card mentoria">
-      <div class="photo p4"><span class="placeholder-label">Encontros e acompanhamento estratégico</span></div>
+      <div class="photo p4">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.4" opacity=".85" style="margin-bottom:8px"><circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3.1-6 7-6s7 2.7 7 6"/><circle cx="17" cy="8" r="2.4"/><path d="M16 14.2c2.7.5 4.8 2.6 5 5.8"/></svg>
+        <span class="placeholder-label">Encontros e acompanhamento estratégico</span>
+      </div>
       <div class="body">
         <div class="kicker">Mentoria</div>
         <h3>Encontros ao vivo para os próximos passos da sua clínica</h3>
