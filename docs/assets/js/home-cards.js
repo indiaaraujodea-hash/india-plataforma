@@ -1,4 +1,4 @@
-// Cards de produtos da Home (pública e logada): Minha Clínica Sustentável,
+// Cards de produtos da Home (pública e logada): Minha Clínica de Valor,
 // Manual da Clínica de Valor (livro comercial — não é o Manual interno) e Mentoria.
 import { WHATSAPP_URL, MANUAL_LIVRO_URL, MANUAL_CAPA_IMG } from './site-config.js';
 
@@ -19,7 +19,7 @@ export function renderHomeCards(container, { clinicaHref }) {
       <div class="hp-photo hp-photo-clinica" role="img" aria-label="Mesa de trabalho com notebook e caderno de planejamento"></div>
       <div class="hp-body">
         <div class="hp-kicker">Para psicólogas</div>
-        <h3>Minha Clínica Sustentável</h3>
+        <h3>Minha Clínica de Valor</h3>
         <p>Diagnóstico, ferramentas e direcionamento para construir uma clínica sustentável na ACP.</p>
         <a class="hp-cta" href="${clinicaHref}" data-cta="clinica">Conhecer a Clínica de Valor →</a>
       </div>
@@ -27,8 +27,7 @@ export function renderHomeCards(container, { clinicaHref }) {
 
     <article class="hp-card">
       <div class="hp-photo hp-photo-manual">
-        <img src="${img(MANUAL_CAPA_IMG)}" alt="Capa do livro Manual da Clínica de Valor" loading="lazy">
-        <span class="hp-capa-pendente">Capa oficial do livro<br><small>aguardando arquivo em assets/img/${MANUAL_CAPA_IMG}</small></span>
+        <img src="${img(MANUAL_CAPA_IMG)}" alt="Capa do livro Manual da Clínica como Negócio na ACP — India Araújo de Almeida" loading="lazy">
       </div>
       <div class="hp-body">
         <div class="hp-kicker">Livro</div>
@@ -49,7 +48,7 @@ export function renderHomeCards(container, { clinicaHref }) {
       </div>
     </article>`;
 
-  // Se a capa oficial ainda não foi enviada, mostra o espaço reservado (sem recriar a capa).
+  // Se o arquivo da capa ainda não estiver em assets/img, o espaço fica apenas com o fundo neutro (sem texto e sem recriar a capa).
   const capa = container.querySelector('.hp-photo-manual img');
   const marcarPendente = () => capa.parentElement.classList.add('pendente');
   capa.addEventListener('error', marcarPendente);

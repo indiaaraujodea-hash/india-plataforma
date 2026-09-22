@@ -65,10 +65,7 @@
 .hp-photo-clinica{background-image:url('../img/hero-bg.jpg');background-size:210%;background-position:62% 88%}
 .hp-photo-manual{background:linear-gradient(135deg,#e9dcc6,#d8c3a2);display:flex;align-items:center;justify-content:center}
 .hp-photo-manual img{height:100%;width:100%;object-fit:contain;display:block}
-.hp-photo-manual .hp-capa-pendente{display:none;text-align:center;color:var(--ink-green);font-family:Georgia,serif;font-size:17px;line-height:1.4;padding:16px}
-.hp-photo-manual .hp-capa-pendente small{font-family:Arial,Helvetica,sans-serif;font-size:11px;color:var(--muted2)}
 .hp-photo-manual.pendente img{display:none}
-.hp-photo-manual.pendente .hp-capa-pendente{display:block}
 .hp-body{padding:22px 24px 26px;display:flex;flex-direction:column;flex:1}
 .hp-kicker{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--terracota);font-weight:800}
 .hp-card h3{font-family:Georgia,serif;font-size:24px;line-height:1.2;color:var(--ink-green);margin:8px 0 10px;font-weight:500}
