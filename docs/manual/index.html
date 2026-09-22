@@ -10,14 +10,9 @@
 .chapter h2{font-size:28px;color:var(--green)}
 .chapter p{line-height:1.7}
 </style>
+<link rel="stylesheet" href="../assets/css/shell.css">
 </head>
 <body>
-<header class="top">
-  <nav class="nav">
-    <a class="brand" href="../index.html"><span class="mark">❧</span><b>INDIA</b></a>
-    <div class="navlinks"><a href="../index.html">Início</a><a href="../mapa/index.html">Meu Mapa</a><a href="../ferramentas/index.html">Ferramentas</a><a href="../manual/index.html">Manual</a><a href="../plano/index.html">Meu Plano</a></div>
-  </nav>
-</header>
 <main class="wrap">
   <section class="section">
     <div class="eyebrow">Manual da Clínica como Negócio na ACP</div>
@@ -35,12 +30,14 @@
 <script type="module">
 import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
 import { requireAuth } from '../assets/js/auth.js';
+import { mountAppShell } from '../assets/js/app-shell.js';
 
 avisarSupabaseNaoConfigurado();
 
 (async () => {
   const session = await requireAuth('../login/index.html');
   if (!session) return;
+  await mountAppShell('manual', session, '..');
 
   const { data: capitulos, error } = await supabase
     .from('manual_capitulos')

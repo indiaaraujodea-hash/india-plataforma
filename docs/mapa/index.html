@@ -77,8 +77,9 @@ main{margin-top:-32px;padding-bottom:80px}
  .progress-wrap{padding:20px}
 }
 </style>
+<link rel="stylesheet" href="../assets/css/shell.css">
 </head>
-<body><a href="../index.html" style="position:fixed;z-index:50;right:14px;top:14px;background:#fff;color:#173f31;border:1px solid #e5ded1;border-radius:999px;padding:8px 12px;text-decoration:none;font:12px Arial">← Clínica de Valor</a>
+<body>
 <main class="wrap" id="diagnostico">
 <section class="panel" id="wizard">
   <div class="progress-wrap">
@@ -204,6 +205,7 @@ main{margin-top:-32px;padding-bottom:80px}
 <script type="module">
 import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
 import { requireAuth } from '../assets/js/auth.js';
+import { mountAppShell } from '../assets/js/app-shell.js';
 import { calcularPontosLatentes } from '../assets/js/diagnostico-engine.js';
 
 avisarSupabaseNaoConfigurado();
@@ -225,6 +227,7 @@ let session;
 (async () => {
   session = await requireAuth('../login/index.html');
   if (!session) return;
+  await mountAppShell('mapa', session, '..');
 
   const { data: existente, error } = await supabase.from('diagnosticos').select('id').eq('user_id', session.user.id).maybeSingle();
   if (error) { console.error(error); }

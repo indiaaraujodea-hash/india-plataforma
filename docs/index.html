@@ -1,7 +1,83 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Clínica de Valor | INDIA</title><link rel="stylesheet" href="style.css"></head><body><header class="top"><nav class="nav" id="mainNav"><a class="brand" href="index.html"><span class="mark">❧</span><b>INDIA</b></a><div class="navlinks"><a href="index.html">Início</a><a href="mapa/index.html">Meu Mapa</a><a href="relatorio/index.html">Meu Relatório</a><a href="ferramentas/index.html">Ferramentas</a><a href="manual/index.html">Manual</a><a href="plano/index.html">Meu Plano</a></div></nav></header><main class="wrap"><section class="hero"><div><div class="eyebrow">Clínica de Valor</div><h1>Sua clínica sustentável começa pela direção certa.</h1><p>Entenda onde sua clínica está, identifique o que está faltando e siga apenas o caminho que faz sentido para o momento do seu negócio.</p><div class="path"><span class="pill">Onde estou</span><span class="arrow">→</span><span class="pill">O que falta</span><span class="arrow">→</span><span class="pill">Meu caminho</span><span class="arrow">→</span><span class="pill">Execução</span></div><a class="btn" href="mapa/index.html">Fazer meu Mapa →</a></div><div class="heroart"><div class="book b1">PESSOAS</div><div class="book b2">ESTRATÉGIA</div><div class="book b3">RESULTADOS</div><div class="desk"></div><div class="cup">INDIA</div></div></section><section class="section"><div class="eyebrow">Como funciona</div><h2>Um sistema de decisão, não uma biblioteca.</h2><p class="lead">Você não precisa abrir todos os conteúdos. O Mapa identifica a prioridade e direciona para a ferramenta, o capítulo do Manual e o plano correspondentes.</p><div class="cards"><div class="card"><div class="n">1</div><h3>Meu Mapa</h3><p>Localiza a clínica atual e identifica o gargalo prioritário.</p></div><div class="card"><div class="n">2</div><h3>Meu Caminho</h3><p>Mostra o que precisa de atenção agora e o que não deve ser prioridade.</p></div><div class="card"><div class="n">3</div><h3>Ferramenta + Manual</h3><p>Abre somente os recursos ligados à decisão indicada.</p></div><div class="card"><div class="n">4</div><h3>Meu Plano</h3><p>Transforma a decisão em uma ação com prazo e acompanhamento.</p></div></div></section></main><footer>INDIA · CAFÉ, PESSOAS E NEGÓCIOS DE VALOR · Clínica de Valor</footer><script type="module">
-import { montarNavSessao } from './assets/js/auth.js';
-import { avisarSupabaseNaoConfigurado } from './assets/js/supabase-client.js';
-avisarSupabaseNaoConfigurado();
-montarNavSessao(document.getElementById('mainNav'), { homePath: '.' });
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>INDIA | Negócios que geram valor</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="assets/css/shell.css">
+</head>
+<body>
+<div class="landing-hero">
+  <div class="grain"></div>
+  <nav class="landing-nav">
+    <div class="brand-mark"><b>INDIA</b><span>CAFÉ · PESSOAS · NEGÓCIOS</span></div>
+    <div class="landing-links">
+      <a href="#sobre">Sobre</a>
+      <a href="#produtos">Produtos</a>
+      <a href="#ajuda">Ajuda</a>
+      <a href="#contato">Contato</a>
+      <a class="btn-entrar" href="login/index.html">Entrar</a>
+    </div>
+  </nav>
+
+  <div class="landing-copy">
+    <div class="eyebrow" style="color:#e7d9bd">Clínica de Valor</div>
+    <h1>Negócios que geram valor.</h1>
+    <p>Ousadia para agir. Estratégias sustentáveis para seus resultados reais.</p>
+  </div>
+
+  <div class="landing-cards" id="produtos">
+    <div class="product-card clinica">
+      <div class="photo p1"></div>
+      <div class="body">
+        <div class="kicker">Para psicólogas</div>
+        <h3>Minha Clínica de Valor</h3>
+        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Construa uma clínica ACP sustentável, com clareza, estratégia e autonomia.</p>
+        <ul>
+          <li>Diagnóstico personalizado</li>
+          <li>Mapa de desenvolvimento</li>
+          <li>Ferramentas e manual</li>
+          <li>Plano de ação e acompanhamento</li>
+        </ul>
+        <a class="cta" href="mapa/index.html">Entrar na Clínica de Valor →</a>
+      </div>
+    </div>
+
+    <div class="product-card empresa">
+      <div class="photo p2"></div>
+      <div class="body">
+        <div class="kicker">Para empresas</div>
+        <h3>Diagnóstico Empresarial</h3>
+        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Entenda seu cenário, identifique oportunidades e organize o próximo passo.</p>
+        <ul>
+          <li>Diagnóstico do negócio</li>
+          <li>Mapa de oportunidades</li>
+          <li>Plano de ação</li>
+          <li>Acompanhamento de resultados</li>
+        </ul>
+        <a class="cta" href="#" id="ctaEmpresarial">Entrar no Diagnóstico Empresarial →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="landing-footer">
+  <b>INDIA</b>
+  <span>CAFÉ · PESSOAS · NEGÓCIOS</span>
+  <div class="flinks">
+    <a href="#">Termos de uso</a>
+    <a href="#">Privacidade</a>
+    <a href="#contato">Contato</a>
+  </div>
+  <span>© 2026 INDIA. Todos os direitos reservados.</span>
+</footer>
+
+<script>
+document.getElementById('ctaEmpresarial').addEventListener('click', function (e) {
+  e.preventDefault();
+  alert('Diagnóstico Empresarial ainda não está disponível nesta versão.');
+});
 </script>
-</body></html>
+</body>
+</html>

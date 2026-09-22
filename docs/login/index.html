@@ -5,32 +5,34 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Entrar | Clínica de Valor</title>
 <link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../assets/css/shell.css">
 </head>
 <body>
-<header class="top">
-  <nav class="nav">
-    <a class="brand" href="../index.html"><span class="mark">❧</span><b>INDIA</b></a>
-    <div class="navlinks"><a href="../index.html">Início</a></div>
-  </nav>
-</header>
-<main class="wrap" style="max-width:520px">
-  <section class="section">
-    <div class="eyebrow">Clínica de Valor</div>
-    <h1 class="serif" style="font-size:34px;color:var(--green);margin:8px 0">Acesse sua conta</h1>
-    <p class="lead">Entre para fazer seu diagnóstico, ver seu relatório, o Manual e seu plano de ação.</p>
+<div class="login-shell">
+  <div class="login-left">
+    <div class="brand-mark"><b>INDIA</b><span>CAFÉ · PESSOAS · NEGÓCIOS</span></div>
+    <h1>Negócios que geram valor.</h1>
+    <p>Ousadia para agir. Estratégias sustentáveis para seus resultados reais.</p>
+    <div class="journey-list">
+      <div class="jitem"><div class="jicon">1</div><div class="jlabel">Seu diagnóstico inicial</div></div>
+      <div class="jitem"><div class="jicon">2</div><div class="jlabel">Estruturar</div></div>
+      <div class="jitem"><div class="jicon">3</div><div class="jlabel">Fortalecer</div></div>
+      <div class="jitem"><div class="jicon">4</div><div class="jlabel">Crescer</div></div>
+      <div class="jitem"><div class="jicon">5</div><div class="jlabel">Sustentar</div></div>
+    </div>
+  </div>
 
-    <div class="panel" style="margin-top:20px">
-      <div class="action-row" style="margin-bottom:18px">
-        <button type="button" class="btn alt" id="tabEntrar" style="flex:1;justify-content:center">Entrar</button>
-        <button type="button" class="btn alt" id="tabCriar" style="flex:1;justify-content:center">Criar conta</button>
-      </div>
+  <div class="login-right">
+    <div class="login-card">
+      <h2 id="cardTitle">Acesse sua conta</h2>
+      <p class="sub">Entre para acessar seu diagnóstico, relatórios, ferramentas e plano de ação.</p>
 
       <div id="msgBox"></div>
 
       <form id="formEntrar">
         <div class="form-field"><label>E-mail</label><input type="email" id="loginEmail" required></div>
         <div class="form-field"><label>Senha</label><input type="password" id="loginSenha" required></div>
-        <button class="btn" type="submit" style="width:100%;justify-content:center">Entrar</button>
+        <button class="btn btn-primary" type="submit">Entrar</button>
       </form>
 
       <form id="formCriar" class="hidden">
@@ -46,12 +48,14 @@
           <div class="form-field"><label>Ano de formação</label><input type="number" id="suAnoFormacao" min="1960" max="2100"></div>
         </div>
         <div class="form-field"><label>Tempo de atuação</label><input type="text" id="suTempoAtuacao" placeholder="Ex.: 5 anos"></div>
-        <button class="btn" type="submit" style="width:100%;justify-content:center">Criar conta</button>
+        <button class="btn btn-primary" type="submit">Criar conta</button>
       </form>
+
+      <div class="switch" id="switchEntrar">Ainda não tem uma conta? <a href="#" id="toCriar">Criar conta</a></div>
+      <div class="switch hidden" id="switchCriar">Já tem uma conta? <a href="#" id="toEntrar">Entrar</a></div>
     </div>
-  </section>
-</main>
-<footer>INDIA · CAFÉ, PESSOAS E NEGÓCIOS DE VALOR · Clínica de Valor</footer>
+  </div>
+</div>
 
 <script type="module">
 import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
@@ -68,10 +72,25 @@ function showMsg(text, type = 'error') {
 
 const formEntrar = document.getElementById('formEntrar');
 const formCriar = document.getElementById('formCriar');
-document.getElementById('tabEntrar').addEventListener('click', () => { formEntrar.classList.remove('hidden'); formCriar.classList.add('hidden'); msgBox.innerHTML=''; });
-document.getElementById('tabCriar').addEventListener('click', () => { formCriar.classList.remove('hidden'); formEntrar.classList.add('hidden'); msgBox.innerHTML=''; });
+const switchEntrar = document.getElementById('switchEntrar');
+const switchCriar = document.getElementById('switchCriar');
+const cardTitle = document.getElementById('cardTitle');
 
-// já logado? manda direto
+function showCriar() {
+  formCriar.classList.remove('hidden'); formEntrar.classList.add('hidden');
+  switchCriar.classList.add('hidden'); switchEntrar.classList.remove('hidden');
+  cardTitle.textContent = 'Criar conta';
+  msgBox.innerHTML = '';
+}
+function showEntrar() {
+  formEntrar.classList.remove('hidden'); formCriar.classList.add('hidden');
+  switchEntrar.classList.add('hidden'); switchCriar.classList.remove('hidden');
+  cardTitle.textContent = 'Acesse sua conta';
+  msgBox.innerHTML = '';
+}
+document.getElementById('toCriar').addEventListener('click', (e) => { e.preventDefault(); showCriar(); });
+document.getElementById('toEntrar').addEventListener('click', (e) => { e.preventDefault(); showEntrar(); });
+
 supabase.auth.getSession().then(({ data }) => {
   if (data.session) location.href = redirect;
 });
@@ -93,8 +112,6 @@ formCriar.addEventListener('submit', async (e) => {
   const { data, error } = await supabase.auth.signUp({ email, password: senha });
   if (error) { showMsg('Não foi possível criar a conta: ' + error.message); return; }
 
-  // O trigger handle_new_user() já criou a linha em profiles (id, email).
-  // Aqui só completamos os campos de cadastro.
   if (data.user) {
     await supabase.from('profiles').update({
       nome_completo: nome,

@@ -262,12 +262,9 @@
     font-weight:600;
   }
 </style>
+<link rel="stylesheet" href="../assets/css/shell.css">
 </head>
 <body>
-<script type="module">
-import { requireAuth } from '../assets/js/auth.js';
-requireAuth('../login/index.html');
-</script>
 <div class="wrap">
   <header>
     <div class="eyebrow">Psicóloga de Valor · Ferramenta</div>
@@ -485,6 +482,15 @@ function calc(){
 
 ids.forEach(id => el[id].addEventListener('input', calc));
 calc();
+</script>
+<script type="module">
+import { requireAuth } from '../assets/js/auth.js';
+import { mountAppShell } from '../assets/js/app-shell.js';
+(async () => {
+  const session = await requireAuth('../login/index.html');
+  if (!session) return;
+  await mountAppShell('ferramentas', session, '..');
+})();
 </script>
 </body>
 </html>

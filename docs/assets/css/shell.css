@@ -1,0 +1,188 @@
+/* INDIA · Clínica de Valor — shell visual (sidebar, landing, login) */
+:root{
+  --ink-green:#173f31;
+  --ink-green2:#1f4a3a;
+  --terracota:#9a5b34;
+  --terracota-dark:#7c4827;
+  --cream-bg:#f7f1e6;
+  --cream-paper:#fdfaf4;
+  --sidebar-bg:#fdfaf5;
+  --sidebar-active-bg:#f1e2cd;
+  --line-soft:#ecdfc9;
+  --muted2:#7a7368;
+}
+
+/* ---------- landing (Home) ---------- */
+.landing-nav{display:flex;align-items:center;justify-content:space-between;padding:22px 40px;position:relative;z-index:5}
+.landing-nav .brand-mark{display:flex;flex-direction:column;line-height:1;color:#fff}
+.landing-nav .brand-mark b{font-family:Georgia,serif;font-size:26px;letter-spacing:.06em}
+.landing-nav .brand-mark span{font-size:10px;letter-spacing:.18em;margin-top:4px;opacity:.85}
+.landing-nav .landing-links{display:flex;align-items:center;gap:28px}
+.landing-nav .landing-links a{color:#fff;text-decoration:none;font-size:14px}
+.landing-nav .landing-links .btn-entrar{background:var(--terracota);color:#fff;padding:11px 20px;border-radius:999px;font-weight:700}
+
+.landing-hero{
+  position:relative;min-height:640px;color:#fff;
+  background:
+    linear-gradient(120deg,rgba(20,30,22,.55),rgba(40,28,20,.35)),
+    radial-gradient(circle at 78% 30%,rgba(255,255,255,.08),transparent 45%),
+    linear-gradient(160deg,#3a3126 0%,#5b4a35 35%,#8a7256 60%,#c9b28f 100%);
+  overflow:hidden;
+}
+.landing-hero .grain{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:3px 3px;opacity:.4;pointer-events:none}
+.landing-copy{max-width:480px;padding:60px 0 60px 40px}
+.landing-copy h1{font-family:Georgia,serif;font-size:52px;line-height:1.05;margin:18px 0 16px;font-weight:500;color:#fff}
+.landing-copy p{font-size:16px;line-height:1.6;color:#f2ece0;max-width:400px}
+
+.landing-cards{display:flex;gap:22px;padding:0 40px 60px;flex-wrap:wrap}
+.product-card{
+  background:var(--cream-paper);border-radius:22px;overflow:hidden;width:420px;max-width:100%;
+  box-shadow:0 22px 50px rgba(20,20,10,.25);
+}
+.product-card .photo{height:190px;background-size:cover;background-position:center}
+.product-card .photo.p1{background:linear-gradient(135deg,#cdbda0,#efe6d6)}
+.product-card .photo.p2{background:linear-gradient(135deg,#c7b9a4,#e8dfce)}
+.product-card .body{padding:24px 26px 28px}
+.product-card .kicker{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--terracota);font-weight:800}
+.product-card h3{font-family:Georgia,serif;font-size:26px;color:var(--ink-green);margin:8px 0 10px;font-weight:500}
+.product-card ul{list-style:none;margin:14px 0 20px;padding:0;display:grid;gap:9px}
+.product-card ul li{font-size:13px;color:#3d463f;display:flex;align-items:center;gap:9px}
+.product-card ul li:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--terracota);flex-shrink:0}
+.product-card .cta{display:inline-flex;align-items:center;gap:8px;width:100%;justify-content:center;padding:14px;border-radius:999px;font-weight:700;text-decoration:none;color:#fff}
+.product-card.clinica .cta{background:var(--ink-green)}
+.product-card.empresa .cta{background:var(--terracota)}
+
+.landing-footer{background:var(--ink-green);color:#e7e2d6;padding:26px 40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;font-size:12px}
+.landing-footer b{font-family:Georgia,serif;font-size:18px;color:#fff;letter-spacing:.05em}
+.landing-footer .flinks{display:flex;gap:18px}
+.landing-footer .flinks a{color:#e7e2d6;text-decoration:none}
+
+/* ---------- login ---------- */
+.login-shell{
+  min-height:100vh;display:grid;grid-template-columns:1.1fr .9fr;
+  background:
+    linear-gradient(120deg,rgba(20,30,22,.5),rgba(60,45,30,.25)),
+    linear-gradient(160deg,#41372b 0%,#6a5640 35%,#a68a67 65%,#dcc7a4 100%);
+}
+.login-left{padding:50px;display:flex;flex-direction:column;justify-content:center;color:#fff}
+.login-left .brand-mark{margin-bottom:34px}
+.login-left .brand-mark b{font-family:Georgia,serif;font-size:26px;color:#fff}
+.login-left .brand-mark span{display:block;font-size:10px;letter-spacing:.18em;color:#f0e9da;margin-top:4px}
+.login-left h1{font-family:Georgia,serif;font-size:42px;line-height:1.08;margin:0 0 14px;font-weight:500}
+.login-left p{font-size:15px;color:#f3ede0;max-width:420px;margin-bottom:26px}
+.journey-list{display:grid;gap:16px;max-width:340px}
+.journey-list .jitem{display:flex;align-items:center;gap:14px}
+.journey-list .jicon{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.16);display:grid;place-items:center;font-size:16px;flex-shrink:0}
+.journey-list .jlabel{font-size:14px;color:#fff}
+
+.login-right{display:flex;align-items:center;justify-content:center;padding:30px}
+.login-card{background:#fff;border-radius:22px;padding:40px 38px;width:100%;max-width:420px;box-shadow:0 30px 60px rgba(20,20,10,.25)}
+.login-card h2{font-family:Georgia,serif;font-size:28px;color:var(--ink-green);text-align:center;margin:0 0 8px}
+.login-card .sub{text-align:center;color:var(--muted2);font-size:13px;margin-bottom:26px;line-height:1.5}
+.login-card .btn-primary{width:100%;justify-content:center;background:var(--terracota);border-radius:999px;padding:14px}
+.login-card .switch{text-align:center;margin-top:18px;font-size:13px;color:var(--muted2)}
+.login-card .switch a{color:var(--terracota);font-weight:700;text-decoration:none}
+
+/* ---------- app shell (sidebar) ---------- */
+body.app-shell-active{margin:0;background:var(--cream-bg)}
+.app-shell{display:flex;min-height:100vh}
+.app-sidebar{
+  width:250px;flex-shrink:0;background:var(--sidebar-bg);border-right:1px solid var(--line-soft);
+  display:flex;flex-direction:column;padding:26px 18px;position:sticky;top:0;height:100vh;overflow-y:auto;
+}
+.app-sidebar .brand-mark{padding:6px 10px 26px}
+.app-sidebar .brand-mark b{font-family:Georgia,serif;font-size:22px;color:var(--ink-green);letter-spacing:.05em}
+.app-sidebar .brand-mark span{display:block;font-size:9px;letter-spacing:.16em;color:var(--muted2);margin-top:3px}
+.app-nav{display:flex;flex-direction:column;gap:3px;flex:1}
+.app-nav a{
+  display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;
+  color:#3d463f;text-decoration:none;font-size:14px;
+}
+.app-nav a .ico{width:18px;text-align:center;flex-shrink:0}
+.app-nav a:hover{background:#f5efe3}
+.app-nav a.active{background:var(--sidebar-active-bg);color:var(--ink-green);font-weight:700}
+.app-nav a.disabled{color:#b7b0a2;cursor:default;pointer-events:none}
+.app-nav .nav-sep{height:1px;background:var(--line-soft);margin:10px 6px}
+.app-signout{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;color:#7a7368;text-decoration:none;font-size:14px;margin-top:8px}
+.app-signout:hover{background:#f5efe3}
+
+.app-main{flex:1;min-width:0;display:flex;flex-direction:column}
+.app-topbar{display:flex;justify-content:flex-end;align-items:center;gap:18px;padding:20px 34px;border-bottom:1px solid var(--line-soft);background:var(--cream-bg)}
+.app-topbar .bell{width:36px;height:36px;border-radius:50%;background:#fff;border:1px solid var(--line-soft);display:grid;place-items:center;color:var(--muted2)}
+.app-topbar .who{display:flex;align-items:center;gap:10px;cursor:default}
+.app-topbar .avatar{width:38px;height:38px;border-radius:50%;background:var(--terracota);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px}
+.app-topbar .who-name{font-size:13px;font-weight:700;color:var(--ink-green);line-height:1.2}
+.app-topbar .who-sub{font-size:11px;color:var(--muted2)}
+.app-content{flex:1;padding:30px 34px 60px}
+
+/* ---------- Meu Plano (Tela 3) ---------- */
+.plan-header .eyebrow{color:var(--terracota)}
+.plan-header h1{font-family:Georgia,serif;font-size:32px;color:var(--ink-green);margin:6px 0 8px}
+.stepper{display:flex;align-items:center;gap:14px;margin:26px 0;flex-wrap:wrap}
+.stepper .sstep{display:flex;align-items:center;gap:10px}
+.stepper .snum{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;border:2px solid var(--line-soft);color:var(--muted2);background:#fff}
+.stepper .sstep.active .snum{background:var(--terracota);color:#fff;border-color:var(--terracota)}
+.stepper .slabel b{display:block;font-size:13px;color:var(--ink-green)}
+.stepper .sstep:not(.active) .slabel b{color:var(--muted2)}
+.stepper .slabel span{font-size:11px;color:var(--muted2)}
+.stepper .sarrow{color:var(--line-soft);font-size:18px}
+
+.plan-grid{display:grid;grid-template-columns:2fr 1fr;gap:22px;align-items:start}
+.plan-card{background:var(--cream-paper);border:1px solid var(--line-soft);border-radius:18px;padding:26px}
+.plan-card .kicker{color:var(--terracota);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.plan-card h2{font-family:Georgia,serif;font-size:22px;color:var(--ink-green);margin:8px 0 10px}
+
+.tool-material-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+.mini-card{background:#fff;border:1px solid var(--line-soft);border-radius:14px;padding:18px}
+.mini-card.priority{background:var(--sidebar-active-bg);border-color:var(--sidebar-active-bg)}
+.mini-card b{display:block;color:var(--ink-green);margin-bottom:6px}
+.mini-card p{font-size:13px;color:#4b5148;margin:0 0 12px}
+.mini-card a.btn{background:var(--ink-green);color:#fff;font-size:13px;padding:10px 16px}
+.mini-card a.link{color:var(--terracota);font-weight:700;font-size:13px;text-decoration:none}
+
+.side-col{display:grid;gap:18px}
+.progress-card{background:var(--cream-paper);border:1px solid var(--line-soft);border-radius:18px;padding:22px}
+.progress-card h4{margin:0 0 16px;color:var(--ink-green);font-size:14px}
+.ring-wrap{display:flex;align-items:center;gap:16px}
+.ring-list{flex:1;display:grid;gap:9px}
+.ring-list .ritem{display:flex;justify-content:space-between;align-items:center;font-size:12px}
+.ring-list .ritem .dot{width:8px;height:8px;border-radius:50%;margin-right:8px;display:inline-block}
+.ring-list .ritem.on .dot{background:var(--ink-green)}
+.ring-list .ritem.off .dot{background:#d8cfbd}
+.ring-list .ritem span.count{color:var(--muted2)}
+
+.remember-card{background:#f4e6d0;border-radius:18px;padding:20px}
+.remember-card b{color:var(--terracota-dark);font-size:13px;display:block;margin-bottom:6px}
+.remember-card p{font-size:13px;color:#5a4a35;margin:0}
+
+.suggestions-card{background:var(--cream-paper);border:1px solid var(--line-soft);border-radius:18px;padding:20px}
+.suggestions-card h4{margin:0 0 14px;color:var(--ink-green);font-size:14px}
+.suggestions-card .sitem{display:flex;align-items:center;gap:10px;padding:9px 0;font-size:13px;color:#3d463f;border-bottom:1px solid var(--line-soft)}
+.suggestions-card .sitem:last-child{border-bottom:0}
+
+.tip-card{background:#eef0ea;border-radius:18px;padding:18px;display:flex;gap:12px}
+.tip-card b{display:block;color:var(--ink-green);font-size:13px;margin-bottom:4px}
+.tip-card p{font-size:12px;color:#4b5148;margin:0}
+
+@media(max-width:960px){
+  .plan-grid{grid-template-columns:1fr}
+  .login-shell{grid-template-columns:1fr}
+  .login-left{display:none}
+  .landing-hero{min-height:auto}
+  .landing-copy{padding:40px 20px}
+  .landing-cards{padding:0 20px 40px}
+}
+@media(max-width:800px){
+  .app-shell{flex-direction:column}
+  .app-sidebar{width:100%;height:auto;position:relative;flex-direction:row;flex-wrap:wrap;padding:14px}
+  .app-sidebar .brand-mark{padding:6px 10px;width:100%}
+  .app-nav{flex-direction:row;flex-wrap:wrap;gap:6px}
+  .app-nav .nav-sep{display:none}
+  .app-signout{margin-left:auto}
+  .app-content{padding:20px}
+  .app-topbar{padding:14px 20px}
+  .landing-nav{padding:16px 20px;flex-wrap:wrap;gap:12px}
+  .landing-nav .landing-links{gap:14px;flex-wrap:wrap}
+  .landing-copy h1{font-size:36px}
+  .tool-material-grid{grid-template-columns:1fr}
+}

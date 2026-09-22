@@ -14,14 +14,9 @@
 .momento-card{display:flex;gap:14px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:10px}
 .momento-card b{font-family:Georgia,serif;font-size:22px;color:var(--green)}
 </style>
+<link rel="stylesheet" href="../assets/css/shell.css">
 </head>
 <body>
-<header class="top">
-  <nav class="nav">
-    <a class="brand" href="../index.html"><span class="mark">❧</span><b>INDIA</b></a>
-    <div class="navlinks"><a href="../index.html">Início</a><a href="../manual/index.html">Manual</a><a href="../ferramentas/index.html">Ferramentas</a><a href="../plano/index.html">Meu Plano</a></div>
-  </nav>
-</header>
 <main class="wrap" style="max-width:880px">
   <section class="section">
     <div class="eyebrow">Meu Relatório</div>
@@ -34,6 +29,7 @@
 <script type="module">
 import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
 import { requireAuth } from '../assets/js/auth.js';
+import { mountAppShell } from '../assets/js/app-shell.js';
 
 avisarSupabaseNaoConfigurado();
 
@@ -174,6 +170,7 @@ async function renderCompreenderAplicar(sec, pontoLatente) {
 (async () => {
   const session = await requireAuth('../login/index.html');
   if (!session) return;
+  await mountAppShell('relatorio', session, '..');
   const conteudo = document.getElementById('conteudo');
 
   const { data: diag, error } = await supabase.from('diagnosticos').select('*').eq('user_id', session.user.id).maybeSingle();
