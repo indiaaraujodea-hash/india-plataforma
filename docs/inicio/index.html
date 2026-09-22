@@ -6,12 +6,31 @@
 <title>INDIA | Negócios que geram valor</title>
 <link rel="stylesheet" href="../style.css">
 <link rel="stylesheet" href="../assets/css/shell.css">
+<style>
+.landing-copy .cta-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:26px}
+.landing-copy .cta-row a{text-decoration:none;padding:14px 26px;border-radius:999px;font-weight:700;font-size:14px}
+.landing-copy .cta-primary{background:var(--terracota,#9a5b34);color:#fff}
+.landing-copy .cta-secondary{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.55)}
+.product-card .photo.p3{background:linear-gradient(135deg,#e9dcc3,#c9a24a);display:flex;align-items:center;justify-content:center}
+.product-card .photo.p4{background:linear-gradient(135deg,#1f4a3a,#3d6753);display:flex;align-items:center;justify-content:center}
+.product-card .photo .placeholder-label{color:#fff;font-family:Georgia,serif;font-size:15px;text-align:center;padding:0 24px;text-shadow:0 1px 6px rgba(0,0,0,.25)}
+.product-card.manual .cta{background:var(--terracota)}
+.product-card.mentoria .cta{background:var(--ink-green2,#1f4a3a)}
+.mentoria-badges{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}
+.mentoria-badges span{background:#f0ece5;color:var(--muted);border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700}
+.quem-por-tras{margin-top:28px;padding-top:22px;border-top:1px solid var(--line)}
+.quem-por-tras .kicker{color:var(--gold,#c5a15a);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+.quem-por-tras b{display:block;font-family:Georgia,serif;font-size:19px;color:var(--ink-green);margin-bottom:6px}
+.quem-por-tras p{color:#8a8578;font-size:13px;font-style:italic;margin:0}
+.contato-canais{display:flex;flex-direction:column;gap:6px;margin:14px 0 20px;font-size:14px;color:#4b5148}
+.contato-canais b{color:var(--ink-green)}
+</style>
 </head>
 <body>
 <div class="landing-hero">
   <div class="grain"></div>
   <nav class="landing-nav">
-    <div class="brand-mark"><b>INDIA</b><span>CAFÉ · PESSOAS · NEGÓCIOS</span></div>
+    <div class="brand-mark"><b>INDIA</b><span>PESSOAS · ENCONTROS · NEGÓCIOS</span></div>
     <div class="landing-links">
       <a href="#sobre">Sobre</a>
       <a href="#produtos">Produtos</a>
@@ -25,6 +44,10 @@
     <div class="eyebrow" style="color:#e7d9bd">Clínica de Valor</div>
     <h1>Negócios que geram valor.</h1>
     <p>Ousadia para agir. Estratégias sustentáveis para seus resultados reais.</p>
+    <div class="cta-row">
+      <a class="cta-primary" href="../mapa/index.html">Comece agora →</a>
+      <a class="cta-secondary" href="../index.html">Entrar</a>
+    </div>
   </div>
 
   <div class="landing-cards" id="produtos">
@@ -32,31 +55,36 @@
       <div class="photo p1"></div>
       <div class="body">
         <div class="kicker">Para psicólogas</div>
-        <h3>Minha Clínica de Valor</h3>
-        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Construa uma clínica ACP sustentável, com clareza, estratégia e autonomia.</p>
+        <h3>Minha Clínica sustentável</h3>
+        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Diagnóstico, ferramentas e direcionamento para construir uma clínica sustentável na ACP.</p>
         <ul>
           <li>Diagnóstico personalizado</li>
           <li>Mapa de desenvolvimento</li>
           <li>Ferramentas e manual</li>
           <li>Plano de ação e acompanhamento</li>
         </ul>
-        <a class="cta" href="../mapa/index.html">Entrar na Clínica de Valor →</a>
+        <a class="cta" href="../mapa/index.html">Conhecer a Clínica de Valor →</a>
       </div>
     </div>
 
-    <div class="product-card empresa">
-      <div class="photo p2"></div>
+    <div class="product-card manual">
+      <div class="photo p3" id="manualCapa"><span class="placeholder-label">Manual da Clínica de Valor</span></div>
       <div class="body">
-        <div class="kicker">Para empresas</div>
-        <h3>Diagnóstico Empresarial</h3>
-        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Entenda seu cenário, identifique oportunidades e organize o próximo passo.</p>
-        <ul>
-          <li>Diagnóstico do negócio</li>
-          <li>Mapa de oportunidades</li>
-          <li>Plano de ação</li>
-          <li>Acompanhamento de resultados</li>
-        </ul>
-        <a class="cta" href="#" id="ctaEmpresarial">Entrar no Diagnóstico Empresarial →</a>
+        <div class="kicker">O livro</div>
+        <h3>Manual da Clínica de Valor</h3>
+        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Estratégias práticas para construir uma clínica sustentável sem perder a essência da Abordagem Centrada na Pessoa.</p>
+        <a class="cta" href="#" id="ctaManualLivro">Conheça o Manual →</a>
+      </div>
+    </div>
+
+    <div class="product-card mentoria">
+      <div class="photo p4"><span class="placeholder-label">Encontros e acompanhamento estratégico</span></div>
+      <div class="body">
+        <div class="kicker">Mentoria</div>
+        <h3>Encontros ao vivo para os próximos passos da sua clínica</h3>
+        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Acompanhamento estratégico para transformar diagnóstico em ação, organizar prioridades e avançar com consistência.</p>
+        <div class="mentoria-badges"><span>Mentoria em Grupo</span><span>Mentoria Individual</span></div>
+        <a class="cta" href="#" id="ctaWhatsapp">Falar comigo no WhatsApp →</a>
       </div>
     </div>
   </div>
@@ -66,17 +94,28 @@
   <div class="eyebrow">Sobre</div>
   <h2 style="font-family:Georgia,serif;color:var(--ink-green);margin:8px 0 10px">A INDIA é uma plataforma para psicólogas construírem clínicas sustentáveis</h2>
   <p style="color:#4b5148;line-height:1.6">Unimos diagnóstico, ferramentas e um plano de ação guiado para ajudar você a organizar a clínica que já tem — com clareza financeira, posicionamento e estrutura, sem perder a abordagem centrada na pessoa.</p>
+
+  <div class="quem-por-tras">
+    <div class="kicker">Quem está por trás</div>
+    <b>India Araújo</b>
+    <p>Biografia em breve.</p>
+  </div>
 </section>
 
 <section id="contato" style="max-width:760px;margin:0 auto 60px;padding:0 24px">
   <div class="eyebrow">Contato</div>
   <h2 style="font-family:Georgia,serif;color:var(--ink-green);margin:8px 0 10px">Precisa de ajuda?</h2>
-  <p style="color:#4b5148;line-height:1.6">Fale com quem administra sua conta na Clínica de Valor para dúvidas sobre o diagnóstico, seu plano ou o acesso à plataforma.</p>
+  <p style="color:#4b5148;line-height:1.6">Fale comigo diretamente sobre o diagnóstico, seu plano ou o acesso à plataforma.</p>
+  <div class="contato-canais">
+    <div><b>Telefone/WhatsApp:</b> (43) 98425-7669</div>
+    <div><b>E-mail:</b> useresultconsultoria@gmail.com</div>
+  </div>
+  <a class="cta" style="display:inline-flex;width:auto;padding:14px 26px;background:var(--ink-green)" href="mailto:useresultconsultoria@gmail.com">Falar por e-mail →</a>
 </section>
 
 <footer class="landing-footer">
   <b>INDIA</b>
-  <span>CAFÉ · PESSOAS · NEGÓCIOS</span>
+  <span>PESSOAS · ENCONTROS · NEGÓCIOS</span>
   <div class="flinks">
     <a href="#">Termos de uso</a>
     <a href="#">Privacidade</a>
@@ -88,7 +127,7 @@
 <script type="module">
 import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
 import { requireAuth, getProfile } from '../assets/js/auth.js';
-import { CONTATO_URL } from '../assets/js/site-config.js';
+import { CONTATO_URL, WHATSAPP_URL, MANUAL_LIVRO_URL } from '../assets/js/site-config.js';
 
 avisarSupabaseNaoConfigurado();
 
@@ -117,9 +156,24 @@ if (CONTATO_URL) {
   if (CONTATO_URL.startsWith('http') || CONTATO_URL.startsWith('mailto:')) linkContato.target = '_blank';
 }
 
-document.getElementById('ctaEmpresarial').addEventListener('click', function (e) {
-  e.preventDefault();
-  alert('Diagnóstico Empresarial ainda não está disponível nesta versão.');
+document.getElementById('ctaWhatsapp').addEventListener('click', function (e) {
+  if (!WHATSAPP_URL) {
+    e.preventDefault();
+    alert('O link do WhatsApp ainda não foi configurado. Assim que for definido em site-config.js, este botão abrirá a conversa diretamente.');
+    return;
+  }
+  this.href = WHATSAPP_URL;
+  this.target = '_blank';
+});
+
+document.getElementById('ctaManualLivro').addEventListener('click', function (e) {
+  if (!MANUAL_LIVRO_URL) {
+    e.preventDefault();
+    alert('A página do Manual ainda não foi configurada. Assim que o link for definido em site-config.js, este botão levará até ela.');
+    return;
+  }
+  this.href = MANUAL_LIVRO_URL;
+  this.target = '_blank';
 });
 </script>
 </body>
