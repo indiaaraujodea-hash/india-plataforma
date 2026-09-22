@@ -9,7 +9,9 @@
 <style>
 html,body{overflow-x:hidden;max-width:100%}
 body{background:#f4efe6}
-.login-left{max-width:100%;padding-left:clamp(110px,13vw,220px)}
+.login-left{max-width:100%;padding-left:clamp(110px,13vw,220px);position:relative}
+.login-left:before{content:"";position:absolute;inset:0;background:linear-gradient(100deg,rgba(244,239,230,.85) 0%,rgba(244,239,230,.68) 40%,rgba(244,239,230,.3) 68%,rgba(244,239,230,0) 88%);pointer-events:none;z-index:0}
+.login-left .landing-nav-top,.login-left .main-block{position:relative;z-index:1}
 .login-left .landing-nav-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:48px}
 .login-left .brand-mark{flex-shrink:0}
 .login-left .brand-mark b{font-size:30px;letter-spacing:4px;color:#173f31;line-height:1}
@@ -25,7 +27,7 @@ body{background:#f4efe6}
 .journey-list:before{content:"";position:absolute;left:23px;top:24px;bottom:24px;width:1px;background:rgba(23,63,49,.3)}
 .journey-list .jitem{position:relative;display:flex;align-items:center;gap:16px}
 .journey-list .jicon{width:46px;height:46px;border-radius:50%;background:#f1e2c8;color:#173f31;display:grid;place-items:center;flex-shrink:0;position:relative;z-index:1;box-shadow:0 4px 14px rgba(20,20,10,.18)}
-.journey-list .jlabel{font-size:16px;color:#173f31;font-weight:600;background:rgba(247,241,230,.88);padding:6px 14px;border-radius:999px;box-shadow:0 2px 8px rgba(20,20,10,.08)}
+.journey-list .jlabel{font-size:16px;color:#173f31;font-weight:600;background:rgba(250,246,238,.97);padding:6px 14px;border-radius:999px;box-shadow:0 3px 10px rgba(20,20,10,.14)}
 
 .login-right .form-field{margin-bottom:20px}
 .login-right .form-field label{font-size:14px;color:#173f31}
