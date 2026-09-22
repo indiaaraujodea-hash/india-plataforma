@@ -11,6 +11,7 @@ const ICONS = {
   evolucao: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>',
   comunidade: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3.1-6 7-6s7 2.7 7 6"/><circle cx="17" cy="8" r="2.4"/><path d="M16 14.2c2.7.5 4.8 2.6 5 5.8"/></svg>',
   suporte: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.2"/><path d="M4.9 4.9l4.2 4.2M19.1 4.9l-4.2 4.2M4.9 19.1l4.2-4.2M19.1 19.1l-4.2-4.2"/></svg>',
+  admin: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/></svg>',
   sair: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>',
   bell: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>',
 };
@@ -38,7 +39,11 @@ export async function mountAppShell(activeKey, session, rootPath = '..') {
   const profile = await getProfile(session.user.id);
   const nome = profile?.nome_completo || session.user.email || 'Minha conta';
 
-  const navHtml = NAV_ITEMS.map((item) => {
+  const navItems = profile?.role === 'admin'
+    ? [...NAV_ITEMS, { key: 'admin', label: 'Admin', icon: 'admin', href: (r) => `${r}/admin/index.html` }]
+    : NAV_ITEMS;
+
+  const navHtml = navItems.map((item) => {
     if (item.disabled) {
       return `<a class="disabled" title="Em breve">${ICONS[item.icon]}<span>${item.label}</span></a>`;
     }
