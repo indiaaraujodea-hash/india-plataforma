@@ -24,7 +24,7 @@
 .landing-hero{
   position:relative;min-height:640px;color:#fff;
   background:
-    linear-gradient(120deg,rgba(20,30,22,.6),rgba(40,28,20,.4)),
+    linear-gradient(120deg,rgba(20,30,22,.62),rgba(40,28,20,.42)),
     url('../img/hero-bg.jpg');
   background-size:cover;
   background-position:center;
@@ -62,7 +62,7 @@
 .login-shell{
   min-height:100vh;display:grid;grid-template-columns:1.1fr .9fr;
   background:
-    linear-gradient(120deg,rgba(20,30,22,.5),rgba(60,45,30,.25)),
+    linear-gradient(120deg,rgba(20,30,22,.55),rgba(60,45,30,.32)),
     url('../img/hero-bg.jpg');
   background-size:cover;
   background-position:center;
