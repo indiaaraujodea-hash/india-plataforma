@@ -7,15 +7,19 @@
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="assets/css/shell.css">
 <style>
+html,body{overflow-x:hidden;max-width:100%}
 body{background:#f4efe6}
-.login-left .landing-nav-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:56px}
-.login-left .brand-mark b{font-size:60px;letter-spacing:8px;color:#173f31;line-height:1}
-.login-left .brand-mark span{display:block;margin-top:10px;font-size:13px;letter-spacing:5px;color:#4d5a52}
-.login-left .landing-links{display:flex;align-items:center;gap:28px;margin-top:10px}
-.login-left .landing-links a{color:#173f31;text-decoration:none;font-size:15px;font-weight:600}
-.login-left .landing-links .btn-entrar{background:#9a6034;color:#fff;padding:13px 26px;border-radius:999px;font-weight:700;font-size:15px}
-.login-left h1{font-family:Georgia,serif;font-weight:500;color:#173f31;font-size:clamp(48px,4.5vw,72px);line-height:1.02;margin:0 0 22px;text-shadow:0 1px 14px rgba(255,255,255,.5)}
-.login-left > p{color:#1f4a3a;font-size:19px;line-height:1.5;font-weight:400;max-width:520px;margin:14px 0 40px;text-shadow:0 1px 10px rgba(255,255,255,.6)}
+.login-left{max-width:100%}
+.login-left .landing-nav-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:48px}
+.login-left .brand-mark{flex-shrink:0}
+.login-left .brand-mark b{font-size:30px;letter-spacing:4px;color:#173f31;line-height:1}
+.login-left .brand-mark span{display:block;margin-top:8px;font-size:10px;letter-spacing:3px;color:#4d5a52}
+.login-left .landing-links{display:flex;align-items:center;gap:24px;margin-top:6px;flex-wrap:wrap}
+.login-left .landing-links a{color:#173f31;text-decoration:none;font-size:14px;font-weight:600;white-space:nowrap}
+.login-left .landing-links .btn-entrar{background:#9a6034;color:#fff;padding:12px 24px;border-radius:999px;font-weight:700;font-size:14px;white-space:nowrap}
+.login-left .main-block{margin-left:clamp(0px,3vw,40px);max-width:600px}
+.login-left h1{font-family:Georgia,serif;font-weight:500;color:#173f31;font-size:clamp(40px,3.6vw,60px);line-height:1.05;margin:0 0 20px;text-shadow:0 1px 14px rgba(255,255,255,.5)}
+.login-left .main-block > p{color:#1f4a3a;font-size:18px;line-height:1.5;font-weight:400;max-width:480px;margin:14px 0 36px;text-shadow:0 1px 10px rgba(255,255,255,.6)}
 
 .journey-list{position:relative;display:grid;gap:20px;max-width:340px;padding-left:2px}
 .journey-list:before{content:"";position:absolute;left:23px;top:24px;bottom:24px;width:1px;background:rgba(23,63,49,.3)}
@@ -33,13 +37,25 @@ body{background:#f4efe6}
 .remember-row{display:flex;justify-content:space-between;align-items:center;margin:2px 0 22px;font-size:14px}
 .remember-row label{display:flex;align-items:center;gap:8px;color:#4b5148;cursor:pointer}
 .remember-row a{color:#9a6034;text-decoration:none;font-weight:600}
+.mobile-topbar{display:none}
+
+/* Acima de 960px: layout desktop de 2 colunas (já tratado acima). */
+/* Abaixo de 960px: comportamento de app mobile, não desktop encolhido —
+   esconde a coluna esquerda inteira (nav/headline/jornada) e mostra só
+   um cabeçalho compacto com a marca INDIA acima do card de login. */
 @media(max-width:960px){
-  .login-left .brand-mark b{font-size:38px;letter-spacing:4px}
-  .login-left h1{font-size:38px}
+  .login-left{display:none}
+  .mobile-topbar{display:flex;align-items:center;justify-content:center;padding:28px 20px 8px}
+  .mobile-topbar .brand-mark{text-align:center}
+  .mobile-topbar .brand-mark b{font-family:Georgia,serif;font-size:26px;letter-spacing:4px;color:#173f31}
+  .mobile-topbar .brand-mark span{display:block;margin-top:6px;font-size:10px;letter-spacing:3px;color:#4d5a52}
 }
 </style>
 </head>
 <body>
+<div class="mobile-topbar">
+  <div class="brand-mark"><b>INDIA</b><span>CAFÉ · PESSOAS · NEGÓCIOS</span></div>
+</div>
 <div class="login-shell">
   <div class="login-left">
     <div class="landing-nav-top">
@@ -49,14 +65,16 @@ body{background:#f4efe6}
         <a class="btn-entrar" href="#">Entrar</a>
       </div>
     </div>
-    <h1>Negócios<br>que geram valor.</h1>
-    <p>Ousadia para agir. Estratégias sustentáveis para seus resultados reais.</p>
-    <div class="journey-list">
-      <div class="jitem"><div class="jicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></div><div class="jlabel">Seu diagnóstico inicial</div></div>
-      <div class="jitem"><div class="jicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="jlabel">Estruturar</div></div>
-      <div class="jitem"><div class="jicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></div><div class="jlabel">Fortalecer</div></div>
-      <div class="jitem"><div class="jicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.2"/><circle cx="12" cy="12" r=".6" fill="currentColor"/></svg></div><div class="jlabel">Crescer</div></div>
-      <div class="jitem"><div class="jicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22V12"/><path d="M12 12C12 7 8 6 5 6c0 5 3 6 7 6z"/><path d="M12 12c0-4 3-5 6-5 0 4-2.5 5-6 5z"/></svg></div><div class="jlabel">Sustentar</div></div>
+    <div class="main-block">
+      <h1>Negócios<br>que geram valor.</h1>
+      <p>Ousadia para agir. Estratégias sustentáveis para seus resultados reais.</p>
+      <div class="journey-list">
+        <div class="jitem"><div class="jicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></div><div class="jlabel">Seu diagnóstico inicial</div></div>
+        <div class="jitem"><div class="jicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="jlabel">Estruturar</div></div>
+        <div class="jitem"><div class="jicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></div><div class="jlabel">Fortalecer</div></div>
+        <div class="jitem"><div class="jicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.2"/><circle cx="12" cy="12" r=".6" fill="currentColor"/></svg></div><div class="jlabel">Crescer</div></div>
+        <div class="jitem"><div class="jicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22V12"/><path d="M12 12C12 7 8 6 5 6c0 5 3 6 7 6z"/><path d="M12 12c0-4 3-5 6-5 0 4-2.5 5-6 5z"/></svg></div><div class="jlabel">Sustentar</div></div>
+      </div>
     </div>
   </div>
 
