@@ -59,24 +59,28 @@
 .landing-footer .flinks a{color:#e7e2d6;text-decoration:none}
 
 /* ---------- Home: cards de produtos (Clínica · Manual · Mentoria) ---------- */
-.hp-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;max-width:1240px;margin:0 auto}
-.hp-card{background:var(--cream-paper);border-radius:22px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 18px 44px rgba(20,20,10,.16);min-width:0}
-.hp-photo{position:relative;aspect-ratio:16/9;background-color:#e8dcc7;background-size:cover;background-position:center;overflow:hidden}
-.hp-photo-clinica{background-image:url('../img/hero-bg.jpg');background-size:210%;background-position:62% 88%}
-.hp-photo-manual{background:linear-gradient(135deg,#e9dcc6,#d8c3a2);display:flex;align-items:center;justify-content:center}
-.hp-photo-manual img{height:100%;width:100%;object-fit:contain;display:block}
-.hp-photo-manual.pendente img{display:none}
-.hp-body{padding:22px 24px 26px;display:flex;flex-direction:column;flex:1}
-.hp-kicker{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--terracota);font-weight:800}
-.hp-card h3{font-family:Georgia,serif;font-size:24px;line-height:1.2;color:var(--ink-green);margin:8px 0 10px;font-weight:500}
-.hp-card p{font-size:14px;line-height:1.55;color:#4b5148;margin:0 0 16px}
+.hp-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;max-width:1300px;margin:0 auto}
+.hp-card{background:#faf7f2;border-radius:18px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 14px 34px rgba(40,28,15,.14);min-width:0}
+.hp-photo{position:relative;aspect-ratio:15/8;background:#e8dcc7;overflow:hidden}
+.hp-photo img{height:100%;width:100%;object-fit:cover;display:block}
+.hp-photo-manual.pendente img{visibility:hidden}
+.hp-body{padding:22px 28px 26px;display:flex;flex-direction:column;flex:1}
+.hp-kicker{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--terracota);font-weight:800}
+.hp-card h3{font-family:Georgia,serif;font-size:26px;line-height:1.18;color:var(--ink-green);margin:10px 0 12px;font-weight:700}
+.hp-card p{font-size:17px;line-height:1.5;color:#4f5a58;margin:0 0 16px}
 .hp-list{list-style:none;margin:0 0 18px;padding:0;display:grid;gap:8px}
-.hp-list li{font-size:14px;color:#3d463f;display:flex;align-items:center;gap:9px;font-weight:600}
+.hp-list li{font-size:15px;color:#3d463f;display:flex;align-items:center;gap:9px;font-weight:600}
 .hp-list li:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--terracota);flex-shrink:0}
-.hp-cta{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:6px;text-align:center;padding:14px 16px;border-radius:999px;font-weight:700;font-size:15px;text-decoration:none;color:#fff;background:var(--ink-green)}
-.hp-cta.alt{background:var(--terracota)}
+.hp-cta{margin-top:auto;display:flex;align-items:center;gap:18px;text-decoration:none;color:var(--ink-green);font-size:18px;font-weight:500;padding-top:6px}
+.hp-cta .hp-ico{width:62px;height:62px;border-radius:50%;background:var(--terracota);color:#fff;display:grid;place-items:center;flex-shrink:0;box-shadow:0 6px 16px rgba(154,91,52,.28);transition:transform .15s}
+.hp-cta .hp-ico.whats{background:var(--ink-green);box-shadow:0 6px 16px rgba(23,63,49,.28)}
+.hp-cta .hp-ico.whats svg{width:30px;height:30px}
+.hp-cta:hover .hp-ico{transform:translateX(3px)}
+.hp-cta:hover span:last-child{text-decoration:underline}
 .hp-cta.disabled{opacity:.6;cursor:not-allowed}
-.hp-cta small{font-weight:400;font-size:12px}
+.hp-cta.disabled:hover .hp-ico{transform:none}
+.hp-cta.disabled:hover span:last-child{text-decoration:none}
+.hp-cta small{font-size:13px;color:var(--muted2)}
 .landing-cards .hp-cards{width:100%}
 @media(max-width:1100px){.hp-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.hp-cards{grid-template-columns:1fr}}
