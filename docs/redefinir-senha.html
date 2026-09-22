@@ -29,17 +29,46 @@ import { supabase, avisarSupabaseNaoConfigurado } from './assets/js/supabase-cli
 avisarSupabaseNaoConfigurado();
 
 const msgBox = document.getElementById('msgBox');
+const formNovaSenha = document.getElementById('formNovaSenha');
 function showMsg(text, type = 'error') {
   msgBox.innerHTML = `<div class="alert alert-${type}">${text}</div>`;
 }
 
-const { data } = await supabase.auth.getSession();
-if (!data.session) {
-  showMsg('Este link de redefinição é inválido ou expirou. Peça um novo link na tela de login.');
-  document.getElementById('formNovaSenha').classList.add('hidden');
+// O link do e-mail de redefinição carrega um token de recuperação na própria URL.
+// O cliente Supabase processa esse token de forma assíncrona ao carregar a página —
+// checar getSession() uma única vez logo no início pode "vencer a corrida" e ler
+// null antes desse processamento terminar, mostrando "link inválido" mesmo num link
+// novo. Por isso escutamos o evento PASSWORD_RECOVERY (fluxo oficial do Supabase)
+// em vez de checar a sessão só uma vez.
+formNovaSenha.classList.add('hidden');
+showMsg('Verificando seu link de redefinição…', 'info');
+
+let sessaoPronta = false;
+function liberarFormulario() {
+  if (sessaoPronta) return;
+  sessaoPronta = true;
+  msgBox.innerHTML = '';
+  formNovaSenha.classList.remove('hidden');
 }
 
-document.getElementById('formNovaSenha').addEventListener('submit', async (e) => {
+supabase.auth.onAuthStateChange((event, session) => {
+  if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
+    liberarFormulario();
+  }
+});
+
+// Fallback: se o evento já tiver disparado antes deste listener ser registrado,
+// getSession() aqui (após o processamento inicial do cliente) ainda encontra a sessão.
+const { data } = await supabase.auth.getSession();
+if (data.session) liberarFormulario();
+
+setTimeout(() => {
+  if (!sessaoPronta) {
+    showMsg('Este link de redefinição é inválido ou expirou. Peça um novo link na tela de login.');
+  }
+}, 4000);
+
+formNovaSenha.addEventListener('submit', async (e) => {
   e.preventDefault();
   const senha = document.getElementById('novaSenha').value;
   const confirmar = document.getElementById('confirmarSenha').value;
