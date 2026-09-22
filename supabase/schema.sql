@@ -53,6 +53,36 @@ create table if not exists public.profiles (
   criado_em timestamptz not null default now()
 );
 
+-- Liberação manual do Diagnóstico (decisão do produto: acesso controlado pela
+-- administradora até existir um fluxo de compra/pagamento). Default bloqueado.
+alter table public.profiles add column if not exists diagnostico_liberado boolean not null default false;
+alter table public.profiles add column if not exists diagnostico_liberado_em timestamptz;
+alter table public.profiles add column if not exists diagnostico_liberado_por uuid references public.profiles(id);
+
+-- Só admin pode alterar os campos de liberação — mesmo que a policy de UPDATE
+-- abaixo permita a cliente atualizar seu próprio perfil (nome, telefone etc.),
+-- ela nunca pode se autoliberar. Segurança reforçada no banco, não só na tela.
+create or replace function public.profiles_bloquear_autoliberacao()
+returns trigger
+language plpgsql
+as $$
+begin
+  if not public.is_admin() then
+    if new.diagnostico_liberado is distinct from old.diagnostico_liberado
+       or new.diagnostico_liberado_em is distinct from old.diagnostico_liberado_em
+       or new.diagnostico_liberado_por is distinct from old.diagnostico_liberado_por then
+      raise exception 'somente administradores podem liberar/bloquear o diagnóstico';
+    end if;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists profiles_liberacao_trigger on public.profiles;
+create trigger profiles_liberacao_trigger
+  before update on public.profiles
+  for each row execute function public.profiles_bloquear_autoliberacao();
+
 -- SECURITY DEFINER: evita recursão de RLS ao checar papel dentro de outras policies.
 create or replace function public.is_admin()
 returns boolean
@@ -95,6 +125,42 @@ create policy profiles_update_own on public.profiles
 -- Clientes não podem se autopromover a admin (role travado no with check).
 -- Mudança de papel para admin é feita manualmente no banco pela proprietária.
 
+-- Admin precisa poder editar o perfil de QUALQUER cliente (liberar/bloquear
+-- diagnóstico, entre outras ações administrativas) — a policy acima só cobre
+-- a própria linha do usuário logado.
+drop policy if exists profiles_update_admin on public.profiles;
+create policy profiles_update_admin on public.profiles
+  for update using (public.is_admin()) with check (public.is_admin());
+
+-- =========================================================
+-- mensagens_suporte — formulário "Ajuda" (persistido, visível só para admin;
+-- não existe envio de e-mail automático nesta versão do app).
+-- =========================================================
+
+create table if not exists public.mensagens_suporte (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references public.profiles(id) on delete set null,
+  nome text not null,
+  email text not null,
+  mensagem text not null,
+  status text not null default 'novo' check (status in ('novo','respondido')),
+  criado_em timestamptz not null default now()
+);
+
+alter table public.mensagens_suporte enable row level security;
+
+drop policy if exists suporte_insert_authenticated on public.mensagens_suporte;
+create policy suporte_insert_authenticated on public.mensagens_suporte
+  for insert with check (auth.role() = 'authenticated');
+
+drop policy if exists suporte_select_admin on public.mensagens_suporte;
+create policy suporte_select_admin on public.mensagens_suporte
+  for select using (public.is_admin());
+
+drop policy if exists suporte_update_admin on public.mensagens_suporte;
+create policy suporte_update_admin on public.mensagens_suporte
+  for update using (public.is_admin()) with check (public.is_admin());
+
 -- =========================================================
 -- diagnostic_fields — catálogo dos field_id estáveis do formulário (decisão D8)
 -- =========================================================
@@ -114,12 +180,14 @@ create policy diagnostic_fields_select_authenticated on public.diagnostic_fields
   for select using (auth.role() = 'authenticated');
 
 -- =========================================================
--- diagnosticos — um por cliente (diagnóstico único), respostas imutáveis
+-- diagnosticos — histórico por ciclo (uma cliente pode ter vários diagnósticos
+-- ao longo do tempo; cada um é imutável e NUNCA sobrescreve o anterior).
+-- "Diagnóstico atual" = o de criado_em mais recente para aquele user_id.
 -- =========================================================
 
 create table if not exists public.diagnosticos (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid not null unique references public.profiles(id) on delete cascade,
+  user_id uuid not null references public.profiles(id) on delete cascade,
   respostas jsonb not null,
   resultado_calculado jsonb,
   motor_versao text,
@@ -129,6 +197,13 @@ create table if not exists public.diagnosticos (
   momento_clinica_definido_em timestamptz,
   criado_em timestamptz not null default now()
 );
+
+-- Remove a constraint antiga de "um diagnóstico por vida toda" de projetos já
+-- aplicados anteriormente — decisão de produto mudou para permitir novos ciclos
+-- (histórico), sem nunca sobrescrever um diagnóstico já existente.
+alter table public.diagnosticos drop constraint if exists diagnosticos_user_id_key;
+
+create index if not exists diagnosticos_user_id_criado_em_idx on public.diagnosticos (user_id, criado_em desc);
 
 -- Trava de imutabilidade: "respostas", "user_id" e "criado_em" nunca mudam após o insert,
 -- mesmo por admin. Só resultado_calculado/motor_versao/status/momento_clinica* são editáveis
@@ -162,11 +237,17 @@ drop policy if exists diagnosticos_select_own_or_admin on public.diagnosticos;
 create policy diagnosticos_select_own_or_admin on public.diagnosticos
   for select using (user_id = auth.uid() or public.is_admin());
 
+-- Só pode inserir um novo diagnóstico quem está com o Diagnóstico LIBERADO pela
+-- administradora — reforçado aqui no banco, não só escondendo o botão na tela.
 drop policy if exists diagnosticos_insert_own on public.diagnosticos;
 create policy diagnosticos_insert_own on public.diagnosticos
-  for insert with check (user_id = auth.uid());
--- "Diagnóstico único" é garantido pela constraint UNIQUE(user_id) acima —
--- uma 2ª tentativa de insert falha no banco, não só na UI.
+  for insert with check (
+    user_id = auth.uid()
+    and exists (
+      select 1 from public.profiles p
+      where p.id = auth.uid() and p.diagnostico_liberado = true
+    )
+  );
 
 drop policy if exists diagnosticos_update_own_or_admin on public.diagnosticos;
 create policy diagnosticos_update_own_or_admin on public.diagnosticos

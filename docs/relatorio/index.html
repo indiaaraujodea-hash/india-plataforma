@@ -22,7 +22,20 @@
 .mfc-col ul{margin:0;padding-left:18px}
 .mfc-col li{margin-bottom:7px;font-size:13.5px;line-height:1.4}
 .mfc-col .empty{color:var(--muted);font-size:13px}
+.prioridade-card{background:var(--sidebar-active-bg,#f1e2cd);border-radius:14px;padding:18px;margin-top:10px}
+.prioridade-card b{display:block;font-family:Georgia,serif;font-size:20px;color:var(--green)}
+.rel-header-actions{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-top:8px}
+.lista-relatorios{display:grid;gap:12px;margin-top:16px}
+.lista-relatorios .item{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.lista-relatorios .item .txt b{display:block;color:var(--green);font-size:15px}
+.lista-relatorios .item .txt span{font-size:13px;color:var(--muted)}
 @media(max-width:720px){.mfc-grid{grid-template-columns:1fr}}
+@media print{
+  .app-sidebar,.app-topbar,.no-print{display:none !important}
+  .app-content{padding:0 !important}
+  .app-main{display:block !important}
+  body{background:#fff !important}
+}
 </style>
 <link rel="stylesheet" href="../assets/css/shell.css">
 </head>
@@ -34,7 +47,7 @@
     <div id="conteudo"><p class="lead">Carregando seu relatório…</p></div>
   </section>
 </main>
-<footer>INDIA · CAFÉ, PESSOAS E NEGÓCIOS DE VALOR · Clínica de Valor</footer>
+<footer class="no-print">INDIA · CAFÉ, PESSOAS E NEGÓCIOS DE VALOR · Clínica de Valor</footer>
 
 <script type="module">
 import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
@@ -49,17 +62,14 @@ const TITULOS_PONTO = {
   produto_mix: 'Produto / Mix', esteira: 'Esteira', escalar: 'Escalar',
 };
 const MOMENTO_LABEL = { estruturacao: 'Estruturação', consolidacao: 'Consolidação', crescimento: 'Crescimento' };
+const FERRAMENTA_NOME = { calculadora_sessao: 'Calculadora de Valor da Sessão', calculadora_grupo: 'Calculadora de Grupo' };
+const FERRAMENTA_HREF = { calculadora_sessao: '../ferramentas/sessao.html', calculadora_grupo: '../ferramentas/grupo.html' };
 
-// Área de MANTER/FORTALECER/CRIAR que mais se conecta a cada Ponto Latente —
-// usado só para destacar, dentro do bloco do Ponto Latente, os itens do MFC
-// que sustentam por que aquele ponto foi identificado (não gera texto novo).
 const PONTO_AREA = {
   captar: ['captacao'], precificar: ['financas'], posicionar: ['posicionamento'],
   produto_mix: ['modelo'], esteira: ['modelo'], escalar: ['financas', 'captacao'],
 };
 
-// Campos que sustentam a personalização de cada ponto latente — só evidências
-// realmente respondidas entram no relatório (nunca inferência).
 const EVIDENCIAS_POR_PONTO = {
   captar: [
     ['acq_sabe_origem', 'Sabe de onde vieram os últimos 10 pacientes/contatos'],
@@ -104,31 +114,6 @@ function evidenciasDoPonto(ponto, respostas) {
   return presentes;
 }
 
-function renderMFC(container, mfc) {
-  const sec = el('section', { class: 'rel-section' });
-  sec.appendChild(el('h2', {}, 'Onde sua clínica está agora'));
-  sec.appendChild(el('p', { class: 'small' }, 'Gerado a partir das suas respostas no diagnóstico.'));
-  const grid = el('div', { class: 'mfc-grid' });
-
-  const colunas = [
-    ['manter', 'Manter', mfc.manter],
-    ['fortalecer', 'Fortalecer', mfc.fortalecer],
-    ['criar', 'Criar', mfc.criar],
-  ];
-  for (const [cls, label, itens] of colunas) {
-    const col = el('div', { class: `mfc-col ${cls}` });
-    col.appendChild(el('h4', {}, label));
-    if (itens.length > 0) {
-      col.appendChild(el('ul', {}, itens.map((i) => el('li', {}, i.label))));
-    } else {
-      col.appendChild(el('p', { class: 'empty' }, 'Nenhum item identificado ainda nesta coluna.'));
-    }
-    grid.appendChild(col);
-  }
-  sec.appendChild(grid);
-  container.appendChild(sec);
-}
-
 function el(tag, attrs = {}, children = []) {
   const e = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) {
@@ -138,16 +123,55 @@ function el(tag, attrs = {}, children = []) {
   return e;
 }
 
-async function carregarLinkCompreenderAplicar(pontoLatente) {
-  const [{ data: capMap }, { data: ferrMap }] = await Promise.all([
-    supabase.from('ponto_latente_capitulo_map').select('capitulo_numero, status, manual_capitulos(titulo)').eq('ponto_latente', pontoLatente).maybeSingle(),
-    supabase.from('ponto_latente_ferramenta_map').select('ferramenta, status').eq('ponto_latente', pontoLatente).maybeSingle(),
-  ]);
-  return { capMap, ferrMap };
+function fmtMoeda(v) {
+  if (v === null || v === undefined || v === '') return null;
+  const n = Number(v);
+  if (!Number.isFinite(n)) return null;
+  return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
 }
 
-function renderBlocoPontoLatente(container, { texto, respostas, pontoLatente, principal, mfc }) {
+function fmtData(iso) {
+  return new Date(iso).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+}
+
+// 1. CENÁRIO ATUAL — síntese objetiva, montada só com o que a pessoa respondeu,
+// sem inferir ou arredondar para melhor. Nunca inventa dado que falta.
+function gerarCenarioAtual(respostas) {
+  const partes = [];
+  const receita = fmtMoeda(respostas.receita_atual);
+  if (receita) partes.push(`fatura em média ${receita} por mês`);
+  if (respostas.pacientes_atuais !== null && respostas.pacientes_atuais !== undefined) partes.push(`atende cerca de ${respostas.pacientes_atuais} pacientes por semana`);
+  const sessao = fmtMoeda(respostas.valor_medio_sessao);
+  if (sessao) partes.push(`cobra em média ${sessao} por sessão`);
+  if (respostas.capacidade_agenda !== null && respostas.capacidade_agenda !== undefined) partes.push(`sua agenda comporta hoje ${respostas.capacidade_agenda} atendimentos por semana`);
+  if (partes.length === 0) return 'Ainda não há dados suficientes nas suas respostas para compor um cenário atual.';
+  return 'Hoje, você ' + partes.join(', ') + '.';
+}
+
+function renderMFC(container, mfc) {
   const sec = el('section', { class: 'rel-section' });
+  sec.appendChild(el('h2', {}, '2-4. Manter, Fortalecer, Criar'));
+  sec.appendChild(el('p', { class: 'small' }, 'Gerado a partir das suas respostas neste diagnóstico.'));
+  const grid = el('div', { class: 'mfc-grid' });
+  const colunas = [
+    ['manter', 'Manter', mfc.manter || []],
+    ['fortalecer', 'Fortalecer', mfc.fortalecer || []],
+    ['criar', 'Criar', mfc.criar || []],
+  ];
+  for (const [cls, label, itens] of colunas) {
+    const col = el('div', { class: `mfc-col ${cls}` });
+    col.appendChild(el('h4', {}, label));
+    if (itens.length > 0) col.appendChild(el('ul', {}, itens.map((i) => el('li', {}, i.label))));
+    else col.appendChild(el('p', { class: 'empty' }, 'Nenhum item identificado ainda nesta coluna.'));
+    grid.appendChild(col);
+  }
+  sec.appendChild(grid);
+  container.appendChild(sec);
+}
+
+function renderBlocoPontoLatente(container, { texto, respostas, pontoLatente, principal, mfc, tituloSecao }) {
+  const sec = el('section', { class: 'rel-section' });
+  sec.appendChild(el('div', { class: 'eyebrow' }, tituloSecao));
   sec.appendChild(el('div', { class: 'badge badge-draft' }, principal ? 'Ponto Latente Principal' : 'Ponto Latente Complementar'));
   sec.appendChild(el('h2', {}, texto.titulo));
   sec.appendChild(el('p', {}, texto.sintese));
@@ -159,15 +183,9 @@ function renderBlocoPontoLatente(container, { texto, respostas, pontoLatente, pr
 
   sec.appendChild(el('h3', {}, 'Como isso aparece na sua clínica'));
   const evid = evidenciasDoPonto(pontoLatente, respostas);
-  if (evid.length > 0) {
-    const ul = el('ul', { class: 'evid-list' }, evid.map((t) => el('li', {}, t)));
-    sec.appendChild(ul);
-  } else {
-    sec.appendChild(el('p', { class: 'small' }, 'Ainda não há evidências suficientes nas suas respostas para personalizar esta seção.'));
-  }
+  if (evid.length > 0) sec.appendChild(el('ul', { class: 'evid-list' }, evid.map((t) => el('li', {}, t))));
+  else sec.appendChild(el('p', { class: 'small' }, 'Ainda não há evidências suficientes nas suas respostas para personalizar esta seção.'));
 
-  // Conecta este Ponto Latente ao que já apareceu no Manter/Fortalecer/Criar,
-  // usando os mesmos itens já classificados — não inventa nada novo aqui.
   const areas = PONTO_AREA[pontoLatente] || [];
   const relacionados = [...(mfc.fortalecer || []), ...(mfc.criar || [])].filter((i) => areas.includes(i.area));
   if (relacionados.length > 0) {
@@ -178,7 +196,7 @@ function renderBlocoPontoLatente(container, { texto, respostas, pontoLatente, pr
   if (principal) {
     sec.appendChild(el('h3', {}, 'Por que olhar para isso agora'));
     sec.appendChild(el('p', {}, texto.por_que_agora));
-    sec.appendChild(el('h3', {}, 'Caminho de Desenvolvimento'));
+    sec.appendChild(el('h3', {}, 'Caminho recomendado'));
     sec.appendChild(el('p', {}, texto.caminho_desenvolvimento));
     sec.appendChild(el('h3', {}, 'Para Refletir'));
     sec.appendChild(el('p', { html: `<em>${texto.para_refletir}</em>` }));
@@ -188,41 +206,63 @@ function renderBlocoPontoLatente(container, { texto, respostas, pontoLatente, pr
   return sec;
 }
 
-async function renderCompreenderAplicar(sec, pontoLatente) {
-  const { capMap, ferrMap } = await carregarLinkCompreenderAplicar(pontoLatente);
-  if (capMap && capMap.capitulo_numero && capMap.status === 'validado') {
-    sec.appendChild(el('h3', {}, 'Para Compreender'));
-    const a = el('a', { href: `../manual/index.html?cap=${capMap.capitulo_numero}`, class: 'btn alt' }, `Abrir capítulo — ${capMap.manual_capitulos?.titulo || ''}`);
-    sec.appendChild(a);
-  }
-  const ferramentaHref = { calculadora_sessao: '../ferramentas/sessao.html', calculadora_grupo: '../ferramentas/grupo.html' };
-  if (ferrMap && ferrMap.ferramenta && ferrMap.status === 'validado') {
-    sec.appendChild(el('h3', {}, 'Para Aplicar'));
-    const nome = ferrMap.ferramenta === 'calculadora_sessao' ? 'Calculadora de Valor da Sessão' : 'Calculadora de Grupo';
-    sec.appendChild(el('a', { href: ferramentaHref[ferrMap.ferramenta], class: 'btn alt' }, `Abrir ${nome}`));
-  }
+// Lê a recomendação (capítulo/ferramenta) congelada no momento do diagnóstico.
+// Fallback só para diagnósticos antigos, salvos antes dessa mudança existir.
+async function resolverRecomendacao(resultado, chave, pontoLatente) {
+  if (resultado[chave]) return resultado[chave];
+  if (!pontoLatente) return null;
+  const [{ data: capMap }, { data: ferrMap }] = await Promise.all([
+    supabase.from('ponto_latente_capitulo_map').select('capitulo_numero, status, manual_capitulos(titulo)').eq('ponto_latente', pontoLatente).maybeSingle(),
+    supabase.from('ponto_latente_ferramenta_map').select('ferramenta, status').eq('ponto_latente', pontoLatente).maybeSingle(),
+  ]);
+  return {
+    capitulo_numero: (capMap?.capitulo_numero && capMap.status === 'validado') ? capMap.capitulo_numero : null,
+    capitulo_titulo: (capMap?.capitulo_numero && capMap.status === 'validado') ? (capMap.manual_capitulos?.titulo || null) : null,
+    ferramenta: (ferrMap?.ferramenta && ferrMap.status === 'validado') ? ferrMap.ferramenta : null,
+  };
 }
 
-(async () => {
-  const session = await requireAuth('../login/index.html');
-  if (!session) return;
-  await mountAppShell('relatorio', session, '..');
-  const conteudo = document.getElementById('conteudo');
+function renderListaRelatorios(conteudo, diagnosticos) {
+  conteudo.innerHTML = '';
+  const sec = el('section', { class: 'rel-section' });
+  sec.appendChild(el('h2', {}, 'Meus Relatórios'));
+  if (!diagnosticos || diagnosticos.length === 0) {
+    sec.appendChild(el('p', { class: 'small' }, 'Você ainda não concluiu nenhum diagnóstico.'));
+    sec.appendChild(el('a', { href: '../mapa/index.html', class: 'btn', style: 'margin-top:10px' }, 'Fazer meu diagnóstico →'));
+  } else {
+    const lista = el('div', { class: 'lista-relatorios' });
+    diagnosticos.forEach((d, i) => {
+      const ciclo = diagnosticos.length - i;
+      const item = el('div', { class: 'item' });
+      const txt = el('div', { class: 'txt' });
+      txt.appendChild(el('b', {}, `Ciclo ${ciclo} — ${fmtData(d.criado_em)}`));
+      const ponto = d.resultado_calculado?.ponto_latente_principal;
+      txt.appendChild(el('span', {}, ponto ? `Prioridade: ${TITULOS_PONTO[ponto] || ponto}` : 'Sem ponto latente calculado'));
+      item.appendChild(txt);
+      item.appendChild(el('a', { href: `?id=${d.id}`, class: 'btn alt' }, 'Abrir →'));
+      lista.appendChild(item);
+    });
+    sec.appendChild(lista);
+  }
+  conteudo.appendChild(sec);
+}
 
-  const { data: diag, error } = await supabase.from('diagnosticos').select('*').eq('user_id', session.user.id).maybeSingle();
-  if (error) { conteudo.innerHTML = `<div class="alert alert-error">Erro ao carregar seu relatório: ${error.message}</div>`; return; }
-  if (!diag) { location.href = '../mapa/index.html'; return; }
-
+async function renderRelatorioDetalhe(conteudo, diag) {
   const resultado = diag.resultado_calculado;
   if (!resultado || resultado.status === 'dados_insuficientes' || !resultado.ponto_latente_principal) {
-    conteudo.innerHTML = `<div class="alert alert-info">Recebemos seu diagnóstico. Algumas respostas ainda são necessárias para calcular seu Ponto Latente — revise o Mapa se quiser complementar suas informações.</div>`;
+    conteudo.innerHTML = `<div class="alert alert-info">Recebemos esse diagnóstico. Algumas respostas ainda são necessárias para calcular o Ponto Latente.</div>`;
     return;
   }
 
   conteudo.innerHTML = '';
 
-  // Seu Momento Atual — só aparece quando já foi definido; nunca mostramos
-  // um estado "a definir"/técnico enquanto isso não acontece.
+  const header = el('div', { class: 'rel-header-actions no-print' });
+  header.appendChild(el('a', { href: '../relatorio/index.html', class: 'small' }, '← Meus Relatórios'));
+  const btnPdf = el('button', { class: 'btn alt', type: 'button' }, 'Baixar meu relatório em PDF');
+  btnPdf.addEventListener('click', () => window.print());
+  header.appendChild(btnPdf);
+  conteudo.appendChild(header);
+
   if (diag.momento_clinica) {
     const momentoSec = el('section', { class: 'rel-section' });
     momentoSec.appendChild(el('div', { class: 'eyebrow' }, 'Seu Momento Atual'));
@@ -232,27 +272,88 @@ async function renderCompreenderAplicar(sec, pontoLatente) {
     conteudo.appendChild(momentoSec);
   }
 
-  const { valores: valoresCompostos } = calcularScoresCompostos(diag.respostas);
-  const mfc = classificarManterFortalecerCriar(diag.respostas, valoresCompostos);
+  // 1. Cenário Atual
+  const cenarioSec = el('section', { class: 'rel-section' });
+  cenarioSec.appendChild(el('div', { class: 'eyebrow' }, '1. Cenário Atual'));
+  cenarioSec.appendChild(el('p', {}, gerarCenarioAtual(diag.respostas)));
+  conteudo.appendChild(cenarioSec);
+
+  // 2-4. Manter / Fortalecer / Criar (do snapshot, com fallback pra diagnósticos antigos)
+  let mfc = { manter: resultado.manter, fortalecer: resultado.fortalecer, criar: resultado.criar };
+  if (!resultado.manter) {
+    const { valores } = calcularScoresCompostos(diag.respostas);
+    mfc = classificarManterFortalecerCriar(diag.respostas, valores);
+  }
   renderMFC(conteudo, mfc);
 
-  // Ponto Latente Principal
+  // 5. Ponto Latente Principal
   const { data: textoPrincipal } = await supabase.from('pontos_latentes_textos').select('*').eq('ponto_latente', resultado.ponto_latente_principal).single();
-  const secPrincipal = renderBlocoPontoLatente(conteudo, { texto: textoPrincipal, respostas: diag.respostas, pontoLatente: resultado.ponto_latente_principal, principal: true, mfc });
-  await renderCompreenderAplicar(secPrincipal, resultado.ponto_latente_principal);
+  const secPrincipal = renderBlocoPontoLatente(conteudo, { texto: textoPrincipal, respostas: diag.respostas, pontoLatente: resultado.ponto_latente_principal, principal: true, mfc, tituloSecao: '5. Ponto Latente Principal' });
 
-  // Ponto Latente Complementar
+  // 6. Ponto Latente Complementar
   if (resultado.ponto_latente_complementar) {
     const { data: textoComplementar } = await supabase.from('pontos_latentes_textos').select('*').eq('ponto_latente', resultado.ponto_latente_complementar).single();
-    renderBlocoPontoLatente(conteudo, { texto: textoComplementar, respostas: diag.respostas, pontoLatente: resultado.ponto_latente_complementar, principal: false, mfc });
+    renderBlocoPontoLatente(conteudo, { texto: textoComplementar, respostas: diag.respostas, pontoLatente: resultado.ponto_latente_complementar, principal: false, mfc, tituloSecao: '6. Ponto Latente Complementar' });
   }
 
-  // Para Avançar
-  const avancarSec = el('section', { class: 'rel-section' });
-  avancarSec.appendChild(el('h2', {}, 'Para Avançar'));
-  avancarSec.appendChild(el('p', {}, 'Meu Plano de Ação de 30 dias.'));
+  // 7. Sua Prioridade Agora
+  const prioSec = el('section', { class: 'rel-section' });
+  prioSec.appendChild(el('div', { class: 'eyebrow' }, '7. Sua Prioridade Agora'));
+  const prioCard = el('div', { class: 'prioridade-card' });
+  prioCard.appendChild(el('b', {}, textoPrincipal?.titulo || TITULOS_PONTO[resultado.ponto_latente_principal]));
+  prioCard.appendChild(el('span', {}, textoPrincipal?.sintese || ''));
+  prioSec.appendChild(prioCard);
+  conteudo.appendChild(prioSec);
+
+  // 8-9. Para Compreender / Para Aplicar
+  const recomendacao = await resolverRecomendacao(resultado, 'recomendacao_principal', resultado.ponto_latente_principal);
+  const capAplicaSec = el('section', { class: 'rel-section' });
+  if (recomendacao?.capitulo_numero) {
+    capAplicaSec.appendChild(el('div', { class: 'eyebrow' }, '8. Para Compreender'));
+    capAplicaSec.appendChild(el('a', { href: `../manual/index.html?cap=${recomendacao.capitulo_numero}`, class: 'btn alt' }, `Abrir capítulo — ${recomendacao.capitulo_titulo || ''}`));
+  }
+  if (recomendacao?.ferramenta) {
+    capAplicaSec.appendChild(el('div', { class: 'eyebrow', style: 'margin-top:18px' }, '9. Para Aplicar'));
+    capAplicaSec.appendChild(el('a', { href: FERRAMENTA_HREF[recomendacao.ferramenta], class: 'btn alt' }, `Abrir ${FERRAMENTA_NOME[recomendacao.ferramenta]}`));
+  }
+  if (capAplicaSec.children.length > 0) conteudo.appendChild(capAplicaSec);
+
+  // 10. Próximo Passo
+  const avancarSec = el('section', { class: 'rel-section no-print' });
+  avancarSec.appendChild(el('div', { class: 'eyebrow' }, '10. Próximo Passo'));
+  avancarSec.appendChild(el('p', {}, 'Transforme isso em ações concretas para os próximos 30 dias.'));
   avancarSec.appendChild(el('a', { href: '../plano/index.html', class: 'btn' }, 'Ir para Meu Plano de Ação →'));
   conteudo.appendChild(avancarSec);
+}
+
+(async () => {
+  const session = await requireAuth('../login/index.html');
+  if (!session) return;
+  await mountAppShell('relatorio', session, '..');
+  const conteudo = document.getElementById('conteudo');
+
+  const params = new URLSearchParams(location.search);
+  const diagId = params.get('id');
+
+  if (diagId) {
+    const { data: diag, error } = await supabase.from('diagnosticos').select('*').eq('id', diagId).maybeSingle();
+    if (error) { conteudo.innerHTML = `<div class="alert alert-error">Erro ao carregar seu relatório: ${error.message}</div>`; return; }
+    if (!diag) { conteudo.innerHTML = `<div class="alert alert-error">Relatório não encontrado.</div>`; return; }
+    await renderRelatorioDetalhe(conteudo, diag);
+    return;
+  }
+
+  const { data: diagnosticos, error } = await supabase.from('diagnosticos').select('id, criado_em, resultado_calculado').eq('user_id', session.user.id).order('criado_em', { ascending: false });
+  if (error) { conteudo.innerHTML = `<div class="alert alert-error">Erro ao carregar seus relatórios: ${error.message}</div>`; return; }
+
+  if (diagnosticos && diagnosticos.length === 1) {
+    // só 1 ciclo: vai direto pro relatório, sem obrigar a passar pela lista.
+    const { data: diag } = await supabase.from('diagnosticos').select('*').eq('id', diagnosticos[0].id).single();
+    await renderRelatorioDetalhe(conteudo, diag);
+    return;
+  }
+
+  renderListaRelatorios(conteudo, diagnosticos);
 })();
 </script>
 </body>

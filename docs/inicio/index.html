@@ -15,8 +15,8 @@
     <div class="landing-links">
       <a href="#sobre">Sobre</a>
       <a href="#produtos">Produtos</a>
-      <a href="#contato">Ajuda</a>
-      <a href="#contato">Contato</a>
+      <a href="#" id="linkAjuda">Ajuda</a>
+      <a href="#contato" id="linkContato">Contato</a>
       <a class="btn-entrar" href="#" id="btnSair">Sair</a>
     </div>
   </nav>
@@ -87,13 +87,16 @@
 
 <script type="module">
 import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
-import { requireAuth } from '../assets/js/auth.js';
+import { requireAuth, getProfile } from '../assets/js/auth.js';
+import { CONTATO_URL } from '../assets/js/site-config.js';
 
 avisarSupabaseNaoConfigurado();
 
+let session, profile;
 (async () => {
-  const session = await requireAuth('../index.html');
+  session = await requireAuth('../index.html');
   if (!session) return;
+  profile = await getProfile(session.user.id);
 })();
 
 document.getElementById('btnSair').addEventListener('click', async (e) => {
@@ -101,6 +104,18 @@ document.getElementById('btnSair').addEventListener('click', async (e) => {
   await supabase.auth.signOut();
   location.href = '../index.html';
 });
+
+document.getElementById('linkAjuda').addEventListener('click', async (e) => {
+  e.preventDefault();
+  const { abrirModalAjuda } = await import('../assets/js/ajuda-modal.js');
+  abrirModalAjuda(session, profile);
+});
+
+if (CONTATO_URL) {
+  const linkContato = document.getElementById('linkContato');
+  linkContato.href = CONTATO_URL;
+  if (CONTATO_URL.startsWith('http') || CONTATO_URL.startsWith('mailto:')) linkContato.target = '_blank';
+}
 
 document.getElementById('ctaEmpresarial').addEventListener('click', function (e) {
   e.preventDefault();

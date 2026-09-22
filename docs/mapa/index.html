@@ -210,7 +210,7 @@ main{margin-top:-32px;padding-bottom:80px}
         <div class="field"><label>Como está seu desgaste com a agenda atual?</label><select id="energia_desgaste"><option value="100">Baixo — sustentável</option><option value="70">Moderado — exige atenção</option><option value="40">Alto — já pesa no funcionamento</option><option value="20">Muito alto — difícil sustentar assim</option></select></div>
         <div class="field"><label>Hoje, qual sensação mais descreve sua clínica?</label><select id="sensacao_atual"><option>Tenho direção, mas preciso organizar prioridades</option><option>Atendo, mas não sei se o modelo fecha</option><option>Preciso de mais pacientes</option><option>Estou cheia, mas não ganho o que gostaria</option><option>Quero crescer sem aumentar atendimentos</option><option>Tenho muitas frentes e pouca clareza</option></select></div>
       </div>
-      <div class="note"><b>Importante:</b> o resultado é uma ferramenta de apoio à decisão da sua clínica. Suas respostas ficam registradas e seu diagnóstico só pode ser feito uma vez.</div>
+      <div class="note"><b>Importante:</b> o resultado é uma ferramenta de apoio à decisão da sua clínica. Suas respostas ficam registradas e não podem ser alteradas depois de enviadas.</div>
       <div id="submitMsg"></div>
       <div class="actions"><button type="button" class="btn back" onclick="prevStep()">Voltar</button><button type="button" class="btn" id="btnSubmit" onclick="enviarDiagnostico()">Concluir diagnóstico</button></div>
     </section>
@@ -220,9 +220,9 @@ main{margin-top:-32px;padding-bottom:80px}
 
 <script type="module">
 import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
-import { requireAuth } from '../assets/js/auth.js';
+import { requireAuth, getProfile } from '../assets/js/auth.js';
 import { mountAppShell } from '../assets/js/app-shell.js';
-import { calcularPontosLatentes } from '../assets/js/diagnostico-engine.js';
+import { calcularPontosLatentes, calcularScoresCompostos, classificarManterFortalecerCriar } from '../assets/js/diagnostico-engine.js';
 
 avisarSupabaseNaoConfigurado();
 
@@ -246,9 +246,18 @@ let session;
   if (!session) return;
   await mountAppShell('mapa', session, '..');
 
-  const { data: existente, error } = await supabase.from('diagnosticos').select('id').eq('user_id', session.user.id).maybeSingle();
+  // "diagnóstico atual" = o mais recente do usuário (histórico por ciclo — nunca sobrescrito).
+  const { data: existentes, error } = await supabase
+    .from('diagnosticos').select('id').eq('user_id', session.user.id)
+    .order('criado_em', { ascending: false }).limit(1);
   if (error) { console.error(error); }
-  if (existente) { location.href = '../relatorio/index.html'; return; }
+  if (existentes && existentes.length > 0) { location.href = '../relatorio/index.html'; return; }
+
+  const profile = await getProfile(session.user.id);
+  if (!profile?.diagnostico_liberado) {
+    document.getElementById('checando').innerHTML = `<div class="alert alert-info" style="margin:34px">Seu diagnóstico ainda não foi liberado. Assim que a liberação for confirmada, esta página ficará disponível automaticamente.</div>`;
+    return;
+  }
 
   document.getElementById('checando').classList.add('hidden');
   document.getElementById('diagForm').classList.remove('hidden');
@@ -318,6 +327,31 @@ window.enviarDiagnostico = async function () {
 
     const resultado = calcularPontosLatentes(respostas, pesos || []);
     resultado.metodologia_validada = (pesos || []).length > 0 && pesos.every(p => p.status === 'validado');
+
+    // Congela, no momento do diagnóstico, tudo que o Relatório precisa exibir depois —
+    // Manter/Fortalecer/Criar e a recomendação de capítulo/ferramenta — para que o
+    // histórico de cada ciclo fique fiel ao que foi mostrado na época, mesmo que os
+    // mapeamentos administrativos mudem no futuro.
+    const { valores: valoresCompostos } = calcularScoresCompostos(respostas);
+    const mfc = classificarManterFortalecerCriar(respostas, valoresCompostos);
+    resultado.manter = mfc.manter;
+    resultado.fortalecer = mfc.fortalecer;
+    resultado.criar = mfc.criar;
+
+    async function recomendacaoPara(pontoLatente) {
+      if (!pontoLatente) return null;
+      const [{ data: capMap }, { data: ferrMap }] = await Promise.all([
+        supabase.from('ponto_latente_capitulo_map').select('capitulo_numero, status, manual_capitulos(titulo)').eq('ponto_latente', pontoLatente).maybeSingle(),
+        supabase.from('ponto_latente_ferramenta_map').select('ferramenta, status').eq('ponto_latente', pontoLatente).maybeSingle(),
+      ]);
+      return {
+        capitulo_numero: (capMap?.capitulo_numero && capMap.status === 'validado') ? capMap.capitulo_numero : null,
+        capitulo_titulo: (capMap?.capitulo_numero && capMap.status === 'validado') ? (capMap.manual_capitulos?.titulo || null) : null,
+        ferramenta: (ferrMap?.ferramenta && ferrMap.status === 'validado') ? ferrMap.ferramenta : null,
+      };
+    }
+    resultado.recomendacao_principal = await recomendacaoPara(resultado.ponto_latente_principal);
+    resultado.recomendacao_complementar = await recomendacaoPara(resultado.ponto_latente_complementar);
 
     const { error: updateErr } = await supabase
       .from('diagnosticos')

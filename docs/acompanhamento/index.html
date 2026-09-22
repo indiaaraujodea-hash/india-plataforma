@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Acompanhamento | Clínica de Valor</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../assets/css/shell.css">
+<style>
+.acomp-table{width:100%;border-collapse:collapse;margin-top:12px}
+.acomp-table th{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted2);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line-soft)}
+.acomp-table td{padding:10px;border-bottom:1px solid var(--line-soft);font-size:13.5px;vertical-align:middle}
+.acomp-table select{border:1px solid var(--line-soft);border-radius:8px;padding:7px 8px;font:inherit}
+.continue-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px}
+.continue-card{background:#fff;border:1px solid var(--line-soft);border-radius:14px;padding:20px}
+.continue-card b{display:block;color:var(--ink-green);font-size:16px;margin-bottom:6px}
+.continue-card p{font-size:13px;color:#4b5148;margin:0 0 14px}
+.continue-card .em-breve{font-size:12px;color:var(--muted2);font-style:italic}
+@media(max-width:720px){.continue-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="plan-header">
+  <div class="eyebrow">Acompanhamento</div>
+  <h1>Meu Acompanhamento</h1>
+  <p class="lead" style="color:var(--muted2)">O progresso do seu Plano de Ação de 30 dias.</p>
+</div>
+
+<div id="aviso"></div>
+
+<div id="conteudoAcomp" style="display:none">
+  <div class="plan-card">
+    <div class="kicker">Sua prioridade</div>
+    <h2 id="pontoTitulo" style="margin:6px 0">—</h2>
+    <p id="pontoDescricao" style="color:#4b5148;font-size:14px">—</p>
+  </div>
+
+  <div class="plan-card" style="margin-top:20px">
+    <div class="progress-card" style="border:0;padding:0">
+      <h4>Meu progresso</h4>
+      <div class="ring-wrap">
+        <svg width="86" height="86" viewBox="0 0 86 86">
+          <circle cx="43" cy="43" r="36" fill="none" stroke="#ecdfc9" stroke-width="9"/>
+          <circle id="ringFg" cx="43" cy="43" r="36" fill="none" stroke="#173f31" stroke-width="9" stroke-linecap="round" stroke-dasharray="226" stroke-dashoffset="226" transform="rotate(-90 43 43)"/>
+          <text id="ringPct" x="43" y="48" text-anchor="middle" font-family="Georgia,serif" font-size="18" fill="#173f31">0%</text>
+        </svg>
+        <div class="ring-list">
+          <div class="ritem on"><span><i class="dot"></i>Ações concluídas</span><span class="count" id="ringCount">0/0</span></div>
+        </div>
+      </div>
+    </div>
+
+    <table class="acomp-table">
+      <thead><tr><th>Ação</th><th>Prazo</th><th>Status</th></tr></thead>
+      <tbody id="acoesBody"></tbody>
+    </table>
+  </div>
+
+  <div class="plan-card" style="margin-top:20px">
+    <div class="kicker">Continue seu desenvolvimento</div>
+    <div class="continue-grid" id="continueGrid"></div>
+  </div>
+</div>
+
+<script type="module">
+import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
+import { requireAuth } from '../assets/js/auth.js';
+import { mountAppShell } from '../assets/js/app-shell.js';
+import { MENTORIA_GRUPO_URL, MENTORIA_INDIVIDUAL_URL } from '../assets/js/site-config.js';
+
+avisarSupabaseNaoConfigurado();
+
+const TITULOS_PONTO = { captar: 'Captar', precificar: 'Precificar', posicionar: 'Posicionar', produto_mix: 'Produto / Mix', esteira: 'Esteira', escalar: 'Escalar' };
+const STATUS_OPCOES = [['nao_iniciado', 'Não iniciado'], ['em_andamento', 'Em andamento'], ['concluido', 'Concluído']];
+
+function montarCardContinue(titulo, desc, url) {
+  const card = document.createElement('div');
+  card.className = 'continue-card';
+  card.innerHTML = `<b>${titulo}</b><p>${desc}</p>`;
+  if (url) {
+    card.innerHTML += `<a class="btn alt" href="${url}" target="_blank" rel="noopener">Saiba mais →</a>`;
+  } else {
+    card.innerHTML += `<span class="em-breve">Em breve</span>`;
+  }
+  return card;
+}
+
+(async () => {
+  const session = await requireAuth('../login/index.html');
+  if (!session) return;
+  await mountAppShell('acompanhamento', session, '..');
+
+  const aviso = document.getElementById('aviso');
+
+  const { data: diagnosticos } = await supabase.from('diagnosticos').select('*').eq('user_id', session.user.id).order('criado_em', { ascending: false }).limit(1);
+  const diag = diagnosticos?.[0];
+  if (!diag || !diag.resultado_calculado?.ponto_latente_principal) {
+    aviso.innerHTML = `<div class="alert alert-info">Seu acompanhamento fica disponível depois que você concluir o diagnóstico. Veja <a href="../mapa/index.html">Meu Diagnóstico</a>.</div>`;
+    return;
+  }
+
+  const { data: plano } = await supabase.from('planos_acao').select('*').eq('diagnostico_id', diag.id).maybeSingle();
+  if (!plano) {
+    aviso.innerHTML = `<div class="alert alert-info">Você ainda não salvou um Plano de Ação. Veja <a href="../plano/index.html">Meu Plano de Ação</a>.</div>`;
+    return;
+  }
+
+  const { data: itens } = await supabase.from('planos_acao_itens').select('*').eq('plano_id', plano.id).order('ordem', { ascending: true });
+  if (!itens || itens.length === 0) {
+    aviso.innerHTML = `<div class="alert alert-info">Seu Plano de Ação ainda não tem ações escolhidas. Veja <a href="../plano/index.html">Meu Plano de Ação</a>.</div>`;
+    return;
+  }
+
+  document.getElementById('conteudoAcomp').style.display = '';
+
+  const resultado = diag.resultado_calculado;
+  const { data: texto } = await supabase.from('pontos_latentes_textos').select('titulo, sintese').eq('ponto_latente', resultado.ponto_latente_principal).single();
+  document.getElementById('pontoTitulo').textContent = texto?.titulo || TITULOS_PONTO[resultado.ponto_latente_principal];
+  document.getElementById('pontoDescricao').textContent = texto?.sintese || '';
+
+  function atualizarProgresso() {
+    const total = itens.length;
+    const concluidas = itens.filter((it) => it.status === 'concluido').length;
+    const pct = total > 0 ? Math.round((concluidas / total) * 100) : 0;
+    const circumference = 226;
+    document.getElementById('ringFg').setAttribute('stroke-dashoffset', String(circumference - (circumference * pct) / 100));
+    document.getElementById('ringPct').textContent = pct + '%';
+    document.getElementById('ringCount').textContent = `${concluidas}/${total}`;
+  }
+
+  const body = document.getElementById('acoesBody');
+  for (const item of itens) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${item.descricao}</td>
+      <td>${item.prazo ? new Date(item.prazo + 'T00:00:00').toLocaleDateString('pt-BR') : '—'}</td>
+      <td><select data-id="${item.id}">${STATUS_OPCOES.map(([v, l]) => `<option value="${v}" ${v === item.status ? 'selected' : ''}>${l}</option>`).join('')}</select></td>`;
+    body.appendChild(tr);
+    tr.querySelector('select').addEventListener('change', async (e) => {
+      const novoStatus = e.target.value;
+      const { error } = await supabase.from('planos_acao_itens').update({
+        status: novoStatus, concluido_em: novoStatus === 'concluido' ? new Date().toISOString() : null,
+      }).eq('id', item.id);
+      if (!error) { item.status = novoStatus; atualizarProgresso(); }
+    });
+  }
+  atualizarProgresso();
+
+  const continueGrid = document.getElementById('continueGrid');
+  continueGrid.appendChild(montarCardContinue('Mentoria em Grupo', 'Aprofunde sua clínica junto com outras profissionais, em encontros guiados.', MENTORIA_GRUPO_URL));
+  continueGrid.appendChild(montarCardContinue('Mentoria Individual / Consultoria', 'Acompanhamento individual para destravar sua prioridade com mais profundidade.', MENTORIA_INDIVIDUAL_URL));
+})();
+</script>
+</body>
+</html>

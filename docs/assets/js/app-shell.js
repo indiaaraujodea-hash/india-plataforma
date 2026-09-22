@@ -20,11 +20,11 @@ const NAV_ITEMS = [
   { key: 'plano', label: 'Meu Plano', icon: 'plan', href: (r) => `${r}/plano/index.html` },
   { key: 'mapa', label: 'Meu Diagnóstico', icon: 'diag', href: (r) => `${r}/mapa/index.html` },
   { key: 'relatorio', label: 'Meus Relatórios', icon: 'report', href: (r) => `${r}/relatorio/index.html` },
+  { key: 'acompanhamento', label: 'Acompanhamento', icon: 'evolucao', href: (r) => `${r}/acompanhamento/index.html` },
   { key: 'ferramentas', label: 'Ferramentas', icon: 'tools', href: (r) => `${r}/ferramentas/index.html` },
   { key: 'manual', label: 'Manual', icon: 'book', href: (r) => `${r}/manual/index.html` },
-  { key: 'evolucao', label: 'Minha Evolução', icon: 'evolucao', disabled: true },
   { key: 'comunidade', label: 'Comunidade', icon: 'comunidade', disabled: true },
-  { key: 'suporte', label: 'Suporte', icon: 'suporte', disabled: true },
+  { key: 'suporte', label: 'Ajuda', icon: 'suporte', action: 'ajuda' },
 ];
 
 function initials(name) {
@@ -41,6 +41,9 @@ export async function mountAppShell(activeKey, session, rootPath = '..') {
   const navHtml = NAV_ITEMS.map((item) => {
     if (item.disabled) {
       return `<a class="disabled" title="Em breve">${ICONS[item.icon]}<span>${item.label}</span></a>`;
+    }
+    if (item.action) {
+      return `<a href="#" data-action="${item.action}">${ICONS[item.icon]}<span>${item.label}</span></a>`;
     }
     const activeClass = item.key === activeKey ? ' active' : '';
     return `<a class="${activeClass.trim()}" href="${item.href(rootPath)}">${ICONS[item.icon]}<span>${item.label}</span></a>`;
@@ -85,4 +88,13 @@ export async function mountAppShell(activeKey, session, rootPath = '..') {
     await supabase.auth.signOut();
     location.href = `${rootPath}/index.html`;
   });
+
+  const ajudaTrigger = document.querySelector('.app-sidebar [data-action="ajuda"]');
+  if (ajudaTrigger) {
+    ajudaTrigger.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const { abrirModalAjuda } = await import(`${rootPath}/assets/js/ajuda-modal.js`);
+      abrirModalAjuda(session, profile);
+    });
+  }
 }

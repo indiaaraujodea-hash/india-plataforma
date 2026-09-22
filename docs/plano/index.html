@@ -181,8 +181,10 @@ function prazoData(dias) {
   if (!session) return;
   await mountAppShell('plano', session, '..');
 
-  const { data: diag, error: diagErr } = await supabase.from('diagnosticos').select('*').eq('user_id', session.user.id).maybeSingle();
+  // "diagnóstico atual" = o mais recente do usuário (histórico por ciclo).
+  const { data: diagnosticos, error: diagErr } = await supabase.from('diagnosticos').select('*').eq('user_id', session.user.id).order('criado_em', { ascending: false }).limit(1);
   if (diagErr) { document.getElementById('avisoSemDiagnostico').innerHTML = `<div class="alert alert-error">${diagErr.message}</div>`; return; }
+  const diag = diagnosticos?.[0];
   if (!diag) { location.href = '../mapa/index.html'; return; }
   const resultado = diag.resultado_calculado;
   if (!resultado || !resultado.ponto_latente_principal) {
