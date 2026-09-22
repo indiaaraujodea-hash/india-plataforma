@@ -33,7 +33,7 @@
 
 <script type="module">
 import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
-import { requireAuth } from '../assets/js/auth.js';
+import { requireAuth, getProfile } from '../assets/js/auth.js';
 import { mountAppShell } from '../assets/js/app-shell.js';
 
 avisarSupabaseNaoConfigurado();
@@ -45,35 +45,50 @@ const TITULOS_PONTO = { captar: 'Captar', precificar: 'Precificar', posicionar: 
   if (!session) return;
   await mountAppShell('manual', session, '..');
 
+  const conteudoEl = document.getElementById('conteudoManual');
+  const [profile, { data: diag }] = await Promise.all([
+    getProfile(session.user.id),
+    supabase.from('diagnosticos').select('resultado_calculado').eq('user_id', session.user.id).maybeSingle(),
+  ]);
+  const isAdmin = profile?.role === 'admin';
+  const pontoPrincipal = diag?.resultado_calculado?.ponto_latente_principal;
+
+  // RLS já restringe o resultado: cliente comum só recebe o(s) capítulo(s) ligados
+  // ao Ponto Latente do próprio diagnóstico; admin recebe o Manual inteiro.
   const { data: capitulos, error } = await supabase
     .from('manual_capitulos')
     .select('numero, titulo, conteudo_html, ordem')
     .order('ordem', { ascending: true });
 
-  const conteudoEl = document.getElementById('conteudoManual');
   if (error) {
     conteudoEl.innerHTML = `<div class="alert alert-error">Não foi possível carregar o Manual: ${error.message}</div>`;
     return;
   }
   if (!capitulos || capitulos.length === 0) {
-    conteudoEl.innerHTML = `<div class="alert alert-info">O Manual está sendo preparado e ficará disponível em breve.</div>`;
+    if (!isAdmin && !pontoPrincipal) {
+      conteudoEl.innerHTML = `<div class="alert alert-info">Complete seu <a href="../mapa/index.html">diagnóstico</a> para desbloquear os capítulos do Manual recomendados para você.</div>`;
+    } else {
+      conteudoEl.innerHTML = `<div class="alert alert-info">O Manual está sendo preparado e ficará disponível em breve.</div>`;
+    }
     return;
   }
 
   const params = new URLSearchParams(location.search);
-  if (!params.get('cap')) {
-    const { data: diag } = await supabase.from('diagnosticos').select('resultado_calculado').eq('user_id', session.user.id).maybeSingle();
-    const pontoPrincipal = diag?.resultado_calculado?.ponto_latente_principal;
-    if (pontoPrincipal) {
-      const { data: capMap } = await supabase.from('ponto_latente_capitulo_map').select('capitulo_numero, status, manual_capitulos(titulo)').eq('ponto_latente', pontoPrincipal).maybeSingle();
-      if (capMap?.capitulo_numero && capMap.status === 'validado') {
-        document.getElementById('recomendadoWrap').innerHTML = `
-          <div class="recomendado-card">
-            <div class="txt"><b>Capítulo recomendado para você</b><span>Com base no seu diagnóstico (${TITULOS_PONTO[pontoPrincipal]}) — Capítulo ${capMap.capitulo_numero}, ${capMap.manual_capitulos?.titulo || ''}</span></div>
-            <a class="btn alt" href="?cap=${capMap.capitulo_numero}">Abrir capítulo →</a>
-          </div>`;
-      }
+  if (!params.get('cap') && pontoPrincipal) {
+    const { data: capMap } = await supabase.from('ponto_latente_capitulo_map').select('capitulo_numero, status, manual_capitulos(titulo)').eq('ponto_latente', pontoPrincipal).maybeSingle();
+    if (capMap?.capitulo_numero && capMap.status === 'validado') {
+      document.getElementById('recomendadoWrap').innerHTML = `
+        <div class="recomendado-card">
+          <div class="txt"><b>Capítulo recomendado para você</b><span>Com base no seu diagnóstico (${TITULOS_PONTO[pontoPrincipal]}) — Capítulo ${capMap.capitulo_numero}, ${capMap.manual_capitulos?.titulo || ''}</span></div>
+          <a class="btn alt" href="?cap=${capMap.capitulo_numero}">Abrir capítulo →</a>
+        </div>`;
     }
+  }
+
+  const selectorWrap = document.getElementById('chapterSelect').parentElement;
+  if (!isAdmin) {
+    selectorWrap.querySelector('label').textContent = capitulos.length > 1 ? 'Seus capítulos' : 'Seu capítulo';
+    if (capitulos.length <= 1) selectorWrap.style.display = 'none';
   }
 
   const select = document.getElementById('chapterSelect');
