@@ -346,8 +346,8 @@ create table if not exists public.manual_capitulos (
 alter table public.manual_capitulos enable row level security;
 
 -- Cliente só pode ler o(s) capítulo(s) ligados ao Ponto Latente (principal ou
--- complementar) do PRÓPRIO diagnóstico — nunca o Manual inteiro livremente.
--- Admin continua com acesso total (para revisar/gerenciar o conteúdo).
+-- complementar) do diagnóstico MAIS RECENTE — nunca de qualquer ciclo antigo,
+-- e nunca o Manual inteiro livremente. Admin continua com acesso total.
 drop policy if exists manual_select_authenticated on public.manual_capitulos;
 drop policy if exists manual_select_permitido on public.manual_capitulos;
 create policy manual_select_permitido on public.manual_capitulos
@@ -355,7 +355,13 @@ create policy manual_select_permitido on public.manual_capitulos
     public.is_admin()
     or exists (
       select 1
-      from public.diagnosticos d
+      from (
+        select resultado_calculado
+        from public.diagnosticos
+        where user_id = auth.uid()
+        order by criado_em desc
+        limit 1
+      ) d
       join public.ponto_latente_capitulo_map capm
         on capm.capitulo_numero = manual_capitulos.numero
         and capm.status = 'validado'
@@ -363,7 +369,6 @@ create policy manual_select_permitido on public.manual_capitulos
           (d.resultado_calculado->>'ponto_latente_principal')::ponto_latente_enum,
           (d.resultado_calculado->>'ponto_latente_complementar')::ponto_latente_enum
         )
-      where d.user_id = auth.uid()
     )
   );
 

@@ -9,12 +9,18 @@
 .chapter{margin:18px 0}
 .chapter h2{font-size:28px;color:var(--green)}
 .chapter p{line-height:1.7}
-.recomendado-wrap{margin:20px 0}
-.recomendado-wrap .kicker{color:var(--gold,#c5a15a);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
-.recomendado-card{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:12px}
-.recomendado-card .txt b{display:block;color:var(--green);font-size:17px;margin-bottom:4px}
-.recomendado-card .txt .motivo{font-size:12px;color:var(--muted);margin-top:6px}
+.kicker{color:var(--gold,#c5a15a);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin:24px 0 10px}
+.momento-wrap{margin:20px 0}
+.momento-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px 26px;margin-bottom:16px}
+.momento-card .cap-kicker{color:var(--gold,#c5a15a);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.momento-card b{display:block;color:var(--green);font-size:21px;margin-bottom:10px}
+.momento-card .motivo{font-style:italic;color:var(--muted);line-height:1.6;margin-bottom:16px}
+.momento-card .btn{display:inline-block}
 .modo-admin-tag{display:inline-block;background:#f0ece5;color:var(--muted);border-radius:999px;padding:6px 14px;font-size:12px;font-weight:700;margin:10px 0}
+.chapter-detail .voltar{display:inline-block;margin-bottom:18px;color:var(--muted);text-decoration:none;font-size:14px}
+.proximo-passo{margin:32px 0 0;padding:22px 24px;background:#f7f2e8;border-radius:16px}
+.proximo-passo .kicker{margin-top:0}
+.proximo-passo .acoes{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
 </style>
 <link rel="stylesheet" href="../assets/css/shell.css">
 </head>
@@ -22,10 +28,9 @@
 <main class="wrap">
   <section class="section">
     <div class="eyebrow">Manual da Clínica como Negócio na ACP</div>
-    <h1 class="serif" style="font-size:46px;color:var(--green);margin:8px 0">Abra apenas o que seu caminho pede agora.</h1>
+    <h1 class="serif" style="font-size:46px;color:var(--green);margin:8px 0" id="manualTitulo">Manual da Clínica de Valor</h1>
     <p class="lead" id="manualLead">Conteúdo protegido — disponível somente para quem já fez login.</p>
     <div id="modoTag"></div>
-    <div id="recomendadoWrap"></div>
     <div id="selectorWrap" style="margin:20px 0;display:none">
       <label for="chapterSelect" class="small">Navegar pelo Manual completo</label>
       <select id="chapterSelect" style="display:block;margin-top:6px;padding:10px;border:1px solid var(--line);border-radius:8px;background:white;max-width:520px;width:100%"></select>
@@ -44,23 +49,61 @@ avisarSupabaseNaoConfigurado();
 
 const TITULOS_PONTO = { captar: 'Captar', precificar: 'Precificar', posicionar: 'Posicionar', produto_mix: 'Produto / Mix', esteira: 'Esteira', escalar: 'Escalar' };
 
+// Ponto Latente (principal ou complementar) → capítulo recomendado, só se a
+// administradora já validou esse vínculo (status='validado').
 async function buscarRecomendacao(pontoLatente) {
   if (!pontoLatente) return null;
-  const { data: capMap } = await supabase.from('ponto_latente_capitulo_map').select('capitulo_numero, status, manual_capitulos(titulo)').eq('ponto_latente', pontoLatente).maybeSingle();
+  const { data: capMap } = await supabase.from('ponto_latente_capitulo_map')
+    .select('capitulo_numero, status, manual_capitulos(titulo)')
+    .eq('ponto_latente', pontoLatente).maybeSingle();
   if (!capMap?.capitulo_numero || capMap.status !== 'validado') return null;
   return { numero: capMap.capitulo_numero, titulo: capMap.manual_capitulos?.titulo || '', ponto: pontoLatente };
 }
 
-function cardRecomendado(rec, principal) {
+// Caminho inverso: dado um capítulo, qual Ponto Latente o recomenda e, se
+// houver, qual ferramenta validada está ligada a esse mesmo Ponto Latente.
+async function buscarFerramentaParaCapitulo(capNumero) {
+  const { data: capm } = await supabase.from('ponto_latente_capitulo_map')
+    .select('ponto_latente').eq('capitulo_numero', capNumero).eq('status', 'validado').limit(1).maybeSingle();
+  if (!capm?.ponto_latente) return null;
+  const { data: ferr } = await supabase.from('ponto_latente_ferramenta_map')
+    .select('ferramenta, status').eq('ponto_latente', capm.ponto_latente).maybeSingle();
+  if (!ferr?.ferramenta || ferr.status !== 'validado') return null;
+  return ferr.ferramenta;
+}
+
+function motivoTexto(ponto) {
+  return `“Este capítulo foi indicado a partir do seu diagnóstico porque se relaciona diretamente com o seu Ponto Latente de ${TITULOS_PONTO[ponto] || ponto}.”`;
+}
+
+function cardMomento(rec, kickerTexto) {
   return `
-    <div class="recomendado-card">
-      <div class="txt">
-        <b>Capítulo ${rec.numero} — ${rec.titulo}</b>
-        <span class="small">${principal ? 'Ponto Latente Principal' : 'Ponto Latente Complementar'}: ${TITULOS_PONTO[rec.ponto]}</span>
-        <div class="motivo">Motivo: este capítulo foi indicado a partir do seu diagnóstico.</div>
-      </div>
-      <a class="btn" href="?cap=${rec.numero}">Abrir capítulo →</a>
+    <div class="momento-card">
+      <div class="cap-kicker">${kickerTexto}</div>
+      <b>Capítulo ${rec.numero} — ${rec.titulo}</b>
+      <div class="motivo">${motivoTexto(rec.ponto)}</div>
+      <a class="btn btn-primary" href="?cap=${rec.numero}">Abrir capítulo →</a>
     </div>`;
+}
+
+async function renderProximoPasso(capNumero) {
+  const ferramenta = await buscarFerramentaParaCapitulo(capNumero);
+  const FERRAMENTA_LABEL = { calculadora_sessao: 'Quanto vale minha sessão?', calculadora_grupo: 'Quanto vale meu serviço em grupo?' };
+  return `
+    <div class="proximo-passo">
+      <div class="kicker">Próximo passo</div>
+      <div class="acoes">
+        ${ferramenta ? `<a class="btn btn-primary" href="../ferramentas/index.html">Ferramenta recomendada: ${FERRAMENTA_LABEL[ferramenta] || ferramenta} →</a>` : ''}
+        <a class="btn" href="../plano/index.html">Ir para Meu Plano →</a>
+      </div>
+    </div>`;
+}
+
+function chapterHtml(cap) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'panel chapter chapter-detail';
+  wrapper.innerHTML = cap.conteudo_html;
+  return wrapper;
 }
 
 (async () => {
@@ -78,54 +121,28 @@ function cardRecomendado(rec, principal) {
   const resultado = diagnosticos?.[0]?.resultado_calculado;
   const pontoPrincipal = resultado?.ponto_latente_principal;
   const pontoComplementar = resultado?.ponto_latente_complementar;
+  const params = new URLSearchParams(location.search);
+  const capParam = params.get('cap') ? Number(params.get('cap')) : null;
 
+  // ===================== MODO ADMINISTRADOR =====================
+  // Admin visualiza o Manual inteiro (22 capítulos) — nunca aplicado à cliente.
   if (isAdmin) {
-    document.getElementById('modoTag').innerHTML = `<span class="modo-admin-tag">Modo administrador — visualizando todos os capítulos</span>`;
-  }
+    document.getElementById('modoTag').innerHTML = `<span class="modo-admin-tag">MODO ADMINISTRADOR — MANUAL COMPLETO</span>`;
 
-  // RLS já restringe o resultado no banco: cliente comum só recebe o(s) capítulo(s)
-  // ligados ao Ponto Latente do próprio diagnóstico; admin recebe o Manual inteiro.
-  const { data: capitulos, error } = await supabase
-    .from('manual_capitulos')
-    .select('numero, titulo, conteudo_html, ordem')
-    .order('ordem', { ascending: true });
+    const { data: capitulos, error } = await supabase
+      .from('manual_capitulos')
+      .select('numero, titulo, conteudo_html, ordem')
+      .order('ordem', { ascending: true });
 
-  if (error) {
-    conteudoEl.innerHTML = `<div class="alert alert-error">Não foi possível carregar o Manual: ${error.message}</div>`;
-    return;
-  }
+    if (error) {
+      conteudoEl.innerHTML = `<div class="alert alert-error">Não foi possível carregar o Manual: ${error.message}</div>`;
+      return;
+    }
 
-  // Recomendação (principal + complementar) — sempre em destaque no topo, para
-  // deixar explícita a cadeia diagnóstico → ponto latente → capítulo.
-  const [recPrincipal, recComplementar] = await Promise.all([
-    buscarRecomendacao(pontoPrincipal),
-    buscarRecomendacao(pontoComplementar),
-  ]);
-  const recomendadoWrap = document.getElementById('recomendadoWrap');
-  if (recPrincipal || recComplementar) {
-    let html = `<div class="kicker">Recomendado para você</div>`;
-    if (recPrincipal) html += cardRecomendado(recPrincipal, true);
-    if (recComplementar) html += cardRecomendado(recComplementar, false);
-    recomendadoWrap.innerHTML = html;
-  } else if (!isAdmin) {
-    recomendadoWrap.innerHTML = pontoPrincipal
-      ? `<div class="alert alert-info">O capítulo recomendado para o seu Ponto Latente ainda está em preparação.</div>`
-      : `<div class="alert alert-info">Complete seu <a href="../mapa/index.html">diagnóstico</a> para desbloquear o capítulo recomendado para você.</div>`;
-  }
-
-  if (!capitulos || capitulos.length === 0) {
-    if (!recPrincipal && !recComplementar) return; // mensagem acima já cobre o caso sem diagnóstico
-    conteudoEl.innerHTML = '';
-    return;
-  }
-
-  // Navegação pelo Manual completo: só para admin. Cliente comum só tem acesso
-  // ao(s) capítulo(s) recomendados (a própria consulta acima já vem restrita).
-  if (isAdmin) {
     const selectorWrap = document.getElementById('selectorWrap');
     selectorWrap.style.display = '';
     const select = document.getElementById('chapterSelect');
-    for (const cap of capitulos) {
+    for (const cap of capitulos || []) {
       const opt = document.createElement('option');
       opt.value = 'cap' + cap.numero;
       opt.textContent = `Capítulo ${cap.numero} — ${cap.titulo}`;
@@ -135,28 +152,75 @@ function cardRecomendado(rec, principal) {
       const el = document.getElementById(select.value);
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
+
+    conteudoEl.innerHTML = '';
+    for (const cap of capitulos || []) {
+      const wrapper = document.createElement('section');
+      wrapper.className = 'panel chapter';
+      wrapper.id = 'cap' + cap.numero;
+      wrapper.dataset.cap = String(cap.numero);
+      wrapper.style.margin = '18px 0';
+      wrapper.innerHTML = cap.conteudo_html;
+      conteudoEl.appendChild(wrapper);
+    }
+
+    if (capParam) {
+      const alvo = document.getElementById('cap' + capParam);
+      if (alvo) {
+        select.value = 'cap' + capParam;
+        alvo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+    return;
   }
 
-  conteudoEl.innerHTML = '';
-  const capsParaMostrar = isAdmin ? capitulos : capitulos.filter((c) => c.numero === recPrincipal?.numero || c.numero === recComplementar?.numero);
-  for (const cap of capsParaMostrar) {
-    const wrapper = document.createElement('section');
-    wrapper.className = 'panel chapter';
-    wrapper.id = 'cap' + cap.numero;
-    wrapper.dataset.cap = String(cap.numero);
-    wrapper.style.margin = '18px 0';
-    wrapper.innerHTML = cap.conteudo_html;
-    conteudoEl.appendChild(wrapper);
+  // ===================== MODO CLIENTE =====================
+  // Nunca busca a lista completa de manual_capitulos aqui — só os capítulos
+  // recomendados (principal/complementar) ou, ao abrir um capítulo específico,
+  // apenas a linha daquele número. RLS decide de fato o que é retornado.
+  const [recPrincipal, recComplementarBruto] = await Promise.all([
+    buscarRecomendacao(pontoPrincipal),
+    buscarRecomendacao(pontoComplementar),
+  ]);
+  const recComplementar = (recComplementarBruto && recComplementarBruto.numero !== recPrincipal?.numero) ? recComplementarBruto : null;
+
+  if (!recPrincipal && !recComplementar) {
+    conteudoEl.innerHTML = pontoPrincipal
+      ? `<div class="alert alert-info">O capítulo recomendado para o seu Ponto Latente ainda está em preparação.</div>`
+      : `<div class="alert alert-info">Complete seu <a href="../mapa/index.html">diagnóstico</a> para desbloquear o capítulo recomendado para você.</div>`;
+    return;
   }
 
-  const params = new URLSearchParams(location.search);
-  const capParam = params.get('cap');
-  const alvo = capParam ? document.getElementById('cap' + capParam) : null;
-  if (alvo) {
-    const select = document.getElementById('chapterSelect');
-    if (select) select.value = 'cap' + capParam;
-    alvo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // ---- Abrindo um capítulo específico (?cap=N) ----
+  if (capParam) {
+    document.getElementById('manualTitulo').textContent = 'Manual da Clínica de Valor';
+    const { data: cap } = await supabase.from('manual_capitulos').select('numero, titulo, conteudo_html').eq('numero', capParam).maybeSingle();
+
+    if (!cap) {
+      // Ou o front-end não reconhece este número como recomendado, ou o banco
+      // (RLS) bloqueou a leitura — nos dois casos, o capítulo não é exibido.
+      conteudoEl.innerHTML = `
+        <div class="alert alert-info">
+          Este capítulo não está disponível para o seu diagnóstico atual.
+          <div style="margin-top:10px"><a href="index.html">← Voltar para o Manual</a></div>
+        </div>`;
+      return;
+    }
+
+    conteudoEl.innerHTML = '';
+    conteudoEl.insertAdjacentHTML('beforeend', `<a class="voltar" href="index.html">← Voltar para o Manual</a>`);
+    conteudoEl.appendChild(chapterHtml(cap));
+    conteudoEl.insertAdjacentHTML('beforeend', await renderProximoPasso(cap.numero));
+    return;
   }
+
+  // ---- Tela inicial personalizada: "o que seu momento pede agora" ----
+  document.getElementById('manualTitulo').textContent = 'Manual da Clínica de Valor';
+  let html = `<div class="kicker" style="font-size:16px;color:var(--green);letter-spacing:0;text-transform:none;font-weight:700">O que seu momento pede agora</div><div class="momento-wrap">`;
+  if (recPrincipal) html += cardMomento(recPrincipal, 'Capítulo recomendado');
+  if (recComplementar) html += `<div class="kicker">Para complementar</div>` + cardMomento(recComplementar, 'Capítulo complementar');
+  html += `</div>`;
+  conteudoEl.innerHTML = html;
 })();
 </script>
 </body>
