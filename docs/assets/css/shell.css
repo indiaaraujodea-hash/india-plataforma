@@ -60,14 +60,13 @@
 
 /* ---------- login ---------- */
 .login-shell{
-  min-height:100vh;display:grid;grid-template-columns:1.1fr .9fr;
-  background:
-    linear-gradient(120deg,rgba(20,30,22,.55),rgba(60,45,30,.32)),
-    url('../img/hero-bg.jpg');
+  width:100vw;min-height:100vh;display:grid;grid-template-columns:60% 40%;
+  background:url('../img/hero-bg.jpg');
   background-size:cover;
   background-position:center;
+  background-repeat:no-repeat;
 }
-.login-left{padding:50px;display:flex;flex-direction:column;justify-content:center;color:#fff}
+.login-left{padding:56px 64px;display:flex;flex-direction:column;justify-content:center;color:#173f31}
 .login-left .brand-mark{margin-bottom:34px}
 .login-left .brand-mark b{font-family:Georgia,serif;font-size:26px;color:#fff}
 .login-left .brand-mark span{display:block;font-size:10px;letter-spacing:.18em;color:#f0e9da;margin-top:4px}
@@ -79,10 +78,10 @@
 .journey-list .jlabel{font-size:14px;color:#fff}
 
 .login-right{display:flex;align-items:center;justify-content:center;padding:30px}
-.login-card{background:#fff;border-radius:22px;padding:40px 38px;width:100%;max-width:420px;box-shadow:0 30px 60px rgba(20,20,10,.25)}
-.login-card h2{font-family:Georgia,serif;font-size:28px;color:var(--ink-green);text-align:center;margin:0 0 8px}
-.login-card .sub{text-align:center;color:var(--muted2);font-size:13px;margin-bottom:26px;line-height:1.5}
-.login-card .btn-primary{width:100%;justify-content:center;background:var(--terracota);border-radius:999px;padding:14px}
+.login-card{background:rgba(255,255,255,.94);border-radius:20px;padding:42px 44px;width:min(540px,90%);box-shadow:0 30px 60px rgba(20,20,10,.2)}
+.login-card h2{font-family:Georgia,serif;font-size:36px;color:var(--ink-green);text-align:center;margin:0 0 10px}
+.login-card .sub{text-align:center;color:var(--muted2);font-size:15px;margin-bottom:30px;line-height:1.5}
+.login-card .btn-primary{width:100%;justify-content:center;background:#9a6034;border-radius:11px;padding:16px;height:54px;font-size:16px}
 .login-card .switch{text-align:center;margin-top:18px;font-size:13px;color:var(--muted2)}
 .login-card .switch a{color:var(--terracota);font-weight:700;text-decoration:none}
 

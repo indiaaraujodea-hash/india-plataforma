@@ -7,16 +7,36 @@
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="assets/css/shell.css">
 <style>
-.login-left .landing-nav-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:40px}
-.login-left .landing-links a{color:#fff;text-decoration:none;font-size:14px;margin-left:22px}
-.login-left .landing-links .btn-entrar{background:var(--terracota);padding:11px 20px;border-radius:999px;font-weight:700}
-.btn-google{width:100%;justify-content:center;background:#fff;color:#2c2c2c;border:1px solid var(--line-soft);border-radius:999px;padding:13px;display:flex;align-items:center;gap:10px;font-weight:600;cursor:pointer;font-size:14px}
+body{background:#f4efe6}
+.login-left .landing-nav-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:56px}
+.login-left .brand-mark b{font-size:60px;letter-spacing:8px;color:#173f31;line-height:1}
+.login-left .brand-mark span{display:block;margin-top:10px;font-size:13px;letter-spacing:5px;color:#4d5a52}
+.login-left .landing-links{display:flex;align-items:center;gap:28px;margin-top:10px}
+.login-left .landing-links a{color:#173f31;text-decoration:none;font-size:15px;font-weight:600}
+.login-left .landing-links .btn-entrar{background:#9a6034;color:#fff;padding:13px 26px;border-radius:999px;font-weight:700;font-size:15px}
+.login-left h1{font-family:Georgia,serif;font-weight:500;color:#173f31;font-size:clamp(48px,4.5vw,72px);line-height:1.02;margin:0 0 22px;text-shadow:0 1px 14px rgba(255,255,255,.5)}
+.login-left > p{color:#1f4a3a;font-size:19px;line-height:1.5;font-weight:400;max-width:520px;margin:14px 0 40px;text-shadow:0 1px 10px rgba(255,255,255,.6)}
+
+.journey-list{position:relative;display:grid;gap:20px;max-width:340px;padding-left:2px}
+.journey-list:before{content:"";position:absolute;left:23px;top:24px;bottom:24px;width:1px;background:rgba(23,63,49,.3)}
+.journey-list .jitem{position:relative;display:flex;align-items:center;gap:16px}
+.journey-list .jicon{width:46px;height:46px;border-radius:50%;background:#f1e2c8;color:#173f31;display:grid;place-items:center;flex-shrink:0;position:relative;z-index:1;box-shadow:0 4px 14px rgba(20,20,10,.18)}
+.journey-list .jlabel{font-size:16px;color:#173f31;font-weight:600;background:rgba(247,241,230,.88);padding:6px 14px;border-radius:999px;box-shadow:0 2px 8px rgba(20,20,10,.08)}
+
+.login-right .form-field{margin-bottom:20px}
+.login-right .form-field label{font-size:14px;color:#173f31}
+.login-right .form-field input{height:56px;border-radius:11px;font-size:16px;padding:0 16px;border:1px solid #e3d8c4}
+.btn-google{width:100%;justify-content:center;background:#fff;color:#2c2c2c;border:1px solid #e3d8c4;border-radius:11px;padding:0;height:54px;display:flex;align-items:center;gap:10px;font-weight:600;cursor:pointer;font-size:16px}
 .btn-google:hover{background:#f7f5f1}
-.divider-ou{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--muted2);font-size:12px}
-.divider-ou:before,.divider-ou:after{content:"";flex:1;height:1px;background:var(--line-soft)}
-.remember-row{display:flex;justify-content:space-between;align-items:center;margin:4px 0 18px;font-size:13px}
+.divider-ou{display:flex;align-items:center;gap:12px;margin:20px 0;color:#8a8578;font-size:13px}
+.divider-ou:before,.divider-ou:after{content:"";flex:1;height:1px;background:#e3d8c4}
+.remember-row{display:flex;justify-content:space-between;align-items:center;margin:2px 0 22px;font-size:14px}
 .remember-row label{display:flex;align-items:center;gap:8px;color:#4b5148;cursor:pointer}
-.remember-row a{color:var(--terracota);text-decoration:none;font-weight:600}
+.remember-row a{color:#9a6034;text-decoration:none;font-weight:600}
+@media(max-width:960px){
+  .login-left .brand-mark b{font-size:38px;letter-spacing:4px}
+  .login-left h1{font-size:38px}
+}
 </style>
 </head>
 <body>
@@ -26,16 +46,17 @@
       <div class="brand-mark"><b>INDIA</b><span>CAFÉ · PESSOAS · NEGÓCIOS</span></div>
       <div class="landing-links">
         <a href="#">Início</a><a href="#">Sobre</a><a href="#">Produtos</a><a href="#">Ajuda</a>
+        <a class="btn-entrar" href="#">Entrar</a>
       </div>
     </div>
-    <h1>Negócios que geram valor.</h1>
+    <h1>Negócios<br>que geram valor.</h1>
     <p>Ousadia para agir. Estratégias sustentáveis para seus resultados reais.</p>
     <div class="journey-list">
-      <div class="jitem"><div class="jicon">📋</div><div class="jlabel">Seu diagnóstico inicial</div></div>
-      <div class="jitem"><div class="jicon">⚙️</div><div class="jlabel">Estruturar</div></div>
-      <div class="jitem"><div class="jicon">📈</div><div class="jlabel">Fortalecer</div></div>
-      <div class="jitem"><div class="jicon">🎯</div><div class="jlabel">Crescer</div></div>
-      <div class="jitem"><div class="jicon">🌱</div><div class="jlabel">Sustentar</div></div>
+      <div class="jitem"><div class="jicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></div><div class="jlabel">Seu diagnóstico inicial</div></div>
+      <div class="jitem"><div class="jicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="jlabel">Estruturar</div></div>
+      <div class="jitem"><div class="jicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></div><div class="jlabel">Fortalecer</div></div>
+      <div class="jitem"><div class="jicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.2"/><circle cx="12" cy="12" r=".6" fill="currentColor"/></svg></div><div class="jlabel">Crescer</div></div>
+      <div class="jitem"><div class="jicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22V12"/><path d="M12 12C12 7 8 6 5 6c0 5 3 6 7 6z"/><path d="M12 12c0-4 3-5 6-5 0 4-2.5 5-6 5z"/></svg></div><div class="jlabel">Sustentar</div></div>
     </div>
   </div>
 
@@ -91,6 +112,17 @@
     </div>
   </div>
 </div>
+
+<footer class="landing-footer">
+  <b>INDIA</b>
+  <span>CAFÉ · PESSOAS · NEGÓCIOS</span>
+  <div class="flinks">
+    <a href="#">Termos de uso</a>
+    <a href="#">Privacidade</a>
+    <a href="#">Contato</a>
+  </div>
+  <span>© 2026 INDIA. Todos os direitos reservados.</span>
+</footer>
 
 <script type="module">
 import { supabase, avisarSupabaseNaoConfigurado } from './assets/js/supabase-client.js';
