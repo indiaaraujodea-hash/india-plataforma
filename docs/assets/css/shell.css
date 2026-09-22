@@ -24,9 +24,10 @@
 .landing-hero{
   position:relative;min-height:640px;color:#fff;
   background:
-    linear-gradient(120deg,rgba(20,30,22,.55),rgba(40,28,20,.35)),
-    radial-gradient(circle at 78% 30%,rgba(255,255,255,.08),transparent 45%),
-    linear-gradient(160deg,#3a3126 0%,#5b4a35 35%,#8a7256 60%,#c9b28f 100%);
+    linear-gradient(120deg,rgba(20,30,22,.6),rgba(40,28,20,.4)),
+    url('../img/hero-bg.jpg');
+  background-size:cover;
+  background-position:center;
   overflow:hidden;
 }
 .landing-hero .grain{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:3px 3px;opacity:.4;pointer-events:none}
@@ -62,7 +63,9 @@
   min-height:100vh;display:grid;grid-template-columns:1.1fr .9fr;
   background:
     linear-gradient(120deg,rgba(20,30,22,.5),rgba(60,45,30,.25)),
-    linear-gradient(160deg,#41372b 0%,#6a5640 35%,#a68a67 65%,#dcc7a4 100%);
+    url('../img/hero-bg.jpg');
+  background-size:cover;
+  background-position:center;
 }
 .login-left{padding:50px;display:flex;flex-direction:column;justify-content:center;color:#fff}
 .login-left .brand-mark{margin-bottom:34px}
