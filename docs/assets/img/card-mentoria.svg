@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 400" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f4ebdc"/>
+      <stop offset="1" stop-color="#e6d6bd"/>
+    </linearGradient>
+    <linearGradient id="light" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="840" height="400" fill="url(#wall)"/>
+  <!-- luz da janela na parede -->
+  <polygon points="520,0 700,0 560,260 380,260" fill="url(#light)"/>
+  <polygon points="720,0 790,0 650,260 580,260" fill="url(#light)"/>
+  <!-- piso -->
+  <rect y="300" width="840" height="100" fill="#b98e66"/>
+  <rect y="300" width="840" height="6" fill="#a47a55"/>
+  <!-- planta -->
+  <path d="M96 300 q-6 -40 4 -60 q10 20 4 60z" fill="#d9c6a6"/>
+  <g fill="#3f6b53">
+    <ellipse cx="86" cy="190" rx="10" ry="26" transform="rotate(-30 86 190)"/>
+    <ellipse cx="118" cy="182" rx="10" ry="28" transform="rotate(28 118 182)"/>
+    <ellipse cx="100" cy="160" rx="9" ry="26"/>
+    <ellipse cx="78" cy="224" rx="9" ry="22" transform="rotate(-55 78 224)"/>
+    <ellipse cx="124" cy="220" rx="9" ry="22" transform="rotate(55 124 220)"/>
+  </g>
+  <rect x="98" y="196" width="3" height="60" fill="#2f5641"/>
+  <!-- poltrona esquerda -->
+  <g>
+    <rect x="190" y="200" width="150" height="96" rx="30" fill="#173f31"/>
+    <rect x="178" y="236" width="44" height="66" rx="18" fill="#1f4a3a"/>
+    <rect x="310" y="236" width="44" height="66" rx="18" fill="#1f4a3a"/>
+    <rect x="214" y="250" width="104" height="40" rx="12" fill="#245744"/>
+    <rect x="200" y="298" width="8" height="18" fill="#5a3e2a"/>
+    <rect x="324" y="298" width="8" height="18" fill="#5a3e2a"/>
+  </g>
+  <!-- poltrona direita -->
+  <g>
+    <rect x="500" y="200" width="150" height="96" rx="30" fill="#9a5b34"/>
+    <rect x="488" y="236" width="44" height="66" rx="18" fill="#7c4827"/>
+    <rect x="620" y="236" width="44" height="66" rx="18" fill="#7c4827"/>
+    <rect x="524" y="250" width="104" height="40" rx="12" fill="#a8683e"/>
+    <rect x="510" y="298" width="8" height="18" fill="#5a3e2a"/>
+    <rect x="634" y="298" width="8" height="18" fill="#5a3e2a"/>
+  </g>
+  <!-- mesa de centro com caderno de planejamento -->
+  <ellipse cx="420" cy="262" rx="70" ry="12" fill="#6e4a30"/>
+  <rect x="414" y="262" width="12" height="46" fill="#5a3e2a"/>
+  <ellipse cx="420" cy="310" rx="34" ry="6" fill="#5a3e2a"/>
+  <g transform="rotate(-6 410 250)">
+    <rect x="376" y="238" width="62" height="18" rx="2" fill="#fdfaf4"/>
+    <rect x="376" y="238" width="4" height="18" fill="#c9b79a"/>
+    <line x1="388" y1="244" x2="428" y2="244" stroke="#c9b79a" stroke-width="1.5"/>
+    <line x1="388" y1="250" x2="420" y2="250" stroke="#c9b79a" stroke-width="1.5"/>
+  </g>
+  <rect x="440" y="236" width="36" height="3" rx="1.5" fill="#1f2521" transform="rotate(-18 458 238)"/>
+  <!-- calendário na parede -->
+  <g transform="translate(392 96)">
+    <rect width="56" height="64" rx="6" fill="#fdfaf4" stroke="#d6c4a6"/>
+    <rect width="56" height="16" rx="6" fill="#9a5b34"/>
+    <g fill="#d6c4a6">
+      <rect x="8" y="24" width="8" height="7" rx="1"/><rect x="24" y="24" width="8" height="7" rx="1"/><rect x="40" y="24" width="8" height="7" rx="1"/>
+      <rect x="8" y="37" width="8" height="7" rx="1"/><rect x="40" y="37" width="8" height="7" rx="1"/>
+      <rect x="8" y="50" width="8" height="7" rx="1"/><rect x="24" y="50" width="8" height="7" rx="1"/><rect x="40" y="50" width="8" height="7" rx="1"/>
+    </g>
+    <rect x="24" y="37" width="8" height="7" rx="1" fill="#173f31"/>
+  </g>
+</svg>

@@ -16,7 +16,10 @@ body{background:#f4efe6}
 .login-left .brand-mark{flex-shrink:0}
 .login-left .brand-mark b{font-size:30px;letter-spacing:4px;color:#173f31;line-height:1}
 .login-left .brand-mark span{display:block;margin-top:8px;font-size:10px;letter-spacing:3px;color:#4d5a52}
-.login-left .landing-links{display:flex;align-items:center;gap:24px;margin-top:6px;flex-wrap:wrap}
+.login-left .landing-links{display:flex;align-items:center;gap:clamp(12px,1.3vw,24px);margin-top:6px;flex-wrap:wrap;justify-content:flex-end}
+.login-left .landing-nav-top{gap:16px}
+/* Em larguras intermediárias a marca e os links não cabem lado a lado: links vão para a linha de baixo, inteiros (sem o Entrar quebrar sozinho). */
+@media(min-width:961px) and (max-width:1700px){.login-left .landing-nav-top{flex-direction:column;align-items:flex-start;margin-bottom:36px}.login-left .landing-links{justify-content:flex-start;margin-top:0}}
 .login-left .landing-links a{color:#173f31;text-decoration:none;font-size:14px;font-weight:600;white-space:nowrap}
 .login-left .landing-links .btn-entrar{background:#9a6034;color:#fff;padding:12px 24px;border-radius:999px;font-weight:700;font-size:14px;white-space:nowrap}
 .login-left .main-block{margin-left:clamp(0px,3vw,40px);max-width:600px}
@@ -40,6 +43,25 @@ body{background:#f4efe6}
 .remember-row label{display:flex;align-items:center;gap:8px;color:#4b5148;cursor:pointer}
 .remember-row a{color:#9a6034;text-decoration:none;font-weight:600}
 .mobile-topbar{display:none}
+.mobile-hero{display:none}
+.login-left .eyebrow-cv{font-size:12px;letter-spacing:.2em;font-weight:800;color:#9a6034;margin:0 0 14px}
+.btn-comece{display:inline-flex;align-items:center;gap:8px;background:#173f31;color:#fff;text-decoration:none;padding:15px 26px;border-radius:999px;font-weight:700;font-size:16px;margin:0 0 36px;box-shadow:0 8px 20px rgba(23,63,49,.22)}
+.btn-comece:hover{background:#1f4a3a}
+
+/* Seções abaixo do hero: Produtos, Sobre, Contato */
+.home-sec{padding:64px 24px}
+.home-sec .sec-head{max-width:1240px;margin:0 auto 28px}
+.home-sec .eyebrow{color:#9a6034}
+.home-sec h2{font-family:Georgia,serif;font-weight:500;color:#173f31;font-size:clamp(26px,3vw,36px);line-height:1.15;margin:8px 0 10px}
+.home-sec .narrow{max-width:760px;margin:0 auto}
+.home-sec .narrow p{color:#4b5148;line-height:1.6;font-size:16px}
+#produtos{background:#efe7d9}
+.quem{margin-top:36px;padding-top:28px;border-top:1px solid #e3d8c4}
+.quem h3{font-family:Georgia,serif;font-weight:500;color:#173f31;font-size:26px;margin:6px 0 10px}
+.contato-opcoes{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px}
+.contato-opcoes a{display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border-radius:999px;font-weight:700;text-decoration:none;font-size:15px;max-width:100%;overflow-wrap:anywhere}
+.contato-opcoes .c-whats{background:#173f31;color:#fff}
+.contato-opcoes .c-email{background:#fff;color:#173f31;border:1px solid #173f31}
 
 /* Acima de 960px: layout desktop de 2 colunas (já tratado acima). */
 /* Abaixo de 960px: comportamento de app mobile, não desktop encolhido —
@@ -47,8 +69,14 @@ body{background:#f4efe6}
    um cabeçalho compacto com a marca INDIA acima do card de login. */
 @media(max-width:960px){
   .login-left{display:none}
-  .mobile-topbar{display:flex;align-items:center;justify-content:center;padding:28px 20px 8px}
-  .mobile-topbar .brand-mark{text-align:center}
+  .mobile-topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 16px 8px}
+  .mobile-topbar .btn-entrar{background:#9a6034;color:#fff;text-decoration:none;padding:10px 20px;border-radius:999px;font-weight:700;font-size:14px;white-space:nowrap;flex-shrink:0}
+  .mobile-hero{display:block;padding:18px 16px 4px;max-width:560px;margin:0 auto}
+  .mobile-hero .eyebrow-cv{font-size:11px;letter-spacing:.2em;font-weight:800;color:#9a6034;margin:0 0 10px}
+  .mobile-hero h1{font-family:Georgia,serif;font-weight:500;color:#173f31;font-size:clamp(32px,9vw,44px);line-height:1.08;margin:0 0 12px}
+  .mobile-hero p{color:#1f4a3a;font-size:16px;line-height:1.5;margin:0 0 18px}
+  .mobile-hero .btn-comece{margin:0 0 6px}
+  .home-sec{padding:44px 16px}
   .mobile-topbar .brand-mark b{font-family:Georgia,serif;font-size:26px;letter-spacing:4px;color:#173f31}
   .mobile-topbar .brand-mark span{display:block;margin-top:6px;font-size:10px;letter-spacing:3px;color:#4d5a52}
 }
@@ -56,20 +84,29 @@ body{background:#f4efe6}
 </head>
 <body>
 <div class="mobile-topbar">
-  <div class="brand-mark"><b>INDIA</b><span>CAFÉ · PESSOAS · NEGÓCIOS</span></div>
+  <div class="brand-mark"><b>INDIA</b><span>PESSOAS · ENCONTROS · NEGÓCIOS</span></div>
+  <a class="btn-entrar" href="#entrar" data-acao="entrar">Entrar</a>
+</div>
+<div class="mobile-hero">
+  <div class="eyebrow-cv">CLÍNICA DE VALOR</div>
+  <h1>Negócios que geram valor.</h1>
+  <p>Ousadia para agir. Estratégias sustentáveis para seus resultados reais.</p>
+  <a class="btn-comece" href="#comecar" data-acao="criar">Comece agora →</a>
 </div>
 <div class="login-shell">
   <div class="login-left">
     <div class="landing-nav-top">
-      <div class="brand-mark"><b>INDIA</b><span>CAFÉ · PESSOAS · NEGÓCIOS</span></div>
+      <div class="brand-mark"><b>INDIA</b><span>PESSOAS · ENCONTROS · NEGÓCIOS</span></div>
       <div class="landing-links">
-        <a href="#">Início</a><a href="#">Sobre</a><a href="#">Produtos</a><a href="#">Ajuda</a>
-        <a class="btn-entrar" href="#">Entrar</a>
+        <a href="#">Início</a><a href="#sobre">Sobre</a><a href="#produtos">Produtos</a><a href="#contato">Contato</a>
+        <a class="btn-entrar" href="#entrar" data-acao="entrar">Entrar</a>
       </div>
     </div>
     <div class="main-block">
+      <div class="eyebrow-cv">CLÍNICA DE VALOR</div>
       <h1>Negócios<br>que geram valor.</h1>
       <p>Ousadia para agir. Estratégias sustentáveis para seus resultados reais.</p>
+      <a class="btn-comece" href="#comecar" data-acao="criar">Comece agora →</a>
       <div class="journey-list">
         <div class="jitem"><div class="jicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></div><div class="jlabel">Seu diagnóstico inicial</div></div>
         <div class="jitem"><div class="jicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="jlabel">Estruturar</div></div>
@@ -81,7 +118,7 @@ body{background:#f4efe6}
   </div>
 
   <div class="login-right">
-    <div class="login-card">
+    <div class="login-card" id="loginCard">
       <h2 id="cardTitle">Acesse sua conta</h2>
       <p class="sub" id="cardSub">Entre para acessar seu diagnóstico, relatórios, ferramentas e plano de ação.</p>
 
@@ -133,17 +170,57 @@ body{background:#f4efe6}
   </div>
 </div>
 
+<section class="home-sec" id="produtos">
+  <div class="sec-head">
+    <div class="eyebrow">Produtos</div>
+    <h2>Caminhos para a sua clínica</h2>
+  </div>
+  <div class="hp-cards" id="homeCards"></div>
+</section>
+
+<section class="home-sec" id="sobre">
+  <div class="narrow">
+    <div class="eyebrow">Sobre</div>
+    <h2>A INDIA é uma plataforma para psicólogas construírem clínicas sustentáveis</h2>
+    <p>Unimos diagnóstico, ferramentas e um plano de ação guiado para ajudar você a organizar a clínica que já tem — com clareza financeira, posicionamento e estrutura, sem perder a abordagem centrada na pessoa.</p>
+    <div class="quem">
+      <div class="eyebrow">Quem está por trás</div>
+      <h3>India Araújo</h3>
+    </div>
+  </div>
+</section>
+
+<section class="home-sec" id="contato">
+  <div class="narrow">
+    <div class="eyebrow">Contato</div>
+    <h2>Fale diretamente comigo</h2>
+    <p>Para conhecer a Clínica de Valor, o Manual ou a Mentoria, entre em contato direto.</p>
+    <div class="contato-opcoes" id="contatoOpcoes"></div>
+  </div>
+</section>
+
 <footer class="landing-footer">
   <b>INDIA</b>
-  <span>CAFÉ · PESSOAS · NEGÓCIOS</span>
+  <span>PESSOAS · ENCONTROS · NEGÓCIOS</span>
   <div class="flinks">
     <a href="#">Termos de uso</a>
     <a href="#">Privacidade</a>
-    <a href="#">Contato</a>
+    <a href="#contato">Contato</a>
   </div>
   <span>© 2026 INDIA. Todos os direitos reservados.</span>
 </footer>
 
+<script type="module">
+// Separado do script de autenticação: os cards e o contato aparecem mesmo se o Supabase falhar ao carregar.
+import { WHATSAPP_URL, WHATSAPP_EXIBICAO, CONTATO_EMAIL } from './assets/js/site-config.js';
+import { renderHomeCards } from './assets/js/home-cards.js';
+
+renderHomeCards(document.getElementById('homeCards'), { clinicaHref: '#comecar' });
+
+const contatoOpcoes = document.getElementById('contatoOpcoes');
+if (WHATSAPP_URL) contatoOpcoes.insertAdjacentHTML('beforeend', `<a class="c-whats" href="${WHATSAPP_URL}" target="_blank" rel="noopener">WhatsApp ${WHATSAPP_EXIBICAO} →</a>`);
+if (CONTATO_EMAIL) contatoOpcoes.insertAdjacentHTML('beforeend', `<a class="c-email" href="mailto:${CONTATO_EMAIL}">${CONTATO_EMAIL}</a>`);
+</script>
 <script type="module">
 import { supabase, avisarSupabaseNaoConfigurado } from './assets/js/supabase-client.js';
 import { GOOGLE_AUTH_ENABLED } from './assets/js/supabase-config.js';
@@ -210,6 +287,19 @@ document.getElementById('toCriar').addEventListener('click', (e) => { e.preventD
 document.getElementById('toEntrar').addEventListener('click', (e) => { e.preventDefault(); showEntrar(); });
 document.getElementById('toEsqueci').addEventListener('click', (e) => { e.preventDefault(); showEsqueci(); });
 document.getElementById('toEntrarDeEsqueci').addEventListener('click', (e) => { e.preventDefault(); showEntrar(); });
+
+// Home pública: botões "Entrar" / "Comece agora" / card da Clínica levam ao card de acesso.
+function irParaCard(mostrar) {
+  mostrar();
+  document.getElementById('loginCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+document.addEventListener('click', (e) => {
+  const alvo = e.target.closest('[data-acao="entrar"], [data-acao="criar"], [data-cta="clinica"]');
+  if (!alvo) return;
+  e.preventDefault();
+  irParaCard(alvo.dataset.acao === 'entrar' ? showEntrar : showCriar);
+});
+if (location.hash === '#comecar') showCriar();
 
 supabase.auth.getSession().then(({ data }) => {
   if (data.session) location.href = redirect;

@@ -11,7 +11,7 @@
 <div class="landing-hero">
   <div class="grain"></div>
   <nav class="landing-nav">
-    <div class="brand-mark"><b>INDIA</b><span>CAFÉ · PESSOAS · NEGÓCIOS</span></div>
+    <div class="brand-mark"><b>INDIA</b><span>PESSOAS · ENCONTROS · NEGÓCIOS</span></div>
     <div class="landing-links">
       <a href="#sobre">Sobre</a>
       <a href="#produtos">Produtos</a>
@@ -28,37 +28,7 @@
   </div>
 
   <div class="landing-cards" id="produtos">
-    <div class="product-card clinica">
-      <div class="photo p1"></div>
-      <div class="body">
-        <div class="kicker">Para psicólogas</div>
-        <h3>Minha Clínica de Valor</h3>
-        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Construa uma clínica ACP sustentável, com clareza, estratégia e autonomia.</p>
-        <ul>
-          <li>Diagnóstico personalizado</li>
-          <li>Mapa de desenvolvimento</li>
-          <li>Ferramentas e manual</li>
-          <li>Plano de ação e acompanhamento</li>
-        </ul>
-        <a class="cta" href="../mapa/index.html">Entrar na Clínica de Valor →</a>
-      </div>
-    </div>
-
-    <div class="product-card empresa">
-      <div class="photo p2"></div>
-      <div class="body">
-        <div class="kicker">Para empresas</div>
-        <h3>Diagnóstico Empresarial</h3>
-        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Entenda seu cenário, identifique oportunidades e organize o próximo passo.</p>
-        <ul>
-          <li>Diagnóstico do negócio</li>
-          <li>Mapa de oportunidades</li>
-          <li>Plano de ação</li>
-          <li>Acompanhamento de resultados</li>
-        </ul>
-        <a class="cta" href="#" id="ctaEmpresarial">Entrar no Diagnóstico Empresarial →</a>
-      </div>
-    </div>
+    <div class="hp-cards" id="homeCards"></div>
   </div>
 </div>
 
@@ -66,17 +36,22 @@
   <div class="eyebrow">Sobre</div>
   <h2 style="font-family:Georgia,serif;color:var(--ink-green);margin:8px 0 10px">A INDIA é uma plataforma para psicólogas construírem clínicas sustentáveis</h2>
   <p style="color:#4b5148;line-height:1.6">Unimos diagnóstico, ferramentas e um plano de ação guiado para ajudar você a organizar a clínica que já tem — com clareza financeira, posicionamento e estrutura, sem perder a abordagem centrada na pessoa.</p>
+  <div style="margin-top:32px;padding-top:24px;border-top:1px solid #e3d8c4">
+    <div class="eyebrow">Quem está por trás</div>
+    <h3 style="font-family:Georgia,serif;font-weight:500;color:var(--ink-green);font-size:24px;margin:6px 0 10px">India Araújo</h3>
+  </div>
 </section>
 
 <section id="contato" style="max-width:760px;margin:0 auto 60px;padding:0 24px">
   <div class="eyebrow">Contato</div>
-  <h2 style="font-family:Georgia,serif;color:var(--ink-green);margin:8px 0 10px">Precisa de ajuda?</h2>
-  <p style="color:#4b5148;line-height:1.6">Fale com quem administra sua conta na Clínica de Valor para dúvidas sobre o diagnóstico, seu plano ou o acesso à plataforma.</p>
+  <h2 style="font-family:Georgia,serif;color:var(--ink-green);margin:8px 0 10px">Fale diretamente comigo</h2>
+  <p style="color:#4b5148;line-height:1.6">Para conhecer o Manual ou a Mentoria, entre em contato direto. Dúvidas sobre o uso da plataforma: use <a href="#" id="linkAjuda2" style="color:var(--terracota);font-weight:700">Ajuda</a>.</p>
+  <div id="contatoOpcoes" style="display:flex;flex-wrap:wrap;gap:12px;margin-top:16px"></div>
 </section>
 
 <footer class="landing-footer">
   <b>INDIA</b>
-  <span>CAFÉ · PESSOAS · NEGÓCIOS</span>
+  <span>PESSOAS · ENCONTROS · NEGÓCIOS</span>
   <div class="flinks">
     <a href="#">Termos de uso</a>
     <a href="#">Privacidade</a>
@@ -85,6 +60,18 @@
   <span>© 2026 INDIA. Todos os direitos reservados.</span>
 </footer>
 
+<script type="module">
+// Separado do script de autenticação: os cards e o contato aparecem mesmo se o Supabase falhar ao carregar.
+import { WHATSAPP_URL, WHATSAPP_EXIBICAO, CONTATO_EMAIL } from '../assets/js/site-config.js';
+import { renderHomeCards } from '../assets/js/home-cards.js';
+
+renderHomeCards(document.getElementById('homeCards'), { clinicaHref: '../mapa/index.html' });
+
+const contatoOpcoes = document.getElementById('contatoOpcoes');
+const estiloBtn = 'display:inline-flex;align-items:center;padding:13px 20px;border-radius:999px;font-weight:700;text-decoration:none;font-size:15px;max-width:100%;overflow-wrap:anywhere;';
+if (WHATSAPP_URL) contatoOpcoes.insertAdjacentHTML('beforeend', `<a href="${WHATSAPP_URL}" target="_blank" rel="noopener" style="${estiloBtn}background:var(--ink-green);color:#fff">WhatsApp ${WHATSAPP_EXIBICAO} →</a>`);
+if (CONTATO_EMAIL) contatoOpcoes.insertAdjacentHTML('beforeend', `<a href="mailto:${CONTATO_EMAIL}" style="${estiloBtn}background:#fff;color:var(--ink-green);border:1px solid var(--ink-green)">${CONTATO_EMAIL}</a>`);
+</script>
 <script type="module">
 import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
 import { requireAuth, getProfile } from '../assets/js/auth.js';
@@ -105,11 +92,13 @@ document.getElementById('btnSair').addEventListener('click', async (e) => {
   location.href = '../index.html';
 });
 
-document.getElementById('linkAjuda').addEventListener('click', async (e) => {
-  e.preventDefault();
-  const { abrirModalAjuda } = await import('../assets/js/ajuda-modal.js');
-  abrirModalAjuda(session, profile);
-});
+for (const id of ['linkAjuda', 'linkAjuda2']) {
+  document.getElementById(id).addEventListener('click', async (e) => {
+    e.preventDefault();
+    const { abrirModalAjuda } = await import('../assets/js/ajuda-modal.js');
+    abrirModalAjuda(session, profile);
+  });
+}
 
 if (CONTATO_URL) {
   const linkContato = document.getElementById('linkContato');
@@ -117,10 +106,6 @@ if (CONTATO_URL) {
   if (CONTATO_URL.startsWith('http') || CONTATO_URL.startsWith('mailto:')) linkContato.target = '_blank';
 }
 
-document.getElementById('ctaEmpresarial').addEventListener('click', function (e) {
-  e.preventDefault();
-  alert('Diagnóstico Empresarial ainda não está disponível nesta versão.');
-});
 </script>
 </body>
 </html>
