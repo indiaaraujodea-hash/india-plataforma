@@ -9,6 +9,9 @@
 .chapter{margin:18px 0}
 .chapter h2{font-size:28px;color:var(--green)}
 .chapter p{line-height:1.7}
+.recomendado-card{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:16px 0}
+.recomendado-card .txt b{display:block;color:var(--green);font-size:15px}
+.recomendado-card .txt span{font-size:13px;color:var(--muted)}
 </style>
 <link rel="stylesheet" href="../assets/css/shell.css">
 </head>
@@ -18,6 +21,7 @@
     <div class="eyebrow">Manual da Clínica como Negócio na ACP</div>
     <h1 class="serif" style="font-size:46px;color:var(--green);margin:8px 0">Abra apenas o que seu caminho pede agora.</h1>
     <p class="lead" id="manualLead">Conteúdo protegido — disponível somente para quem já fez login.</p>
+    <div id="recomendadoWrap"></div>
     <div style="margin:20px 0">
       <label for="chapterSelect" class="small">Ir para capítulo</label>
       <select id="chapterSelect" style="display:block;margin-top:6px;padding:10px;border:1px solid var(--line);border-radius:8px;background:white;max-width:520px;width:100%"></select>
@@ -33,6 +37,8 @@ import { requireAuth } from '../assets/js/auth.js';
 import { mountAppShell } from '../assets/js/app-shell.js';
 
 avisarSupabaseNaoConfigurado();
+
+const TITULOS_PONTO = { captar: 'Captar', precificar: 'Precificar', posicionar: 'Posicionar', produto_mix: 'Produto / Mix', esteira: 'Esteira', escalar: 'Escalar' };
 
 (async () => {
   const session = await requireAuth('../login/index.html');
@@ -50,8 +56,24 @@ avisarSupabaseNaoConfigurado();
     return;
   }
   if (!capitulos || capitulos.length === 0) {
-    conteudoEl.innerHTML = `<div class="alert alert-info">O conteúdo do Manual ainda não foi migrado para o banco. Rode supabase/seed_manual.sql no projeto Supabase.</div>`;
+    conteudoEl.innerHTML = `<div class="alert alert-info">O Manual está sendo preparado e ficará disponível em breve.</div>`;
     return;
+  }
+
+  const params = new URLSearchParams(location.search);
+  if (!params.get('cap')) {
+    const { data: diag } = await supabase.from('diagnosticos').select('resultado_calculado').eq('user_id', session.user.id).maybeSingle();
+    const pontoPrincipal = diag?.resultado_calculado?.ponto_latente_principal;
+    if (pontoPrincipal) {
+      const { data: capMap } = await supabase.from('ponto_latente_capitulo_map').select('capitulo_numero, status, manual_capitulos(titulo)').eq('ponto_latente', pontoPrincipal).maybeSingle();
+      if (capMap?.capitulo_numero && capMap.status === 'validado') {
+        document.getElementById('recomendadoWrap').innerHTML = `
+          <div class="recomendado-card">
+            <div class="txt"><b>Capítulo recomendado para você</b><span>Com base no seu diagnóstico (${TITULOS_PONTO[pontoPrincipal]}) — Capítulo ${capMap.capitulo_numero}, ${capMap.manual_capitulos?.titulo || ''}</span></div>
+            <a class="btn alt" href="?cap=${capMap.capitulo_numero}">Abrir capítulo →</a>
+          </div>`;
+      }
+    }
   }
 
   const select = document.getElementById('chapterSelect');
@@ -73,7 +95,6 @@ avisarSupabaseNaoConfigurado();
     conteudoEl.appendChild(wrapper);
   }
 
-  const params = new URLSearchParams(location.search);
   const capParam = params.get('cap');
   const alvo = capParam ? document.getElementById('cap' + capParam) : null;
   if (alvo) {

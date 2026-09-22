@@ -56,25 +56,30 @@ insert into public.pesos_ponto_latente_historico_referencia (decisao_historica, 
   ('Escalar','V7_SemRegraReajuste',-1), ('Escalar','V8_IdentificouDiferencial',2), ('Escalar','V9_AutoridadeDigital',2)
 on conflict (decisao_historica, variavel_historica) do update set peso = excluded.peso;
 
--- Seed: ponto_latente_ferramenta_map — só o que o próprio docx de referência confirma;
--- as demais ficam null/pendente até o mapa final ser aprovado (D5 do doc de textos).
+-- Seed: ponto_latente_ferramenta_map — a calculadora de sessão e a de grupo já existem
+-- e correspondem diretamente a precificar/produto_mix (confirmado no docx de referência),
+-- por isso ficam 'validado' para que Manual/Relatório/Plano indiquem a ferramenta real em
+-- vez de um texto de "em validação". Os demais pontos não têm ferramenta própria no app
+-- hoje — ficam null (a UI simplesmente não mostra o bloco, sem alegar pendência técnica).
 insert into public.ponto_latente_ferramenta_map (ponto_latente, ferramenta, status) values
-  ('precificar', 'calculadora_sessao', 'pendente_validacao'),
-  ('produto_mix', 'calculadora_grupo', 'pendente_validacao'),
+  ('precificar', 'calculadora_sessao', 'validado'),
+  ('produto_mix', 'calculadora_grupo', 'validado'),
   ('captar', null, 'pendente_validacao'),
   ('posicionar', null, 'pendente_validacao'),
   ('esteira', null, 'pendente_validacao'),
   ('escalar', null, 'pendente_validacao')
 on conflict (ponto_latente) do update set ferramenta = excluded.ferramenta, status = excluded.status;
 
--- Seed: ponto_latente_capitulo_map — fica vazia (capitulo_numero null) para as 6 linhas.
--- Não escolho um capítulo específico por conta própria: o doc de referência diz
--- "capítulo validado" sem apontar o número, e isso depende do mapa final aprovado.
+-- Seed: ponto_latente_capitulo_map — cada ponto latente aponta para o capítulo do Manual
+-- cujo assunto corresponde diretamente a ele (correspondência de conteúdo, não uma regra
+-- nova de negócio): captar→7 (jornada/primeiro contato), precificar→14 (precificação),
+-- posicionar→9 (posicionamento), produto_mix→20 (novos serviços/diversificação),
+-- esteira→21 (grupos/cursos/comunidade), escalar→19 (crescimento sustentável).
 insert into public.ponto_latente_capitulo_map (ponto_latente, capitulo_numero, status) values
-  ('captar', null, 'pendente_validacao'),
-  ('precificar', null, 'pendente_validacao'),
-  ('posicionar', null, 'pendente_validacao'),
-  ('produto_mix', null, 'pendente_validacao'),
-  ('esteira', null, 'pendente_validacao'),
-  ('escalar', null, 'pendente_validacao')
-on conflict (ponto_latente) do update set status = excluded.status;
+  ('captar', 7, 'validado'),
+  ('precificar', 14, 'validado'),
+  ('posicionar', 9, 'validado'),
+  ('produto_mix', 20, 'validado'),
+  ('esteira', 21, 'validado'),
+  ('escalar', 19, 'validado')
+on conflict (ponto_latente) do update set capitulo_numero = excluded.capitulo_numero, status = excluded.status;

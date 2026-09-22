@@ -92,13 +92,10 @@ main{margin-top:-32px;padding-bottom:80px}
   <form id="diagForm" class="hidden">
     <section class="step active" data-title="A clínica que você quer construir">
       <h2>Primeiro, a direção.</h2>
-      <p class="intro">Antes de dizer o que falta, precisamos saber qual clínica você quer sustentar. O mesmo cenário pode ser saudável para uma profissional e insuficiente para outra.</p>
+      <p class="intro">Antes de dizer o que falta, precisamos saber quem responde e qual caminho você quer avaliar. As perguntas seguintes vão levantar sua realidade atual — não pedimos metas que você ainda não sabe definir.</p>
       <div class="grid2">
         <div class="field"><label>Seu nome</label><input id="respondent_nome" type="text" placeholder="Ex.: Ana Souza" required></div>
         <div class="field"><label>Seu melhor e-mail</label><input id="respondent_email" type="email" placeholder="Ex.: ana@email.com" required><small>Usado para identificar seu diagnóstico e permitir o acompanhamento estratégico.</small></div>
-        <div class="field"><label>Quanto você quer faturar por mês?</label><input id="goal_faturamento" type="number" min="0" step="100" placeholder="Ex.: 12000" required></div>
-        <div class="field"><label>Quanto deseja retirar para você por mês?</label><input id="goal_retirada" type="number" min="0" step="100" placeholder="Ex.: 8000"></div>
-        <div class="field"><label>Quantos atendimentos individuais por semana você quer sustentar no máximo?</label><input id="max_atendimentos" type="number" min="1" max="80" placeholder="Ex.: 20" required></div>
         <div class="field"><label>Qual modelo você deseja hoje?</label><select id="modelo_desejado"><option value="individual">Viver majoritariamente da clínica individual</option><option value="mixed">Clínica + outros serviços</option><option value="open">Ainda não sei / quero avaliar possibilidades</option></select></div>
       </div>
       <div class="note">Ao concluir o Mapa, suas respostas e o resultado estratégico serão registrados para acompanhamento. O diagnóstico só pode ser feito uma vez. Não inclua nomes, relatos ou dados clínicos de pacientes.</div>
@@ -107,14 +104,33 @@ main{margin-top:-32px;padding-bottom:80px}
 
     <section class="step" data-title="Sua realidade econômica hoje">
       <h2>Agora, a realidade do mês.</h2>
-      <p class="intro">Use números reais. A intenção é comparar capacidade, ocupação, preço e meta — não criar uma fotografia idealizada.</p>
+      <p class="intro">Use números reais de agora — não o que você acha que deveria faturar ou retirar. A intenção é entender sua situação atual, não criar uma fotografia idealizada.</p>
       <div class="grid3">
-        <div class="field"><label>Faturamento mensal atual</label><input id="receita_atual" type="number" min="0" step="100" placeholder="Ex.: 6500" required></div>
-        <div class="field"><label>Pacientes / atendimentos semanais atuais</label><input id="pacientes_atuais" type="number" min="0" max="80" placeholder="Ex.: 12" required></div>
+        <div class="field"><label>Faturamento médio mensal atual</label><input id="receita_atual" type="number" min="0" step="100" placeholder="Ex.: 6500" required></div>
+        <div class="field"><label>Custos fixos mensais da clínica</label><input id="custos_mensais" type="number" min="0" step="50" placeholder="Ex.: 1800"></div>
+        <div class="field"><label>Custos variáveis mensais, se souber</label><input id="custos_variaveis" type="number" min="0" step="50" placeholder="Ex.: 300"><small>Opcional — deixe em branco se não souber separar.</small></div>
         <div class="field"><label>Valor médio por sessão</label><input id="valor_medio_sessao" type="number" min="0" step="5" placeholder="Ex.: 150" required></div>
-        <div class="field"><label>Custos mensais da clínica</label><input id="custos_mensais" type="number" min="0" step="50" placeholder="Ex.: 1800"></div>
-        <div class="field"><label>Percentual da receita vindo dos 3 maiores pacientes</label><input id="concentracao_top3" type="number" min="0" max="100" placeholder="Ex.: 35"></div>
-        <div class="field"><label>Percentual de novos pacientes vindo do principal canal</label><input id="concentracao_canal" type="number" min="0" max="100" placeholder="Ex.: 80"></div>
+        <div class="field"><label>Quantidade média de atendimentos por semana</label><input id="pacientes_atuais" type="number" min="0" max="80" placeholder="Ex.: 12" required></div>
+        <div class="field"><label>Quanto você retira atualmente por mês</label><input id="retirada_atual" type="number" min="0" step="100" placeholder="Ex.: 3000"></div>
+        <div class="field"><label>Capacidade atual da agenda (atendimentos/semana que ela comporta hoje)</label><input id="capacidade_agenda" type="number" min="1" max="80" placeholder="Ex.: 20"></div>
+      </div>
+      <div class="actions"><button type="button" class="btn back" onclick="prevStep()">Voltar</button><button type="button" class="btn" onclick="nextStep()">Continuar</button></div>
+    </section>
+
+    <section class="step" data-title="Seus pacientes e canais de chegada">
+      <h2>De onde vêm seus pacientes?</h2>
+      <p class="intro">Não pedimos percentuais de cabeça — informe as quantidades que você consegue contar, e o sistema calcula os indicadores de concentração a partir delas.</p>
+      <div class="grid3">
+        <div class="field"><label>Quantos pacientes/clientes ativos você tem hoje?</label><input id="pacientes_ativos_total" type="number" min="0" placeholder="Ex.: 15"></div>
+        <div class="field"><label>Quantos desses pacientes representam uma parte importante da sua receita?</label><input id="pacientes_concentrados_qtd" type="number" min="0" placeholder="Ex.: 3"></div>
+        <div class="field"><label>Quantos pacientes novos chegaram nos últimos 3 meses?</label><input id="novos_pacientes_3meses" type="number" min="0" placeholder="Ex.: 5"></div>
+      </div>
+      <p class="intro" style="margin-top:20px">Desses pacientes novos, quantos vieram de cada canal?</p>
+      <div class="grid3">
+        <div class="field"><label>Indicação</label><input id="canal_indicacao_qtd" type="number" min="0" placeholder="Ex.: 2"></div>
+        <div class="field"><label>Instagram / redes sociais</label><input id="canal_instagram_qtd" type="number" min="0" placeholder="Ex.: 2"></div>
+        <div class="field"><label>Google / site</label><input id="canal_google_qtd" type="number" min="0" placeholder="Ex.: 0"></div>
+        <div class="field"><label>Outro canal</label><input id="canal_outro_qtd" type="number" min="0" placeholder="Ex.: 1"></div>
       </div>
       <div class="actions"><button type="button" class="btn back" onclick="prevStep()">Voltar</button><button type="button" class="btn" onclick="nextStep()">Continuar</button></div>
     </section>
@@ -194,7 +210,7 @@ main{margin-top:-32px;padding-bottom:80px}
         <div class="field"><label>Como está seu desgaste com a agenda atual?</label><select id="energia_desgaste"><option value="100">Baixo — sustentável</option><option value="70">Moderado — exige atenção</option><option value="40">Alto — já pesa no funcionamento</option><option value="20">Muito alto — difícil sustentar assim</option></select></div>
         <div class="field"><label>Hoje, qual sensação mais descreve sua clínica?</label><select id="sensacao_atual"><option>Tenho direção, mas preciso organizar prioridades</option><option>Atendo, mas não sei se o modelo fecha</option><option>Preciso de mais pacientes</option><option>Estou cheia, mas não ganho o que gostaria</option><option>Quero crescer sem aumentar atendimentos</option><option>Tenho muitas frentes e pouca clareza</option></select></div>
       </div>
-      <div class="note"><b>Importante:</b> o resultado é uma ferramenta de decisão gerencial em desenvolvimento. A metodologia final de priorização ainda está em validação — o relatório mostrará isso com clareza.</div>
+      <div class="note"><b>Importante:</b> o resultado é uma ferramenta de apoio à decisão da sua clínica. Suas respostas ficam registradas e seu diagnóstico só pode ser feito uma vez.</div>
       <div id="submitMsg"></div>
       <div class="actions"><button type="button" class="btn back" onclick="prevStep()">Voltar</button><button type="button" class="btn" id="btnSubmit" onclick="enviarDiagnostico()">Concluir diagnóstico</button></div>
     </section>
@@ -211,8 +227,9 @@ import { calcularPontosLatentes } from '../assets/js/diagnostico-engine.js';
 avisarSupabaseNaoConfigurado();
 
 const FIELD_IDS = [
-  'respondent_nome','respondent_email','goal_faturamento','goal_retirada','max_atendimentos','modelo_desejado',
-  'receita_atual','pacientes_atuais','valor_medio_sessao','custos_mensais','concentracao_top3','concentracao_canal',
+  'respondent_nome','respondent_email','modelo_desejado',
+  'receita_atual','custos_mensais','custos_variaveis','valor_medio_sessao','pacientes_atuais','retirada_atual','capacidade_agenda',
+  'pacientes_ativos_total','pacientes_concentrados_qtd','novos_pacientes_3meses','canal_indicacao_qtd','canal_instagram_qtd','canal_google_qtd','canal_outro_qtd',
   'estrutura_contrato','estrutura_prontuario','estrutura_cadastro','estrutura_cancelamento','estrutura_reajuste','estrutura_agenda_inclui','estrutura_protocolos',
   'financas_contas_separadas','financas_custo_conhecido','financas_retirada_previsivel','financas_reserva','financas_acompanha_indicadores','financas_ponto_equilibrio',
   'pos_publico_claro','pos_diferenciais','pos_presenca_coerente','pos_entendem_por_que_agora','pos_comunica_valor',
@@ -221,7 +238,7 @@ const FIELD_IDS = [
   'energia_desgaste','sensacao_atual',
 ];
 const CHECKBOX_IDS = new Set(['estrutura_contrato','estrutura_prontuario','estrutura_cadastro','estrutura_cancelamento','estrutura_reajuste','estrutura_agenda_inclui','estrutura_protocolos','financas_contas_separadas','financas_custo_conhecido','financas_retirada_previsivel','financas_reserva','financas_acompanha_indicadores','financas_ponto_equilibrio','acq_sabe_origem','acq_dois_canais','acq_presenca_clara','acq_rotina_relacionamento','acq_primeiro_contato_organizado','acq_nao_depende_uma_fonte']);
-const NUMBER_IDS = new Set(['goal_faturamento','goal_retirada','max_atendimentos','receita_atual','pacientes_atuais','valor_medio_sessao','custos_mensais','concentracao_top3','concentracao_canal','pos_publico_claro','pos_diferenciais','pos_presenca_coerente','pos_entendem_por_que_agora','pos_comunica_valor','mod_servico_claro','mod_preco_criterios','mod_novo_servico_resolve','mod_agenda_comporta','energia_desgaste']);
+const NUMBER_IDS = new Set(['receita_atual','custos_mensais','custos_variaveis','valor_medio_sessao','pacientes_atuais','retirada_atual','capacidade_agenda','pacientes_ativos_total','pacientes_concentrados_qtd','novos_pacientes_3meses','canal_indicacao_qtd','canal_instagram_qtd','canal_google_qtd','canal_outro_qtd','pos_publico_claro','pos_diferenciais','pos_presenca_coerente','pos_entendem_por_que_agora','pos_comunica_valor','mod_servico_claro','mod_preco_criterios','mod_novo_servico_resolve','mod_agenda_comporta','energia_desgaste']);
 
 let session;
 (async () => {

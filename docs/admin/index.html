@@ -139,7 +139,7 @@ async function carregarDetalhe(conteudo, diagnosticoId) {
       <table class="admin-table"><thead><tr><th>Ponto Latente</th><th>Score</th><th>Status</th></tr></thead><tbody>${scoresHtml || '<tr><td colspan=3>—</td></tr>'}</tbody></table>
 
       <h3 style="color:var(--green2);margin-top:22px">Plano de Ação</h3>
-      ${plano ? `<div class="small">O que resolver primeiro: ${plano.o_que_resolver_primeiro || '—'}</div><ul>${acoesHtml || '<li>Nenhuma ação registrada ainda</li>'}</ul>` : '<div class="small">Ainda não criado pela cliente.</div>'}
+      ${plano ? `<div class="small">Resultado esperado em 30 dias: ${plano.resultado_30_dias || '—'}</div><ul>${acoesHtml || '<li>Nenhuma ação registrada ainda</li>'}</ul>` : '<div class="small">Ainda não criado pela cliente.</div>'}
 
       <h3 style="color:var(--green2);margin-top:22px">Respostas originais (imutáveis)</h3>
       <div class="panel" style="background:#fff">${respostasHtml}</div>

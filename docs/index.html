@@ -126,8 +126,15 @@ body{background:#f4efe6}
 
 <script type="module">
 import { supabase, avisarSupabaseNaoConfigurado } from './assets/js/supabase-client.js';
+import { GOOGLE_AUTH_ENABLED } from './assets/js/supabase-config.js';
 
 avisarSupabaseNaoConfigurado();
+
+// Enquanto o provedor Google não estiver configurado no Supabase, o botão fica
+// oculto (em vez de mostrar um botão quebrado com "Unsupported provider").
+if (!GOOGLE_AUTH_ENABLED) {
+  document.getElementById('googleBlock').style.display = 'none';
+}
 
 const params = new URLSearchParams(location.search);
 const redirect = params.get('redirect') || 'inicio/index.html';

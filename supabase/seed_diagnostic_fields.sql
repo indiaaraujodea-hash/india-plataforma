@@ -1,17 +1,34 @@
 -- Seed: diagnostic_fields (catálogo de field_id estáveis do formulário — decisão D8)
+--
+-- Revisão: as perguntas que pediam metas ("quanto quer faturar/retirar") e
+-- percentuais diretos ("% dos 3 maiores pacientes", "% do canal principal")
+-- foram substituídas por perguntas de REALIDADE ATUAL e QUANTIDADES que a
+-- profissional consegue responder sem cálculo prévio — o sistema deriva os
+-- indicadores (margem, concentração de canal) a partir delas.
+
+-- Remove do catálogo os field_id descontinuados (não afeta diagnósticos já
+-- respondidos: "respostas" é imutável e continua guardando o que foi enviado).
+delete from public.diagnostic_fields
+where field_id in ('goal_faturamento', 'goal_retirada', 'max_atendimentos', 'concentracao_top3', 'concentracao_canal');
+
 insert into public.diagnostic_fields (field_id, etapa, ordem, label, tipo) values
   ('respondent_nome', 'identidade', 1, 'Seu nome', 'text'),
   ('respondent_email', 'identidade', 2, 'Seu melhor e-mail', 'email'),
-  ('goal_faturamento', 'identidade', 3, 'Quanto você quer faturar por mês?', 'number'),
-  ('goal_retirada', 'identidade', 4, 'Quanto deseja retirar para você por mês?', 'number'),
-  ('max_atendimentos', 'identidade', 5, 'Quantos atendimentos individuais por semana você quer sustentar no máximo?', 'number'),
-  ('modelo_desejado', 'identidade', 6, 'Qual modelo você deseja hoje?', 'select'),
-  ('receita_atual', 'economia_atual', 1, 'Faturamento mensal atual', 'number'),
-  ('pacientes_atuais', 'economia_atual', 2, 'Pacientes / atendimentos semanais atuais', 'number'),
-  ('valor_medio_sessao', 'economia_atual', 3, 'Valor médio por sessão', 'number'),
-  ('custos_mensais', 'economia_atual', 4, 'Custos mensais da clínica', 'number'),
-  ('concentracao_top3', 'economia_atual', 5, 'Percentual da receita vindo dos 3 maiores pacientes', 'number'),
-  ('concentracao_canal', 'economia_atual', 6, 'Percentual de novos pacientes vindo do principal canal', 'number'),
+  ('modelo_desejado', 'identidade', 3, 'Qual modelo você deseja hoje?', 'select'),
+  ('receita_atual', 'economia_atual', 1, 'Faturamento médio mensal atual', 'number'),
+  ('custos_mensais', 'economia_atual', 2, 'Custos fixos mensais da clínica', 'number'),
+  ('custos_variaveis', 'economia_atual', 3, 'Custos variáveis mensais, se souber', 'number'),
+  ('valor_medio_sessao', 'economia_atual', 4, 'Valor médio por sessão', 'number'),
+  ('pacientes_atuais', 'economia_atual', 5, 'Quantidade média de atendimentos por semana', 'number'),
+  ('retirada_atual', 'economia_atual', 6, 'Quanto você retira atualmente por mês', 'number'),
+  ('capacidade_agenda', 'economia_atual', 7, 'Quantos atendimentos por semana sua agenda comporta hoje (capacidade atual)', 'number'),
+  ('pacientes_ativos_total', 'pacientes_canais', 1, 'Quantos pacientes/clientes ativos você tem hoje?', 'number'),
+  ('pacientes_concentrados_qtd', 'pacientes_canais', 2, 'Quantos desses pacientes representam uma parte importante da sua receita?', 'number'),
+  ('novos_pacientes_3meses', 'pacientes_canais', 3, 'Quantos pacientes novos chegaram nos últimos 3 meses?', 'number'),
+  ('canal_indicacao_qtd', 'pacientes_canais', 4, 'Desses novos pacientes, quantos vieram de indicação?', 'number'),
+  ('canal_instagram_qtd', 'pacientes_canais', 5, 'Desses novos pacientes, quantos vieram do Instagram/redes sociais?', 'number'),
+  ('canal_google_qtd', 'pacientes_canais', 6, 'Desses novos pacientes, quantos vieram do Google/site?', 'number'),
+  ('canal_outro_qtd', 'pacientes_canais', 7, 'Desses novos pacientes, quantos vieram de outro canal?', 'number'),
   ('estrutura_contrato', 'estrutura', 1, 'Contrato / acordo terapêutico estruturado', 'checkbox'),
   ('estrutura_prontuario', 'estrutura', 2, 'Prontuário com rotina sustentável', 'checkbox'),
   ('estrutura_cadastro', 'estrutura', 3, 'Cadastro inicial padronizado', 'checkbox'),

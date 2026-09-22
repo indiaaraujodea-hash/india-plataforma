@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { calcularScoresCompostos, calcularPontosLatentes, MOTOR_VERSAO } from '../diagnostico-engine.js';
+import { calcularScoresCompostos, calcularPontosLatentes, classificarManterFortalecerCriar, MOTOR_VERSAO } from '../diagnostico-engine.js';
 
 // pesos idênticos ao seed_pesos.sql (versão 1, ativa)
 const PESOS_SEED = [
@@ -14,16 +14,21 @@ function respostasCompletas(overrides = {}) {
   return {
     respondent_nome: 'Ana',
     respondent_email: 'ana@teste.com',
-    goal_faturamento: 12000,
-    goal_retirada: 8000,
-    max_atendimentos: 20,
+    capacidade_agenda: 20,
     modelo_desejado: 'individual',
     receita_atual: 6000,
     pacientes_atuais: 12,
     valor_medio_sessao: 150,
     custos_mensais: 1800,
-    concentracao_top3: 30,
-    concentracao_canal: 40,
+    custos_variaveis: 200,
+    retirada_atual: 3000,
+    pacientes_ativos_total: 12,
+    pacientes_concentrados_qtd: 3,
+    novos_pacientes_3meses: 5,
+    canal_indicacao_qtd: 2,
+    canal_instagram_qtd: 2,
+    canal_google_qtd: 0,
+    canal_outro_qtd: 1,
     estrutura_contrato: true, estrutura_prontuario: true, estrutura_cadastro: false,
     estrutura_cancelamento: true, estrutura_reajuste: false, estrutura_agenda_inclui: true, estrutura_protocolos: false,
     financas_contas_separadas: true, financas_custo_conhecido: true, financas_retirada_previsivel: false,
@@ -113,4 +118,51 @@ test('ranking: ponto com score composto mais alto vira principal (caso controlad
   });
   const r = calcularPontosLatentes(respostas, PESOS_SEED);
   assert.equal(r.ponto_latente_principal, 'posicionar');
+});
+
+test('concentração de canal é derivada das quantidades por canal, não de um percentual direto', () => {
+  // 1 canal concentra 8 dos 10 novos pacientes informados por canal => 80% (>=75, penalidade forte)
+  const concentrado = respostasCompletas({ canal_indicacao_qtd: 8, canal_instagram_qtd: 1, canal_google_qtd: 1, canal_outro_qtd: 0 });
+  const distribuido = respostasCompletas({ canal_indicacao_qtd: 3, canal_instagram_qtd: 3, canal_google_qtd: 2, canal_outro_qtd: 2 });
+  const { valores: vConcentrado } = calcularScoresCompostos(concentrado);
+  const { valores: vDistribuido } = calcularScoresCompostos(distribuido);
+  assert.ok(vConcentrado.captacao_score < vDistribuido.captacao_score);
+});
+
+test('sem nenhuma quantidade por canal informada, captação fica "parcial" (nunca inventa concentração)', () => {
+  const respostas = respostasCompletas({ canal_indicacao_qtd: null, canal_instagram_qtd: null, canal_google_qtd: null, canal_outro_qtd: null });
+  const { statusParcial, avisos } = calcularScoresCompostos(respostas);
+  assert.equal(statusParcial.captacao, 'parcial');
+  assert.ok(avisos.some((a) => a.campo === 'captacao'));
+});
+
+test('financas_score usa custos fixos + variáveis, sem depender de meta de retirada', () => {
+  const respostas = respostasCompletas({ receita_atual: 10000, custos_mensais: 2000, custos_variaveis: 1000 });
+  const { valores, statusParcial } = calcularScoresCompostos(respostas);
+  assert.equal(statusParcial.financas, 'ok');
+  assert.ok(valores.financas_score !== null);
+});
+
+test('classificarManterFortalecerCriar: checkbox marcado vira MANTER, desmarcado vira CRIAR, ausente não entra em nenhuma coluna', () => {
+  const respostas = respostasCompletas({
+    financas_reserva: true,
+    financas_retirada_previsivel: false,
+  });
+  delete respostas.financas_ponto_equilibrio;
+  const { valores } = calcularScoresCompostos(respostas);
+  const { manter, criar } = classificarManterFortalecerCriar(respostas, valores);
+  assert.ok(manter.some((i) => i.id === 'financas_reserva'));
+  assert.ok(criar.some((i) => i.id === 'financas_retirada_previsivel'));
+  assert.ok(!manter.some((i) => i.id === 'financas_ponto_equilibrio'));
+  assert.ok(!criar.some((i) => i.id === 'financas_ponto_equilibrio'));
+});
+
+test('classificarManterFortalecerCriar: score composto baixo cai em CRIAR, médio em FORTALECER, alto em MANTER', () => {
+  const { manter, fortalecer, criar } = classificarManterFortalecerCriar({}, {
+    financas_score: 20, captacao_score: 55, posicionamento_score: 90, modelo_score: undefined,
+  });
+  assert.ok(criar.some((i) => i.id === 'financas_score'));
+  assert.ok(fortalecer.some((i) => i.id === 'captacao_score'));
+  assert.ok(manter.some((i) => i.id === 'posicionamento_score'));
+  assert.ok(!manter.some((i) => i.id === 'modelo_score') && !fortalecer.some((i) => i.id === 'modelo_score') && !criar.some((i) => i.id === 'modelo_score'));
 });

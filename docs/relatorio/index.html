@@ -13,6 +13,16 @@
 .evid-list li{margin-bottom:4px;font-size:14px}
 .momento-card{display:flex;gap:14px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:10px}
 .momento-card b{font-family:Georgia,serif;font-size:22px;color:var(--green)}
+.mfc-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:10px}
+.mfc-col{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px}
+.mfc-col h4{margin:0 0 10px;font-size:14px;letter-spacing:.04em;text-transform:uppercase}
+.mfc-col.manter h4{color:#3f7a55}
+.mfc-col.fortalecer h4{color:#b67a22}
+.mfc-col.criar h4{color:#9a5057}
+.mfc-col ul{margin:0;padding-left:18px}
+.mfc-col li{margin-bottom:7px;font-size:13.5px;line-height:1.4}
+.mfc-col .empty{color:var(--muted);font-size:13px}
+@media(max-width:720px){.mfc-grid{grid-template-columns:1fr}}
 </style>
 <link rel="stylesheet" href="../assets/css/shell.css">
 </head>
@@ -30,6 +40,7 @@
 import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
 import { requireAuth } from '../assets/js/auth.js';
 import { mountAppShell } from '../assets/js/app-shell.js';
+import { calcularScoresCompostos, classificarManterFortalecerCriar } from '../assets/js/diagnostico-engine.js';
 
 avisarSupabaseNaoConfigurado();
 
@@ -38,6 +49,14 @@ const TITULOS_PONTO = {
   produto_mix: 'Produto / Mix', esteira: 'Esteira', escalar: 'Escalar',
 };
 const MOMENTO_LABEL = { estruturacao: 'Estruturação', consolidacao: 'Consolidação', crescimento: 'Crescimento' };
+
+// Área de MANTER/FORTALECER/CRIAR que mais se conecta a cada Ponto Latente —
+// usado só para destacar, dentro do bloco do Ponto Latente, os itens do MFC
+// que sustentam por que aquele ponto foi identificado (não gera texto novo).
+const PONTO_AREA = {
+  captar: ['captacao'], precificar: ['financas'], posicionar: ['posicionamento'],
+  produto_mix: ['modelo'], esteira: ['modelo'], escalar: ['financas', 'captacao'],
+};
 
 // Campos que sustentam a personalização de cada ponto latente — só evidências
 // realmente respondidas entram no relatório (nunca inferência).
@@ -85,17 +104,29 @@ function evidenciasDoPonto(ponto, respostas) {
   return presentes;
 }
 
-function potenciasGerais(respostas) {
-  const todasEvidencias = Object.values(EVIDENCIAS_POR_PONTO).flat();
-  const vistos = new Set();
-  const potencias = [];
-  for (const [fieldId, label] of todasEvidencias) {
-    if (vistos.has(fieldId)) continue;
-    vistos.add(fieldId);
-    const v = respostas[fieldId];
-    if (v === true || (typeof v === 'number' && v >= 3)) potencias.push(label);
+function renderMFC(container, mfc) {
+  const sec = el('section', { class: 'rel-section' });
+  sec.appendChild(el('h2', {}, 'Onde sua clínica está agora'));
+  sec.appendChild(el('p', { class: 'small' }, 'Gerado a partir das suas respostas no diagnóstico.'));
+  const grid = el('div', { class: 'mfc-grid' });
+
+  const colunas = [
+    ['manter', 'Manter', mfc.manter],
+    ['fortalecer', 'Fortalecer', mfc.fortalecer],
+    ['criar', 'Criar', mfc.criar],
+  ];
+  for (const [cls, label, itens] of colunas) {
+    const col = el('div', { class: `mfc-col ${cls}` });
+    col.appendChild(el('h4', {}, label));
+    if (itens.length > 0) {
+      col.appendChild(el('ul', {}, itens.map((i) => el('li', {}, i.label))));
+    } else {
+      col.appendChild(el('p', { class: 'empty' }, 'Nenhum item identificado ainda nesta coluna.'));
+    }
+    grid.appendChild(col);
   }
-  return potencias.slice(0, 8);
+  sec.appendChild(grid);
+  container.appendChild(sec);
 }
 
 function el(tag, attrs = {}, children = []) {
@@ -115,7 +146,7 @@ async function carregarLinkCompreenderAplicar(pontoLatente) {
   return { capMap, ferrMap };
 }
 
-function renderBlocoPontoLatente(container, { texto, respostas, pontoLatente, principal }) {
+function renderBlocoPontoLatente(container, { texto, respostas, pontoLatente, principal, mfc }) {
   const sec = el('section', { class: 'rel-section' });
   sec.appendChild(el('div', { class: 'badge badge-draft' }, principal ? 'Ponto Latente Principal' : 'Ponto Latente Complementar'));
   sec.appendChild(el('h2', {}, texto.titulo));
@@ -135,6 +166,15 @@ function renderBlocoPontoLatente(container, { texto, respostas, pontoLatente, pr
     sec.appendChild(el('p', { class: 'small' }, 'Ainda não há evidências suficientes nas suas respostas para personalizar esta seção.'));
   }
 
+  // Conecta este Ponto Latente ao que já apareceu no Manter/Fortalecer/Criar,
+  // usando os mesmos itens já classificados — não inventa nada novo aqui.
+  const areas = PONTO_AREA[pontoLatente] || [];
+  const relacionados = [...(mfc.fortalecer || []), ...(mfc.criar || [])].filter((i) => areas.includes(i.area));
+  if (relacionados.length > 0) {
+    sec.appendChild(el('h3', {}, 'Por que merece atenção'));
+    sec.appendChild(el('ul', { class: 'evid-list' }, relacionados.map((i) => el('li', {}, i.label))));
+  }
+
   if (principal) {
     sec.appendChild(el('h3', {}, 'Por que olhar para isso agora'));
     sec.appendChild(el('p', {}, texto.por_que_agora));
@@ -150,20 +190,16 @@ function renderBlocoPontoLatente(container, { texto, respostas, pontoLatente, pr
 
 async function renderCompreenderAplicar(sec, pontoLatente) {
   const { capMap, ferrMap } = await carregarLinkCompreenderAplicar(pontoLatente);
-  sec.appendChild(el('h3', {}, 'Para Compreender'));
   if (capMap && capMap.capitulo_numero && capMap.status === 'validado') {
+    sec.appendChild(el('h3', {}, 'Para Compreender'));
     const a = el('a', { href: `../manual/index.html?cap=${capMap.capitulo_numero}`, class: 'btn alt' }, `Abrir capítulo — ${capMap.manual_capitulos?.titulo || ''}`);
     sec.appendChild(a);
-  } else {
-    sec.appendChild(el('p', { class: 'small' }, 'O capítulo do Manual para este Ponto Latente ainda está em validação metodológica. Você pode navegar livremente pelo Manual completo.'));
   }
-  sec.appendChild(el('h3', {}, 'Para Aplicar'));
   const ferramentaHref = { calculadora_sessao: '../ferramentas/sessao.html', calculadora_grupo: '../ferramentas/grupo.html' };
-  if (ferrMap && ferrMap.ferramenta) {
+  if (ferrMap && ferrMap.ferramenta && ferrMap.status === 'validado') {
+    sec.appendChild(el('h3', {}, 'Para Aplicar'));
     const nome = ferrMap.ferramenta === 'calculadora_sessao' ? 'Calculadora de Valor da Sessão' : 'Calculadora de Grupo';
     sec.appendChild(el('a', { href: ferramentaHref[ferrMap.ferramenta], class: 'btn alt' }, `Abrir ${nome}`));
-  } else {
-    sec.appendChild(el('p', { class: 'small' }, 'A ferramenta recomendada para este Ponto Latente ainda está em validação metodológica.'));
   }
 }
 
@@ -179,49 +215,36 @@ async function renderCompreenderAplicar(sec, pontoLatente) {
 
   const resultado = diag.resultado_calculado;
   if (!resultado || resultado.status === 'dados_insuficientes' || !resultado.ponto_latente_principal) {
-    conteudo.innerHTML = `<div class="alert alert-info">Recebemos seu diagnóstico, mas ainda não há dados suficientes para calcular seu Ponto Latente. Assim que a metodologia for validada, seu relatório completo aparecerá aqui.</div>`;
+    conteudo.innerHTML = `<div class="alert alert-info">Recebemos seu diagnóstico. Algumas respostas ainda são necessárias para calcular seu Ponto Latente — revise o Mapa se quiser complementar suas informações.</div>`;
     return;
   }
 
   conteudo.innerHTML = '';
 
-  if (!resultado.metodologia_validada) {
-    conteudo.appendChild(el('div', { class: 'alert alert-warn' }, 'Resultado preliminar — a metodologia de priorização (pesos) ainda está em validação. Este relatório usa uma configuração provisória e pode mudar quando as regras finais forem aprovadas.'));
-  }
-
-  // Seu Momento Atual
-  const momentoSec = el('section', { class: 'rel-section' });
-  momentoSec.appendChild(el('div', { class: 'eyebrow' }, 'Seu Momento Atual'));
-  const momentoCard = el('div', { class: 'momento-card' });
+  // Seu Momento Atual — só aparece quando já foi definido; nunca mostramos
+  // um estado "a definir"/técnico enquanto isso não acontece.
   if (diag.momento_clinica) {
+    const momentoSec = el('section', { class: 'rel-section' });
+    momentoSec.appendChild(el('div', { class: 'eyebrow' }, 'Seu Momento Atual'));
+    const momentoCard = el('div', { class: 'momento-card' });
     momentoCard.appendChild(el('b', {}, MOMENTO_LABEL[diag.momento_clinica]));
-  } else {
-    momentoCard.appendChild(el('span', { class: 'badge badge-pending' }, 'A definir'));
-    momentoCard.appendChild(el('span', { class: 'small', style: 'margin-left:10px' }, 'O Momento da Clínica ainda não foi avaliado — é uma dimensão separada do Ponto Latente e será definido conforme a metodologia validada.'));
+    momentoSec.appendChild(momentoCard);
+    conteudo.appendChild(momentoSec);
   }
-  momentoSec.appendChild(momentoCard);
-  conteudo.appendChild(momentoSec);
 
-  // Potências
-  const potSec = el('section', { class: 'rel-section' });
-  potSec.appendChild(el('h2', {}, 'Potências da sua Clínica'));
-  const potencias = potenciasGerais(diag.respostas);
-  if (potencias.length > 0) {
-    potSec.appendChild(el('ul', { class: 'evid-list' }, potencias.map((t) => el('li', {}, t))));
-  } else {
-    potSec.appendChild(el('p', { class: 'small' }, 'Ainda não identificamos potências confirmadas nas respostas.'));
-  }
-  conteudo.appendChild(potSec);
+  const { valores: valoresCompostos } = calcularScoresCompostos(diag.respostas);
+  const mfc = classificarManterFortalecerCriar(diag.respostas, valoresCompostos);
+  renderMFC(conteudo, mfc);
 
   // Ponto Latente Principal
   const { data: textoPrincipal } = await supabase.from('pontos_latentes_textos').select('*').eq('ponto_latente', resultado.ponto_latente_principal).single();
-  const secPrincipal = renderBlocoPontoLatente(conteudo, { texto: textoPrincipal, respostas: diag.respostas, pontoLatente: resultado.ponto_latente_principal, principal: true });
+  const secPrincipal = renderBlocoPontoLatente(conteudo, { texto: textoPrincipal, respostas: diag.respostas, pontoLatente: resultado.ponto_latente_principal, principal: true, mfc });
   await renderCompreenderAplicar(secPrincipal, resultado.ponto_latente_principal);
 
   // Ponto Latente Complementar
   if (resultado.ponto_latente_complementar) {
     const { data: textoComplementar } = await supabase.from('pontos_latentes_textos').select('*').eq('ponto_latente', resultado.ponto_latente_complementar).single();
-    renderBlocoPontoLatente(conteudo, { texto: textoComplementar, respostas: diag.respostas, pontoLatente: resultado.ponto_latente_complementar, principal: false });
+    renderBlocoPontoLatente(conteudo, { texto: textoComplementar, respostas: diag.respostas, pontoLatente: resultado.ponto_latente_complementar, principal: false, mfc });
   }
 
   // Para Avançar
