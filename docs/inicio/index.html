@@ -30,7 +30,6 @@
   <nav class="landing-nav">
     <div class="brand-mark"><b>INDIA</b><span>ENCONTROS · PESSOAS · NEGÓCIOS</span></div>
     <div class="landing-links">
-      <a href="#sobre">Sobre</a>
       <a href="#produtos">Produtos</a>
       <a href="#" id="linkAjuda">Ajuda</a>
       <a href="#contato" id="linkContato">Contato</a>
@@ -101,29 +100,13 @@
   </div>
 </div>
 
-<section id="sobre" style="max-width:760px;margin:50px auto;padding:0 24px">
-  <div class="eyebrow">Sobre</div>
-  <h2 style="font-family:Georgia,serif;color:var(--ink-green);margin:8px 0 10px">A INDIA é uma plataforma para psicólogas construírem clínicas sustentáveis</h2>
-  <p style="color:#4b5148;line-height:1.6">Unimos diagnóstico, ferramentas e um plano de ação guiado para ajudar você a organizar a clínica que já tem — com clareza financeira, posicionamento e estrutura, sem perder a abordagem centrada na pessoa.</p>
-</section>
-
-<section id="contato" style="max-width:760px;margin:0 auto 60px;padding:0 24px">
-  <div class="eyebrow">Contato</div>
-  <h2 style="font-family:Georgia,serif;color:var(--ink-green);margin:8px 0 10px">Precisa de ajuda?</h2>
-  <p style="color:#4b5148;line-height:1.6">Fale comigo diretamente sobre o diagnóstico, seu plano ou o acesso à plataforma.</p>
-  <div class="contato-canais">
-    <div><b>Telefone/WhatsApp:</b> (43) 98425-7669</div>
-    <div><b>E-mail:</b> useresultconsultoria@gmail.com</div>
-  </div>
-</section>
-
 <footer class="landing-footer">
   <b>INDIA</b>
   <span>ENCONTROS · PESSOAS · NEGÓCIOS</span>
   <div class="flinks">
     <a href="#">Termos de uso</a>
     <a href="#">Privacidade</a>
-    <a href="#contato">Contato</a>
+    <a href="#" id="linkContatoFooter">Contato</a>
   </div>
   <span>© 2026 INDIA. Todos os direitos reservados.</span>
 </footer>
@@ -155,9 +138,12 @@ document.getElementById('linkAjuda').addEventListener('click', async (e) => {
 });
 
 if (CONTATO_URL) {
-  const linkContato = document.getElementById('linkContato');
-  linkContato.href = CONTATO_URL;
-  if (CONTATO_URL.startsWith('http') || CONTATO_URL.startsWith('mailto:')) linkContato.target = '_blank';
+  for (const id of ['linkContato', 'linkContatoFooter']) {
+    const link = document.getElementById(id);
+    if (!link) continue;
+    link.href = CONTATO_URL;
+    if (CONTATO_URL.startsWith('http') || CONTATO_URL.startsWith('mailto:')) link.target = '_blank';
+  }
 }
 
 function ligarBotaoConfiguravel(id, url, mensagemPendente) {
