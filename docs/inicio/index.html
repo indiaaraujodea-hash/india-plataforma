@@ -3,50 +3,85 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>INDIA | Negócios que geram valor</title>
+<title>INDIA | Clínica de Valor</title>
 <link rel="stylesheet" href="../style.css">
 <link rel="stylesheet" href="../assets/css/shell.css">
 <style>
-.landing-cards{gap:18px;padding-left:24px;padding-right:24px}
-.product-card{width:398px}
+/* ---- Hero limpo: sem fotografia, fundo claro, tipografia elegante ---- */
+.landing-hero{
+  background:var(--cream,#f7f3eb);
+  min-height:0;
+  color:var(--green,#173f31);
+  padding-bottom:8px;
+}
+.landing-nav .brand-mark b,.landing-nav .brand-mark span{color:var(--green,#173f31)}
+.landing-nav .brand-mark span{opacity:.65}
+.landing-nav .landing-links a{color:var(--green,#173f31)}
+.landing-copy{max-width:640px;padding:56px 40px 20px}
+.landing-copy .eyebrow{color:var(--gold,#b58a48)}
+.landing-copy h1{color:var(--green,#173f31);font-size:clamp(38px,5vw,54px);letter-spacing:.02em;text-transform:uppercase}
+.landing-copy p{color:#4b5148;font-size:18px;max-width:520px}
+.hero-pillars{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:26px}
+.hero-pillars span{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--terracota,#9a5b34)}
+.hero-pillars .dot{width:4px;height:4px;border-radius:50%;background:var(--line,#e5ded1)}
+
+/* ---- menu mobile (hambúrguer) ---- */
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;color:var(--green,#173f31)}
+@media(max-width:900px){
+  .landing-nav{position:relative}
+  .landing-nav .landing-links{
+    position:absolute;top:100%;left:0;right:0;z-index:20;
+    background:var(--cream-paper,#fdfaf4);flex-direction:column;align-items:stretch;gap:0;
+    max-height:0;overflow:hidden;transition:max-height .25s ease;
+    box-shadow:0 12px 24px rgba(20,20,10,.12);border-radius:0 0 14px 14px;
+  }
+  .landing-nav .landing-links.aberto{max-height:320px}
+  .landing-nav .landing-links a{padding:16px 24px;border-bottom:1px solid var(--line,#e5ded1);font-size:15px}
+  .landing-nav .landing-links .btn-entrar{border-radius:0;text-align:center}
+  .hamburger{display:flex}
+}
+
+/* ---- cards: 4 no total, um pouco mais estreitos para caber lado a lado ---- */
+.landing-cards{gap:16px;padding-left:24px;padding-right:24px;padding-bottom:64px}
+.product-card{width:312px}
 .product-card .photo{display:flex;flex-direction:column;align-items:center;justify-content:center;background-size:cover;background-position:center;background-repeat:no-repeat}
-.product-card .photo.p6{background-image:url('../assets/img/calculadora-card.jpg');background-size:cover;background-position:center;background-repeat:no-repeat}
-.product-card .photo.p1{background-image:url('../assets/img/clinica-card.jpg');background-size:cover;background-position:center;background-repeat:no-repeat}
-.product-card .photo.p4{background-image:url('../assets/img/mentoria-card.jpg');background-size:cover;background-position:center;background-repeat:no-repeat}
-.product-card.calculadora .cta{background:var(--ink-green)}
-.product-card.mentoria .cta{background:var(--terracota)}
-.mentoria-linha{font-weight:700;color:var(--ink-green);margin:0 0 8px;font-size:14px}
-.contato-canais{display:flex;flex-direction:column;gap:6px;margin:14px 0 20px;font-size:14px;color:#4b5148}
-.contato-canais b{color:var(--ink-green)}
+.product-card .photo.p6{background-image:url('../assets/img/calculadora-card.jpg')}
+.product-card .photo.p1{background-image:url('../assets/img/mapa-30-dias.svg');background-size:cover}
+.product-card .photo.p4{background-image:url('../assets/img/mentoria-card.jpg')}
+.product-card .photo.p7{background:linear-gradient(135deg,#e9dcc3,#c9a24a)}
+.product-card.calculadora .cta{background:var(--ink-green,#173f31)}
+.product-card.mapa .cta{background:var(--terracota,#9a5b34)}
+.product-card.mentoria .cta{background:var(--ink-green2,#1f4a3a)}
+.product-card.conteudos .cta{background:var(--terracota,#9a5b34)}
+.mentoria-linha{font-weight:700;color:var(--ink-green,#173f31);margin:0 0 8px;font-size:14px}
 .product-card ul li:before{content:none}
-.product-card ul li svg{color:var(--terracota);flex-shrink:0}
-.hero-pillars{display:flex;gap:30px;flex-wrap:wrap;margin-top:32px}
-.hero-pillars .pillar{display:flex;flex-direction:column;align-items:flex-start;gap:8px;color:#f2ece0}
-.hero-pillars .pillar span{font-size:12px;letter-spacing:.04em}
+.product-card ul li svg{color:var(--terracota,#9a5b34);flex-shrink:0}
+
+.landing-footer{background:var(--ink-green,#173f31)}
+.landing-footer .flinks{gap:22px}
 </style>
 </head>
 <body>
 <div class="landing-hero">
-  <div class="grain"></div>
   <nav class="landing-nav">
     <div class="brand-mark"><b>INDIA</b><span>ENCONTROS · PESSOAS · NEGÓCIOS</span></div>
-    <div class="landing-links">
+    <button class="hamburger" id="btnHamburger" aria-label="Abrir menu" aria-expanded="false">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <div class="landing-links" id="landingLinks">
       <a href="#produtos">Produtos</a>
       <a href="#" id="linkAjuda">Ajuda</a>
-      <a href="#contato" id="linkContato">Contato</a>
+      <a href="#" id="linkContato">Contato</a>
       <a class="btn-entrar" href="../index.html" id="btnAuth">Entrar</a>
     </div>
   </nav>
 
   <div class="landing-copy">
-    <div class="eyebrow" style="color:#e7d9bd">Clínica de Valor</div>
-    <h1>Negócios que geram valor.</h1>
-    <p>Ousadia para agir. Estratégias sustentáveis para seus resultados reais.</p>
+    <div class="eyebrow">Clínica de Valor</div>
+    <h1>Clínica de Valor</h1>
+    <p>Sua clínica sustentável e autêntica começa aqui.</p>
     <div class="hero-pillars">
-      <div class="pillar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span>Conhecimento</span></div>
-      <div class="pillar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3.1-6 7-6s7 2.7 7 6"/><circle cx="17" cy="8" r="2.4"/><path d="M16 14.2c2.7.5 4.8 2.6 5 5.8"/></svg><span>Pessoas</span></div>
-      <div class="pillar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.2"/><circle cx="12" cy="12" r=".6" fill="#fff"/></svg><span>Estratégia</span></div>
-      <div class="pillar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M3 21h18"/><path d="M6 21V10M12 21V4M18 21v-7"/></svg><span>Resultados</span></div>
+      <span>Estratégia</span><span class="dot"></span><span>Clareza</span><span class="dot"></span><span>Resultados reais</span>
     </div>
   </div>
 
@@ -56,7 +91,7 @@
       <div class="body">
         <div class="kicker">Gratuito</div>
         <h3>Calculadora da Psicóloga</h3>
-        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Descubra, em poucos minutos, quanto vale a sua sessão, com base na sua realidade.</p>
+        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Descubra, em poucos minutos, quanto sua sessão precisa valer.</p>
         <ul>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a4 4 0 0 1-5.4 5.4L4 17l3 3 5.3-5.3a4 4 0 0 1 5.4-5.4z"/></svg>Simples e rápida</li>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Com seu cadastro</li>
@@ -66,17 +101,16 @@
       </div>
     </div>
 
-    <div class="product-card clinica">
+    <div class="product-card mapa">
       <div class="photo p1"></div>
       <div class="body">
-        <div class="kicker">Para psicólogas</div>
-        <h3>Minha Clínica de Valor</h3>
-        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Diagnóstico, mapa e direcionamento para construir uma clínica mais sustentável.</p>
+        <div class="kicker">Plano prático</div>
+        <h3>Seu Mapa de 30 Dias</h3>
+        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Direcionamento claro para colocar seu plano em prática.</p>
         <ul>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M6 21V10M12 21V4M18 21v-7"/></svg>Diagnóstico personalizado</li>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>Mapa de desenvolvimento</li>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a4 4 0 0 1-5.4 5.4L4 17l3 3 5.3-5.3a4 4 0 0 1 5.4-5.4z"/></svg>Ferramentas e manual</li>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>Plano de ação e acompanhamento</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>Plano de ação em 30 dias</li>
         </ul>
         <a class="cta" href="#" id="ctaClinica">Conhecer Minha Clínica de Valor →</a>
       </div>
@@ -85,17 +119,24 @@
     <div class="product-card mentoria">
       <div class="photo p4"></div>
       <div class="body">
-        <div class="kicker">Mentoria</div>
+        <div class="kicker">Mentorias</div>
         <h3>Mentorias</h3>
-        <div class="mentoria-linha">Mentoria em Grupo + Mentoria Individual</div>
-        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Acompanhamento estratégico para transformar conhecimento em ação e construir a clínica que você deseja.</p>
+        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Em grupo ou individual.</p>
         <ul>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3.1-6 7-6s7 2.7 7 6"/><circle cx="17" cy="8" r="2.4"/><path d="M16 14.2c2.7.5 4.8 2.6 5 5.8"/></svg>Mentoria em grupo</li>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>Mentoria individual</li>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.2"/><circle cx="12" cy="12" r=".6" fill="currentColor"/></svg>Troca e aplicação prática</li>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>Acompanhamento da evolução</li>
         </ul>
         <a class="cta" href="#" id="ctaMentoria">Conhecer as mentorias →</a>
+      </div>
+    </div>
+
+    <div class="product-card conteudos">
+      <div class="photo p7"></div>
+      <div class="body">
+        <div class="kicker">Conteúdos</div>
+        <h3>Aulas, manual e ferramentas</h3>
+        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Recursos práticos para apoiar sua jornada.</p>
+        <a class="cta" href="#" id="ctaConteudos">Conhecer os conteúdos →</a>
       </div>
     </div>
   </div>
@@ -105,8 +146,8 @@
   <b>INDIA</b>
   <span>ENCONTROS · PESSOAS · NEGÓCIOS</span>
   <div class="flinks">
-    <a href="#">Termos de uso</a>
-    <a href="#">Privacidade</a>
+    <a href="#">Sobre a India</a>
+    <a href="#" id="linkInstagram">Instagram</a>
     <a href="#" id="linkContatoFooter">Contato</a>
   </div>
   <span>© 2026 INDIA. Todos os direitos reservados.</span>
@@ -115,7 +156,7 @@
 <script type="module">
 import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
 import { getSession, getProfile } from '../assets/js/auth.js';
-import { CONTATO_URL, WHATSAPP_URL, EDUZZ_CHECKOUT_URL } from '../assets/js/site-config.js';
+import { CONTATO_URL, WHATSAPP_URL, EDUZZ_CHECKOUT_URL, INSTAGRAM_URL } from '../assets/js/site-config.js';
 
 avisarSupabaseNaoConfigurado();
 
@@ -137,6 +178,12 @@ let session, profile;
     });
   }
 })();
+
+const landingLinks = document.getElementById('landingLinks');
+document.getElementById('btnHamburger').addEventListener('click', function () {
+  const aberto = landingLinks.classList.toggle('aberto');
+  this.setAttribute('aria-expanded', aberto ? 'true' : 'false');
+});
 
 document.getElementById('linkAjuda').addEventListener('click', async (e) => {
   e.preventDefault();
@@ -172,12 +219,15 @@ function ligarBotaoConfiguravel(id, url, mensagemPendente) {
 }
 
 ligarBotaoConfiguravel('ctaMentoria', WHATSAPP_URL, 'O link do WhatsApp ainda não foi configurado. Assim que for definido em site-config.js, este botão abrirá a conversa diretamente.');
+ligarBotaoConfiguravel('linkInstagram', INSTAGRAM_URL, 'O link do Instagram ainda não foi configurado. Assim que for definido em site-config.js, este link abrirá o perfil diretamente.');
 
-// Enquanto não houver checkout (Eduzz) configurado, o botão leva direto ao
+// Enquanto não houver checkout (Eduzz) configurado, os botões levam direto ao
 // início do diagnóstico — é o caminho real disponível hoje.
-const ctaClinica = document.getElementById('ctaClinica');
-ctaClinica.href = EDUZZ_CHECKOUT_URL || '../mapa/index.html';
-if (EDUZZ_CHECKOUT_URL) ctaClinica.target = '_blank';
+for (const id of ['ctaClinica', 'ctaConteudos']) {
+  const el = document.getElementById(id);
+  el.href = EDUZZ_CHECKOUT_URL || '../mapa/index.html';
+  if (EDUZZ_CHECKOUT_URL) el.target = '_blank';
+}
 </script>
 </body>
 </html>
