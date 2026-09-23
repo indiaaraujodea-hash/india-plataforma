@@ -292,7 +292,21 @@
   <a class="voltar" href="../inicio/index.html">← Voltar para a Home</a>
 </div>
 
-<div class="lead-gate" id="leadGate">
+<div class="lead-gate" id="apresentacao">
+  <div class="card">
+    <div class="eyebrow">Calculadora da Psicóloga · Gratuita</div>
+    <h1>Quanto vale a minha sessão?</h1>
+    <p class="sub">Descubra, em poucos minutos, quanto sua sessão precisa valer — considerando pró-labore, custos fixos, impostos e faltas de pacientes. Não é "achismo", é conta.</p>
+    <ul style="list-style:none;padding:0;margin:0 0 22px;display:grid;gap:10px;font-size:14px;color:var(--tinta-suave)">
+      <li>✓ Simples e rápida</li>
+      <li>✓ Não exige login nem criação de conta</li>
+      <li>✓ Resultado na hora</li>
+    </ul>
+    <button class="btn-primary" type="button" id="btnIniciarCalculo">Calcular gratuitamente →</button>
+  </div>
+</div>
+
+<div class="lead-gate" id="leadGate" style="display:none">
   <div class="card">
     <div class="eyebrow">Calculadora da Psicóloga · Gratuita</div>
     <h1>Antes de calcular, me conta quem é você</h1>
@@ -538,10 +552,18 @@ avisarSupabaseNaoConfigurado();
 // Se já liberou a calculadora nesta sessão do navegador, não pede de novo.
 try {
   if (sessionStorage.getItem('leadCalculadoraLiberada') === '1') {
+    document.getElementById('apresentacao').style.display = 'none';
     document.getElementById('leadGate').style.display = 'none';
     document.getElementById('calculadoraConteudo').style.display = '';
   }
 } catch (err) {}
+
+// 1ª etapa: apresentação/benefício → 2ª etapa: pequeno cadastro (nome + e-mail).
+document.getElementById('btnIniciarCalculo').addEventListener('click', () => {
+  document.getElementById('apresentacao').style.display = 'none';
+  document.getElementById('leadGate').style.display = '';
+  window.scrollTo(0, 0);
+});
 
 document.getElementById('formLead').addEventListener('submit', async (e) => {
   e.preventDefault();

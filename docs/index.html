@@ -147,8 +147,11 @@ body{background:#f4efe6}
 <script type="module">
 import { supabase, avisarSupabaseNaoConfigurado } from './assets/js/supabase-client.js';
 import { GOOGLE_AUTH_ENABLED } from './assets/js/supabase-config.js';
+import { ativarToggleSenha } from './assets/js/senha-toggle.js';
 
 avisarSupabaseNaoConfigurado();
+ativarToggleSenha('loginSenha');
+ativarToggleSenha('suSenha');
 
 // Enquanto o provedor Google não estiver configurado no Supabase, o botão fica
 // oculto (em vez de mostrar um botão quebrado com "Unsupported provider").

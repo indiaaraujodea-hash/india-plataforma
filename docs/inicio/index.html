@@ -41,19 +41,16 @@
   .hamburger{display:flex}
 }
 
-/* ---- cards: 4 no total, um pouco mais estreitos para caber lado a lado ---- */
-.landing-cards{gap:16px;padding-left:24px;padding-right:24px;padding-bottom:64px}
-.product-card{width:312px}
+/* ---- cards: os 3 existentes, largura ajustada para caber lado a lado ---- */
+.landing-cards{gap:18px;padding-left:24px;padding-right:24px;padding-bottom:64px}
+.product-card{width:340px}
 .product-card .photo{display:flex;flex-direction:column;align-items:center;justify-content:center;background-size:cover;background-position:center;background-repeat:no-repeat}
 .product-card .photo.p6{background-image:url('../assets/img/calculadora-card.jpg')}
 .product-card .photo.p1{background-image:url('../assets/img/mapa-30-dias.svg');background-size:cover}
 .product-card .photo.p4{background-image:url('../assets/img/mentoria-card.jpg')}
-.product-card .photo.p7{background:linear-gradient(135deg,#e9dcc3,#c9a24a)}
 .product-card.calculadora .cta{background:var(--ink-green,#173f31)}
 .product-card.mapa .cta{background:var(--terracota,#9a5b34)}
 .product-card.mentoria .cta{background:var(--ink-green2,#1f4a3a)}
-.product-card.conteudos .cta{background:var(--terracota,#9a5b34)}
-.mentoria-linha{font-weight:700;color:var(--ink-green,#173f31);margin:0 0 8px;font-size:14px}
 .product-card ul li:before{content:none}
 .product-card ul li svg{color:var(--terracota,#9a5b34);flex-shrink:0}
 
@@ -130,15 +127,6 @@
       </div>
     </div>
 
-    <div class="product-card conteudos">
-      <div class="photo p7"></div>
-      <div class="body">
-        <div class="kicker">Conteúdos</div>
-        <h3>Aulas, manual e ferramentas</h3>
-        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Recursos práticos para apoiar sua jornada.</p>
-        <a class="cta" href="#" id="ctaConteudos">Conhecer os conteúdos →</a>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -221,13 +209,11 @@ function ligarBotaoConfiguravel(id, url, mensagemPendente) {
 ligarBotaoConfiguravel('ctaMentoria', WHATSAPP_URL, 'O link do WhatsApp ainda não foi configurado. Assim que for definido em site-config.js, este botão abrirá a conversa diretamente.');
 ligarBotaoConfiguravel('linkInstagram', INSTAGRAM_URL, 'O link do Instagram ainda não foi configurado. Assim que for definido em site-config.js, este link abrirá o perfil diretamente.');
 
-// Enquanto não houver checkout (Eduzz) configurado, os botões levam direto ao
+// Enquanto não houver checkout (Eduzz) configurado, o botão leva direto ao
 // início do diagnóstico — é o caminho real disponível hoje.
-for (const id of ['ctaClinica', 'ctaConteudos']) {
-  const el = document.getElementById(id);
-  el.href = EDUZZ_CHECKOUT_URL || '../mapa/index.html';
-  if (EDUZZ_CHECKOUT_URL) el.target = '_blank';
-}
+const ctaClinica = document.getElementById('ctaClinica');
+ctaClinica.href = EDUZZ_CHECKOUT_URL || '../mapa/index.html';
+if (EDUZZ_CHECKOUT_URL) ctaClinica.target = '_blank';
 </script>
 </body>
 </html>
