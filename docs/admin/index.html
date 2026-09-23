@@ -23,6 +23,7 @@
     <div class="eyebrow">Painel Administrativo</div>
     <h1 class="serif" style="font-size:36px;color:var(--green);margin:8px 0">Clientes</h1>
     <div id="mensagensSuporte"></div>
+    <div id="leadsCalculadora"></div>
     <div id="conteudo"><p>Carregando…</p></div>
   </section>
 </main>
@@ -299,12 +300,30 @@ async function carregarMensagensSuporte() {
   });
 }
 
+async function carregarLeadsCalculadora() {
+  const wrap = document.getElementById('leadsCalculadora');
+  const { data: leads, error } = await supabase.from('leads_calculadora').select('*').order('criado_em', { ascending: false }).limit(100);
+  if (error || !leads || leads.length === 0) return;
+  wrap.innerHTML = `
+    <details class="panel" style="margin-bottom:18px">
+      <summary style="cursor:pointer;font-weight:700;color:var(--green)">Leads da Calculadora (${leads.length})</summary>
+      <div style="margin-top:12px">
+        ${leads.map((l) => `
+          <div class="resp-item">
+            <div class="lbl">${fmtDataHora(l.criado_em)}</div>
+            <div class="val">${l.nome} · ${l.email}</div>
+          </div>`).join('')}
+      </div>
+    </details>`;
+}
+
 (async () => {
   const ctx = await requireAdmin('../index.html', '../login/index.html');
   if (!ctx) return;
   await mountAppShell('admin', ctx.session, '..');
   const conteudo = document.getElementById('conteudo');
   carregarMensagensSuporte();
+  carregarLeadsCalculadora();
   const params = new URLSearchParams(location.search);
   const id = params.get('id');
   if (id) carregarFicha(conteudo, id);
