@@ -526,7 +526,7 @@ create table if not exists public.solicitacoes_compra (
   email text not null,
   whatsapp text not null,
   produto text not null default 'Minha Clínica de Valor',
-  valor numeric(10,2) not null default 27.00,
+  valor numeric(10,2) not null default 37.90,
   status text not null default 'aguardando_confirmacao' check (status in ('aguardando_confirmacao','confirmado')),
   criado_em timestamptz not null default now(),
   confirmado_em timestamptz,
