@@ -23,6 +23,7 @@
     <div class="eyebrow">Painel Administrativo</div>
     <h1 class="serif" style="font-size:36px;color:var(--green);margin:8px 0">Clientes</h1>
     <div id="mensagensSuporte"></div>
+    <div id="solicitacoesCompra"></div>
     <div id="leadsCalculadora"></div>
     <div id="conteudo"><p>Carregando…</p></div>
   </section>
@@ -300,6 +301,64 @@ async function carregarMensagensSuporte() {
   });
 }
 
+// =========================================================
+// Solicitações de acesso — venda provisória (PIX manual) de "Minha
+// Clínica de Valor" enquanto o checkout da Eduzz está indisponível.
+// A liberação reutiliza profiles.diagnostico_liberado (mesma função
+// já usada na ficha da cliente) — não é um segundo sistema de acesso.
+// =========================================================
+async function carregarSolicitacoesCompra() {
+  const wrap = document.getElementById('solicitacoesCompra');
+  const { data: sols, error } = await supabase.from('solicitacoes_compra').select('*').order('criado_em', { ascending: false }).limit(100);
+  if (error || !sols || sols.length === 0) return;
+  const pendentes = sols.filter((s) => s.status === 'aguardando_confirmacao');
+
+  wrap.innerHTML = `
+    <details class="panel" style="margin-bottom:18px" ${pendentes.length > 0 ? 'open' : ''}>
+      <summary style="cursor:pointer;font-weight:700;color:var(--green)">Solicitações de Acesso ${pendentes.length > 0 ? `<span class="badge badge-pending">${pendentes.length} aguardando confirmação</span>` : `(${sols.length})`}</summary>
+      <div style="margin-top:12px">
+        ${sols.map((s) => `
+          <div class="resp-item" data-sol-id="${s.id}">
+            <div class="lbl">${fmtDataHora(s.criado_em)} · ${s.produto} · R$ ${Number(s.valor).toFixed(2).replace('.', ',')}</div>
+            <div class="val"><b>${s.nome}</b> · ${s.email} · ${s.whatsapp}</div>
+            <div class="val" style="margin-top:6px">
+              <span class="badge ${s.status === 'confirmado' ? 'badge-ok' : 'badge-pending'}">${s.status === 'confirmado' ? 'Confirmado' : 'Aguardando confirmação'}</span>
+            </div>
+            <button class="btn alt btnLiberarSolicitacao" style="padding:5px 10px;margin-top:8px;font-size:12px">Liberar acesso</button>
+          </div>`).join('')}
+      </div>
+    </details>`;
+
+  wrap.querySelectorAll('.btnLiberarSolicitacao').forEach((btn) => {
+    btn.addEventListener('click', async (e) => {
+      const item = e.target.closest('[data-sol-id]');
+      const sol = sols.find((s) => s.id === item.dataset.solId);
+      const confirmou = confirm('Confirma que o pagamento foi recebido e deseja liberar o acesso?');
+      if (!confirmou) return;
+
+      const { data: { user } } = await supabase.auth.getUser();
+      await supabase.from('solicitacoes_compra').update({
+        status: 'confirmado',
+        confirmado_em: new Date().toISOString(),
+        confirmado_por: user.id,
+      }).eq('id', sol.id);
+
+      const { data: perfil } = await supabase.from('profiles').select('id').eq('email', sol.email).maybeSingle();
+      if (perfil) {
+        await supabase.from('profiles').update({
+          diagnostico_liberado: true,
+          diagnostico_liberado_em: new Date().toISOString(),
+          diagnostico_liberado_por: user.id,
+        }).eq('id', perfil.id);
+        alert('Acesso liberado.');
+      } else {
+        alert(`Pagamento confirmado. Esta cliente ainda não criou conta — assim que ela criar a conta com o e-mail ${sol.email}, clique em "Liberar acesso" novamente para liberar o diagnóstico.`);
+      }
+      carregarSolicitacoesCompra();
+    });
+  });
+}
+
 async function carregarLeadsCalculadora() {
   const wrap = document.getElementById('leadsCalculadora');
   const { data: leads, error } = await supabase.from('leads_calculadora').select('*').order('criado_em', { ascending: false }).limit(100);
@@ -323,6 +382,7 @@ async function carregarLeadsCalculadora() {
   await mountAppShell('admin', ctx.session, '..');
   const conteudo = document.getElementById('conteudo');
   carregarMensagensSuporte();
+  carregarSolicitacoesCompra();
   carregarLeadsCalculadora();
   const params = new URLSearchParams(location.search);
   const id = params.get('id');

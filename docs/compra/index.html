@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minha Clínica de Valor | INDIA</title>
+<style>
+  @font-face {
+    font-family: 'Cambria';
+    src: local('Cambria');
+  }
+  :root{
+    --verde: #1D6B4E;
+    --verde-escuro: #12432F;
+    --terracota: #B5613C;
+    --creme: #FAFAF7;
+    --creme-linha: #EDE8DE;
+    --tinta: #22281F;
+    --tinta-suave: #5B6357;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--creme);
+    color:var(--tinta);
+    font-family:'Calibri','Trebuchet MS',sans-serif;
+    line-height:1.5;
+  }
+  h1,h2,.serif{font-family:'Cambria','Georgia',serif}
+  .topo{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:20px 24px;border-bottom:1px solid var(--creme-linha);
+  }
+  .topo .brand{font-family:'Cambria',serif;font-size:20px;color:var(--verde-escuro);text-decoration:none;letter-spacing:.04em}
+  .topo a.voltar{color:var(--tinta-suave);text-decoration:none;font-size:13px}
+
+  .etapa{max-width:560px;margin:48px auto;padding:0 20px}
+  .card{background:#fff;border:1px solid var(--creme-linha);border-radius:10px;padding:34px 30px}
+  .eyebrow{
+    text-transform:uppercase;letter-spacing:.14em;font-size:11px;
+    color:var(--terracota);font-weight:700;margin-bottom:8px;
+  }
+  h1{font-size:28px;margin:0 0 10px;color:var(--verde-escuro);font-weight:700}
+  .sub{color:var(--tinta-suave);font-size:15px;margin:0 0 22px}
+
+  .preco{
+    display:flex;align-items:baseline;gap:8px;margin:0 0 22px;
+    padding:14px 18px;background:var(--creme);border:1px solid var(--creme-linha);border-radius:8px;
+  }
+  .preco .valor{font-family:'Cambria',serif;font-size:30px;color:var(--verde-escuro);font-weight:700}
+  .preco .obs{font-size:13px;color:var(--tinta-suave)}
+
+  ul.beneficios{list-style:none;padding:0;margin:0 0 26px;display:grid;gap:11px}
+  ul.beneficios li{display:flex;gap:10px;font-size:14.5px;color:var(--tinta)}
+  ul.beneficios li:before{content:'✓';color:var(--verde);font-weight:700;flex-shrink:0}
+
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:14px;font-weight:600;margin-bottom:6px;color:var(--tinta)}
+  .field input{
+    width:100%;padding:12px 14px;border:1px solid var(--creme-linha);border-radius:6px;
+    font-size:15px;font-family:inherit;color:var(--tinta);background:var(--creme);
+  }
+
+  .btn-primary{
+    width:100%;padding:14px;border:none;border-radius:999px;background:var(--verde-escuro);
+    color:#fff;font-weight:700;font-size:15px;cursor:pointer;font-family:inherit;margin-top:6px;
+  }
+  .btn-primary:hover{background:var(--verde)}
+  .btn-primary:disabled{opacity:.6;cursor:default}
+  .btn-secundario{
+    display:inline-block;width:100%;text-align:center;box-sizing:border-box;
+    padding:13px;border:1px solid var(--verde-escuro);border-radius:999px;background:transparent;
+    color:var(--verde-escuro);font-weight:700;font-size:14.5px;text-decoration:none;font-family:inherit;
+    margin-top:12px;
+  }
+  .btn-secundario:hover{background:var(--creme)}
+
+  .erro{color:var(--terracota);font-size:13px;margin-top:10px;display:none}
+
+  .pix-valor{font-size:16px;font-weight:700;color:var(--verde-escuro);margin:0 0 20px}
+  .pix-qr-wrap{
+    display:flex;justify-content:center;margin:0 0 22px;
+  }
+  .pix-qr-wrap img{
+    width:220px;height:220px;object-fit:contain;background:#fff;border:1px solid var(--creme-linha);
+    border-radius:8px;padding:10px;
+  }
+  .pix-qr-fallback{
+    display:none;font-size:13.5px;color:#8a5a11;background:#fff5e5;border:1px solid #f0d9a8;
+    border-radius:8px;padding:14px 16px;text-align:center;
+  }
+  .pix-instrucao{font-size:14px;color:var(--tinta-suave);margin:0 0 22px}
+  .aviso-tecnico{font-size:12.5px;color:var(--tinta-suave);margin-top:18px;text-align:center}
+
+  .confirmacao-icone{font-size:34px;margin-bottom:6px}
+
+  @media(max-width:480px){
+    .etapa{margin:24px auto}
+    .card{padding:26px 20px}
+    h1{font-size:24px}
+  }
+</style>
+</head>
+<body>
+<div class="topo">
+  <a class="brand" href="../inicio/index.html">INDIA</a>
+  <a class="voltar" href="../inicio/index.html">← Voltar para a Home</a>
+</div>
+
+<!-- Etapa 1: oferta + identificação -->
+<div class="etapa" id="oferta">
+  <div class="card">
+    <div class="eyebrow">Minha Clínica de Valor · Acesso</div>
+    <h1>Minha Clínica de Valor</h1>
+    <p class="sub">Um caminho para compreender sua clínica, identificar sua prioridade e transformar diagnóstico em ação.</p>
+
+    <div class="preco">
+      <span class="valor">R$ 27,00</span>
+      <span class="obs">pagamento único</span>
+    </div>
+
+    <ul class="beneficios">
+      <li>Diagnóstico da Clínica</li>
+      <li>Mapa personalizado</li>
+      <li>Direcionamento: Manter, Fortalecer e Criar</li>
+      <li>Identificação da prioridade atual</li>
+      <li>Conteúdo do Manual indicado para o momento da clínica</li>
+      <li>Ferramentas recomendadas</li>
+      <li>Plano de Ação de 30 dias</li>
+      <li>Histórico dentro da plataforma</li>
+    </ul>
+
+    <form id="formOferta">
+      <div class="field"><label>Nome</label><input type="text" id="ofNome" required></div>
+      <div class="field"><label>E-mail</label><input type="email" id="ofEmail" required></div>
+      <div class="field"><label>WhatsApp</label><input type="tel" id="ofWhatsapp" required placeholder="(00) 00000-0000"></div>
+      <button class="btn-primary" type="submit">Continuar para pagamento →</button>
+    </form>
+  </div>
+</div>
+
+<!-- Etapa 2: pagamento PIX -->
+<div class="etapa" id="pagamento" style="display:none">
+  <div class="card">
+    <div class="eyebrow">Minha Clínica de Valor · Pagamento</div>
+    <h1>Pagamento via PIX</h1>
+    <p class="pix-valor">Valor: R$ 27,00</p>
+
+    <div class="pix-qr-wrap">
+      <img alt="QR Code PIX — Minha Clínica de Valor" id="pixQrImg" style="display:none">
+    </div>
+    <div class="pix-qr-fallback" id="pixQrFallback">
+      O QR Code PIX ainda não foi configurado nesta página. Assim que a imagem original for enviada, ela aparecerá aqui.
+    </div>
+
+    <p class="pix-instrucao">Após realizar o PIX, envie sua solicitação para confirmação.</p>
+
+    <button class="btn-primary" type="button" id="btnJaPaguei">Já realizei o pagamento</button>
+    <div class="erro" id="pagamentoErro"></div>
+    <p class="aviso-tecnico">O sistema não possui integração bancária. Este botão registra sua solicitação — ele não confirma o pagamento automaticamente.</p>
+  </div>
+</div>
+
+<!-- Etapa 3: solicitação registrada -->
+<div class="etapa" id="confirmacao" style="display:none">
+  <div class="card" style="text-align:center">
+    <div class="confirmacao-icone">✓</div>
+    <h1>Solicitação recebida</h1>
+    <p class="sub">Seu pagamento será conferido e, após a confirmação, seu acesso será liberado.</p>
+    <a class="btn-secundario" id="btnWhatsapp" href="#" target="_blank" rel="noopener">Falar pelo WhatsApp</a>
+  </div>
+</div>
+
+<script type="module">
+import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
+import { WHATSAPP_URL } from '../assets/js/site-config.js';
+
+avisarSupabaseNaoConfigurado();
+
+document.getElementById('btnWhatsapp').href = WHATSAPP_URL || 'https://wa.me/5543984257669';
+
+// A imagem só ganha src depois de já ter os listeners presos — evita a
+// corrida em que o <img> começa a carregar (e falha) antes do módulo rodar.
+const pixQrImg = document.getElementById('pixQrImg');
+pixQrImg.addEventListener('load', function () { this.style.display = 'block'; });
+pixQrImg.addEventListener('error', function () {
+  this.style.display = 'none';
+  document.getElementById('pixQrFallback').style.display = 'block';
+});
+pixQrImg.src = '../assets/img/pix-qrcode.png';
+
+let dadosCliente = null;
+
+document.getElementById('formOferta').addEventListener('submit', (e) => {
+  e.preventDefault();
+  dadosCliente = {
+    nome: document.getElementById('ofNome').value.trim(),
+    email: document.getElementById('ofEmail').value.trim(),
+    whatsapp: document.getElementById('ofWhatsapp').value.trim(),
+  };
+  if (!dadosCliente.nome || !dadosCliente.email || !dadosCliente.whatsapp) return;
+  document.getElementById('oferta').style.display = 'none';
+  document.getElementById('pagamento').style.display = '';
+  window.scrollTo(0, 0);
+});
+
+document.getElementById('btnJaPaguei').addEventListener('click', async () => {
+  if (!dadosCliente) return;
+  const btn = document.getElementById('btnJaPaguei');
+  const erroEl = document.getElementById('pagamentoErro');
+  erroEl.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Registrando…';
+
+  const { error } = await supabase.from('solicitacoes_compra').insert({
+    nome: dadosCliente.nome,
+    email: dadosCliente.email,
+    whatsapp: dadosCliente.whatsapp,
+    produto: 'Minha Clínica de Valor',
+    valor: 27.00,
+  });
+
+  if (error) {
+    erroEl.textContent = 'Não foi possível registrar sua solicitação agora: ' + error.message;
+    erroEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Já realizei o pagamento';
+    return;
+  }
+
+  document.getElementById('pagamento').style.display = 'none';
+  document.getElementById('confirmacao').style.display = '';
+  window.scrollTo(0, 0);
+});
+</script>
+</body>
+</html>

@@ -152,7 +152,7 @@
 <script type="module">
 import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
 import { getSession, getProfile } from '../assets/js/auth.js';
-import { CONTATO_URL, WHATSAPP_URL, EDUZZ_CHECKOUT_URL, INSTAGRAM_URL } from '../assets/js/site-config.js';
+import { CONTATO_URL, WHATSAPP_URL, INSTAGRAM_URL } from '../assets/js/site-config.js';
 
 avisarSupabaseNaoConfigurado();
 
@@ -217,11 +217,10 @@ function ligarBotaoConfiguravel(id, url, mensagemPendente) {
 ligarBotaoConfiguravel('ctaMentoria', WHATSAPP_URL, 'O link do WhatsApp ainda não foi configurado. Assim que for definido em site-config.js, este botão abrirá a conversa diretamente.');
 ligarBotaoConfiguravel('linkInstagram', INSTAGRAM_URL, 'O link do Instagram ainda não foi configurado. Assim que for definido em site-config.js, este link abrirá o perfil diretamente.');
 
-// Enquanto não houver checkout (Eduzz) configurado, o botão leva direto ao
-// início do diagnóstico — é o caminho real disponível hoje.
+// Venda provisória enquanto o checkout da Eduzz está indisponível: leva à
+// página interna de compra (identificação + PIX manual), não mais à Eduzz.
 const ctaClinica = document.getElementById('ctaClinica');
-ctaClinica.href = EDUZZ_CHECKOUT_URL || '../mapa/index.html';
-if (EDUZZ_CHECKOUT_URL) ctaClinica.target = '_blank';
+ctaClinica.href = '../compra/index.html';
 </script>
 </body>
 </html>

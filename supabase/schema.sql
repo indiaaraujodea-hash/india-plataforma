@@ -511,3 +511,38 @@ create policy leads_calculadora_insert_publico on public.leads_calculadora
 drop policy if exists leads_calculadora_select_admin on public.leads_calculadora;
 create policy leads_calculadora_select_admin on public.leads_calculadora
   for select using (public.is_admin());
+
+-- =========================================================
+-- solicitacoes_compra — venda provisória (manual) de "Minha Clínica de
+-- Valor" enquanto o checkout da Eduzz está indisponível. Visitante só
+-- INSERT a própria solicitação (mesmo padrão de leads_calculadora /
+-- mensagens_suporte); leitura e atualização de status/liberação são só
+-- para admin. A liberação de acesso em si reutiliza profiles.diagnostico_*
+-- já existente — esta tabela não cria um segundo sistema de permissões.
+-- =========================================================
+create table if not exists public.solicitacoes_compra (
+  id uuid primary key default gen_random_uuid(),
+  nome text not null,
+  email text not null,
+  whatsapp text not null,
+  produto text not null default 'Minha Clínica de Valor',
+  valor numeric(10,2) not null default 27.00,
+  status text not null default 'aguardando_confirmacao' check (status in ('aguardando_confirmacao','confirmado')),
+  criado_em timestamptz not null default now(),
+  confirmado_em timestamptz,
+  confirmado_por uuid references public.profiles(id)
+);
+
+alter table public.solicitacoes_compra enable row level security;
+
+drop policy if exists solicitacoes_compra_insert_publico on public.solicitacoes_compra;
+create policy solicitacoes_compra_insert_publico on public.solicitacoes_compra
+  for insert to anon, authenticated with check (true);
+
+drop policy if exists solicitacoes_compra_select_admin on public.solicitacoes_compra;
+create policy solicitacoes_compra_select_admin on public.solicitacoes_compra
+  for select using (public.is_admin());
+
+drop policy if exists solicitacoes_compra_update_admin on public.solicitacoes_compra;
+create policy solicitacoes_compra_update_admin on public.solicitacoes_compra
+  for update using (public.is_admin()) with check (public.is_admin());
