@@ -14,9 +14,6 @@
   color:var(--green,#173f31);
   padding-bottom:8px;
 }
-.landing-nav .brand-mark b,.landing-nav .brand-mark span{color:var(--green,#173f31)}
-.landing-nav .brand-mark span{opacity:.65}
-.landing-nav .landing-links a{color:var(--green,#173f31)}
 .landing-copy{max-width:640px;padding:56px 40px 20px}
 .landing-copy .eyebrow{color:var(--gold,#b58a48)}
 .landing-copy h1{color:var(--green,#173f31);font-size:clamp(38px,5vw,54px);letter-spacing:.02em;text-transform:uppercase}
@@ -24,22 +21,6 @@
 .hero-pillars{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:26px}
 .hero-pillars span{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--terracota,#9a5b34)}
 .hero-pillars .dot{width:4px;height:4px;border-radius:50%;background:var(--line,#e5ded1)}
-
-/* ---- menu mobile (hambúrguer) ---- */
-.hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;color:var(--green,#173f31)}
-@media(max-width:900px){
-  .landing-nav{position:relative}
-  .landing-nav .landing-links{
-    position:absolute;top:100%;left:0;right:0;z-index:20;
-    background:var(--cream-paper,#fdfaf4);flex-direction:column;align-items:stretch;gap:0;
-    max-height:0;overflow:hidden;transition:max-height .25s ease;
-    box-shadow:0 12px 24px rgba(20,20,10,.12);border-radius:0 0 14px 14px;
-  }
-  .landing-nav .landing-links.aberto{max-height:320px}
-  .landing-nav .landing-links a{padding:16px 24px;border-bottom:1px solid var(--line,#e5ded1);font-size:15px}
-  .landing-nav .landing-links .btn-entrar{border-radius:0;text-align:center}
-  .hamburger{display:flex}
-}
 
 /* ---- cards: os 3 existentes, largura ajustada para caber lado a lado ---- */
 .landing-cards{gap:18px;padding-left:24px;padding-right:24px;padding-bottom:64px;align-items:stretch}
@@ -68,18 +49,7 @@
 </head>
 <body>
 <div class="landing-hero">
-  <nav class="landing-nav">
-    <div class="brand-mark"><b>INDIA</b><span>ENCONTROS · PESSOAS · NEGÓCIOS</span></div>
-    <button class="hamburger" id="btnHamburger" aria-label="Abrir menu" aria-expanded="false">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-    </button>
-    <div class="landing-links" id="landingLinks">
-      <a href="#produtos">Produtos</a>
-      <a href="#" id="linkAjuda">Ajuda</a>
-      <a href="#" id="linkContato">Contato</a>
-      <a class="btn-entrar" href="../index.html" id="btnAuth">Entrar</a>
-    </div>
-  </nav>
+  <div id="cabecalhoPublico"></div>
 
   <div class="landing-copy">
     <div class="eyebrow">Clínica de Valor</div>
@@ -150,51 +120,20 @@
 </footer>
 
 <script type="module">
-import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
-import { getSession, getProfile } from '../assets/js/auth.js';
+import { avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
 import { CONTATO_URL, WHATSAPP_URL, INSTAGRAM_URL } from '../assets/js/site-config.js';
+import { montarCabecalhoPublico } from '../assets/js/site-header.js';
 
 avisarSupabaseNaoConfigurado();
 
-// Home pública — não exige login. Se a visitante já estiver logada, o botão
-// de autenticação vira "Sair" em vez de "Entrar"; o resto da página é igual
-// para todo mundo (a venda acontece aqui fora, sem precisar de conta).
-let session, profile;
-(async () => {
-  session = await getSession();
-  if (session) {
-    profile = await getProfile(session.user.id);
-    const btnAuth = document.getElementById('btnAuth');
-    btnAuth.textContent = 'Sair';
-    btnAuth.href = '#';
-    btnAuth.addEventListener('click', async (e) => {
-      e.preventDefault();
-      await supabase.auth.signOut();
-      location.reload();
-    });
-  }
-})();
-
-const landingLinks = document.getElementById('landingLinks');
-document.getElementById('btnHamburger').addEventListener('click', function () {
-  const aberto = landingLinks.classList.toggle('aberto');
-  this.setAttribute('aria-expanded', aberto ? 'true' : 'false');
-});
-
-document.getElementById('linkAjuda').addEventListener('click', async (e) => {
-  e.preventDefault();
-  if (!session) {
-    location.href = '../index.html?redirect=' + encodeURIComponent('inicio/index.html');
-    return;
-  }
-  const { abrirModalAjuda } = await import('../assets/js/ajuda-modal.js');
-  abrirModalAjuda(session, profile);
-});
+// Cabeçalho (Início, Sobre, Produtos, Ajuda, Contato, Entrar/Sair) é o
+// componente único compartilhado com as demais páginas do site — mudar o
+// menu é mudar só site-header.js.
+montarCabecalhoPublico({ container: document.getElementById('cabecalhoPublico'), rootPath: '..', paginaAtual: 'inicio' });
 
 if (CONTATO_URL) {
-  for (const id of ['linkContato', 'linkContatoFooter']) {
-    const link = document.getElementById(id);
-    if (!link) continue;
+  const link = document.getElementById('linkContatoFooter');
+  if (link) {
     link.href = CONTATO_URL;
     if (CONTATO_URL.startsWith('http') || CONTATO_URL.startsWith('mailto:')) link.target = '_blank';
   }

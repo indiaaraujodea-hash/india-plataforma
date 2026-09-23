@@ -11,14 +11,14 @@ html,body{overflow-x:hidden;max-width:100%}
 body{background:#f4efe6}
 .login-left{max-width:100%;padding-left:clamp(110px,13vw,220px);padding-top:24px;padding-bottom:56px;position:relative}
 .login-left:before{content:"";position:absolute;inset:0;background:linear-gradient(100deg,rgba(244,239,230,.85) 0%,rgba(244,239,230,.68) 40%,rgba(244,239,230,.3) 68%,rgba(244,239,230,0) 88%);pointer-events:none;z-index:0}
-.login-left .landing-nav-top,.login-left .main-block{position:relative;z-index:1}
-.login-left .landing-nav-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:48px}
-.login-left .brand-mark{flex-shrink:0}
-.login-left .brand-mark b{font-size:30px;letter-spacing:4px;color:#173f31;line-height:1}
-.login-left .brand-mark span{display:block;margin-top:8px;font-size:10px;letter-spacing:3px;color:#4d5a52}
-.login-left .landing-links{display:flex;align-items:center;gap:24px;margin-top:6px;flex-wrap:wrap}
-.login-left .landing-links a{color:#173f31;text-decoration:none;font-size:14px;font-weight:600;white-space:nowrap}
-.login-left .landing-links .btn-entrar{background:#9a6034;color:#fff;padding:12px 24px;border-radius:999px;font-weight:700;font-size:14px;white-space:nowrap}
+.login-left #cabecalhoPublico,.login-left .main-block{position:relative;z-index:1}
+.login-left #cabecalhoPublico{margin-bottom:48px}
+.login-left #cabecalhoPublico .ph-header{padding:0;background:transparent;align-items:flex-start}
+.login-left #cabecalhoPublico .ph-brand{flex-shrink:0}
+.login-left #cabecalhoPublico .ph-brand b{font-size:30px;letter-spacing:4px;color:#173f31;line-height:1}
+.login-left #cabecalhoPublico .ph-brand span{display:block;margin-top:8px;font-size:10px;letter-spacing:3px;color:#4d5a52;opacity:1}
+.login-left #cabecalhoPublico .ph-links{margin-top:6px}
+.login-left #cabecalhoPublico .ph-entrar{background:#9a6034}
 .login-left .main-block{margin-left:clamp(0px,3vw,40px);max-width:600px}
 .login-left h1{font-family:Georgia,serif;font-weight:500;color:#173f31;font-size:clamp(40px,3.6vw,60px);line-height:1.05;margin:0 0 20px;text-shadow:0 1px 14px rgba(255,255,255,.5)}
 .login-left .main-block > p{color:#1f4a3a;font-size:18px;line-height:1.5;font-weight:400;max-width:480px;margin:14px 0 36px;text-shadow:0 1px 10px rgba(255,255,255,.6)}
@@ -60,13 +60,7 @@ body{background:#f4efe6}
 </div>
 <div class="login-shell">
   <div class="login-left">
-    <div class="landing-nav-top">
-      <div class="brand-mark"><b>INDIA</b><span>CAFÉ · PESSOAS · NEGÓCIOS</span></div>
-      <div class="landing-links">
-        <a href="#">Início</a><a href="sobre/index.html">Sobre</a><a href="inicio/index.html">Produtos</a><a href="#">Ajuda</a>
-        <a class="btn-entrar" href="#">Entrar</a>
-      </div>
-    </div>
+    <div id="cabecalhoPublico"></div>
     <div class="main-block">
       <h1>Negócios<br>que geram valor.</h1>
       <p>Ousadia para agir. Estratégias sustentáveis para seus resultados reais.</p>
@@ -149,10 +143,12 @@ body{background:#f4efe6}
 import { supabase, avisarSupabaseNaoConfigurado } from './assets/js/supabase-client.js';
 import { GOOGLE_AUTH_ENABLED } from './assets/js/supabase-config.js';
 import { ativarToggleSenha } from './assets/js/senha-toggle.js';
+import { montarCabecalhoPublico } from './assets/js/site-header.js';
 
 avisarSupabaseNaoConfigurado();
 ativarToggleSenha('loginSenha');
 ativarToggleSenha('suSenha');
+montarCabecalhoPublico({ container: document.getElementById('cabecalhoPublico'), rootPath: '.', paginaAtual: 'login' });
 
 // Enquanto o provedor Google não estiver configurado no Supabase, o botão fica
 // oculto (em vez de mostrar um botão quebrado com "Unsupported provider").
