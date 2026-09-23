@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Minha Clínica de Valor | INDIA</title>
+<title>Seu Mapa de 30 Dias | INDIA</title>
 <style>
   @font-face {
     font-family: 'Cambria';
@@ -105,8 +105,8 @@
 <!-- Etapa 1: oferta + identificação -->
 <div class="etapa" id="oferta">
   <div class="card">
-    <div class="eyebrow">Minha Clínica de Valor · Acesso</div>
-    <h1>Minha Clínica de Valor</h1>
+    <div class="eyebrow">Seu Mapa de 30 Dias · Acesso</div>
+    <h1>Seu Mapa de 30 Dias</h1>
     <p class="sub">Um caminho para compreender sua clínica, identificar sua prioridade e transformar diagnóstico em ação.</p>
 
     <div class="preco">
@@ -137,12 +137,12 @@
 <!-- Etapa 2: pagamento PIX -->
 <div class="etapa" id="pagamento" style="display:none">
   <div class="card">
-    <div class="eyebrow">Minha Clínica de Valor · Pagamento</div>
+    <div class="eyebrow">Seu Mapa de 30 Dias · Pagamento</div>
     <h1>Pagamento via PIX</h1>
     <p class="pix-valor">Valor: R$ 47,90</p>
 
     <div class="pix-qr-wrap">
-      <img alt="QR Code PIX — Minha Clínica de Valor" id="pixQrImg" style="display:none">
+      <img alt="QR Code PIX — Seu Mapa de 30 Dias" id="pixQrImg" style="display:none">
     </div>
     <div class="pix-qr-fallback" id="pixQrFallback">
       O QR Code PIX ainda não foi configurado nesta página. Assim que a imagem original for enviada, ela aparecerá aqui.
@@ -213,7 +213,7 @@ document.getElementById('btnJaPaguei').addEventListener('click', async () => {
     nome: dadosCliente.nome,
     email: dadosCliente.email,
     whatsapp: dadosCliente.whatsapp,
-    produto: 'Minha Clínica de Valor',
+    produto: 'Seu Mapa de 30 Dias',
     valor: 47.90,
   });
 
