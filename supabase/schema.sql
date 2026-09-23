@@ -489,3 +489,25 @@ drop trigger if exists planos_acao_touch_trigger on public.planos_acao;
 create trigger planos_acao_touch_trigger
   before update on public.planos_acao
   for each row execute function public.planos_acao_touch();
+
+-- =========================================================
+-- leads_calculadora — captura de nome/e-mail na Calculadora da
+-- Psicóloga pública (fora do login). Só INSERT público; leitura é
+-- só para admin (mesmo padrão de mensagens_suporte).
+-- =========================================================
+create table if not exists public.leads_calculadora (
+  id uuid primary key default gen_random_uuid(),
+  nome text not null,
+  email text not null,
+  criado_em timestamptz not null default now()
+);
+
+alter table public.leads_calculadora enable row level security;
+
+drop policy if exists leads_calculadora_insert_publico on public.leads_calculadora;
+create policy leads_calculadora_insert_publico on public.leads_calculadora
+  for insert to anon, authenticated with check (true);
+
+drop policy if exists leads_calculadora_select_admin on public.leads_calculadora;
+create policy leads_calculadora_select_admin on public.leads_calculadora
+  for select using (public.is_admin());
