@@ -159,8 +159,13 @@ if (!GOOGLE_AUTH_ENABLED) {
   document.getElementById('googleBlock').style.display = 'none';
 }
 
+// Sem um ?redirect= explícito (ex.: vindo de uma página protegida), o destino
+// padrão após login/cadastro é o ecossistema privado (mapa/index.html decide
+// sozinho se mostra o diagnóstico, o relatório mais recente, ou o aviso de
+// acesso ainda não liberado) — a cliente autenticada nunca volta para a Home
+// pública, que é a vitrine de venda para quem ainda não comprou.
 const params = new URLSearchParams(location.search);
-const redirect = params.get('redirect') || 'inicio/index.html';
+const redirect = params.get('redirect') || 'mapa/index.html';
 
 const msgBox = document.getElementById('msgBox');
 function showMsg(text, type = 'error') {
