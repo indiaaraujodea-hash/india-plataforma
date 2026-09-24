@@ -36,11 +36,8 @@
 /* selo "Comece por aqui" no canto do card do Mapa */
 .product-card{position:relative}
 .selo-comece{position:absolute;top:14px;left:14px;z-index:2;background:var(--terracota,#9a5b34);color:#fdfaf4;font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:6px 11px;border-radius:999px;box-shadow:0 2px 8px rgba(23,63,49,.18)}
-.product-card .photo.p4{
-  background-image:url('../assets/img/mentoria-cabecas.png');
-  background-size:auto 100%;background-position:center;background-repeat:no-repeat;
-  background-color:#dac598;
-}
+.product-card .photo.p4{background:#ececea;overflow:hidden;align-items:stretch;justify-content:stretch}
+.product-card .photo.p4 video{width:100%;height:100%;display:block;object-fit:cover;object-position:50% 50%}
 /* mesma grade vertical nos 3 cards: cada linha (etiqueta/título/texto/lista)
    reserva a mesma altura, e o CTA fica sempre grudado no rodapé do card. */
 .product-card .body{display:flex;flex-direction:column;flex:1;padding:24px 26px 26px}
@@ -119,7 +116,14 @@
     </div>
 
     <div class="product-card mentoria">
-      <div class="photo p4"></div>
+      <div class="photo p4">
+        <video class="video-card" poster="../assets/img/mentoria-poster.jpg"
+               autoplay muted loop playsinline preload="metadata"
+               aria-label="Ilustração de um grupo de pessoas conversando em roda">
+          <source src="../assets/video/mentoria.mp4" type="video/mp4">
+          <source src="../assets/video/mentoria.webm" type="video/webm">
+        </video>
+      </div>
       <div class="body">
         <div class="kicker">Mentorias</div>
         <h3>Mentorias</h3>
