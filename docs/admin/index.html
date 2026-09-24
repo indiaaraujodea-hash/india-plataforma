@@ -50,6 +50,10 @@ function fmtDataHora(iso) {
   return new Date(iso).toLocaleString('pt-BR');
 }
 
+function escHtml(v) {
+  return String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
 function csvEscape(v) {
   const s = v === null || v === undefined ? '' : String(v);
   return `"${s.replace(/"/g, '""')}"`;
@@ -286,8 +290,8 @@ async function carregarMensagensSuporte() {
       <div style="margin-top:12px">
         ${msgs.map((m) => `
           <div class="resp-item" data-msg-id="${m.id}">
-            <div class="lbl">${m.nome} · ${m.email} · ${fmtDataHora(m.criado_em)}</div>
-            <div class="val">${m.mensagem}</div>
+            <div class="lbl">${escHtml(m.nome)} · ${escHtml(m.email)} · ${fmtDataHora(m.criado_em)}</div>
+            <div class="val">${escHtml(m.mensagem)}</div>
             <button class="btn alt marcarRespondido" style="padding:5px 10px;margin-top:6px;font-size:12px">Marcar como respondido</button>
           </div>`).join('')}
       </div>
@@ -319,8 +323,8 @@ async function carregarSolicitacoesCompra() {
       <div style="margin-top:12px">
         ${sols.map((s) => `
           <div class="resp-item" data-sol-id="${s.id}">
-            <div class="lbl">${fmtDataHora(s.criado_em)} · ${s.produto} · R$ ${Number(s.valor).toFixed(2).replace('.', ',')}</div>
-            <div class="val"><b>${s.nome}</b> · ${s.email} · ${s.whatsapp}</div>
+            <div class="lbl">${fmtDataHora(s.criado_em)} · ${escHtml(s.produto)} · R$ ${Number(s.valor).toFixed(2).replace('.', ',')}</div>
+            <div class="val"><b>${escHtml(s.nome)}</b> · ${escHtml(s.email)} · ${escHtml(s.whatsapp)}</div>
             <div class="val" style="margin-top:6px">
               <span class="badge ${s.status === 'confirmado' ? 'badge-ok' : 'badge-pending'}">${s.status === 'confirmado' ? 'Confirmado' : 'Aguardando confirmação'}</span>
             </div>
@@ -361,19 +365,43 @@ async function carregarSolicitacoesCompra() {
 
 async function carregarLeadsCalculadora() {
   const wrap = document.getElementById('leadsCalculadora');
-  const { data: leads, error } = await supabase.from('leads_calculadora').select('*').order('criado_em', { ascending: false }).limit(100);
-  if (error || !leads || leads.length === 0) return;
+  // Sem limite: a lista completa também alimenta o CSV. Ordena no navegador
+  // para funcionar mesmo se a coluna de data tiver outro nome no banco.
+  const { data: leads, error } = await supabase.from('leads_calculadora').select('*');
+  const dataLead = (l) => l.criado_em || l.created_at || null;
+  if (leads) leads.sort((a, b) => String(dataLead(b) || '').localeCompare(String(dataLead(a) || '')));
+  const total = leads ? leads.length : 0;
+  let corpo;
+  if (error) {
+    corpo = `<p class="small" style="color:#a43b45">Não foi possível carregar os leads: ${escHtml(error.message)}. Confira se o SQL de <code>supabase/migracao_leads_calculadora.sql</code> foi rodado no Supabase.</p>`;
+  } else if (total === 0) {
+    corpo = '<p class="small">Nenhum cadastro na calculadora ainda. Eles aparecem aqui assim que alguém preencher nome e e-mail em /calculadora.</p>';
+  } else {
+    corpo = `
+      <button class="btn alt" id="btnExportarLeads" style="padding:6px 12px;font-size:12px;margin-bottom:8px">Baixar planilha (CSV)</button>
+      ${leads.map((l) => `
+        <div class="resp-item">
+          <div class="lbl">${fmtDataHora(dataLead(l))}</div>
+          <div class="val">${escHtml(l.nome)} · ${escHtml(l.email)}${l.calculadora ? ` · <span style="color:#6b7266">${escHtml(l.calculadora)}</span>` : ''}</div>
+        </div>`).join('')}`;
+  }
   wrap.innerHTML = `
     <details class="panel" style="margin-bottom:18px">
-      <summary style="cursor:pointer;font-weight:700;color:var(--green)">Leads da Calculadora (${leads.length})</summary>
-      <div style="margin-top:12px">
-        ${leads.map((l) => `
-          <div class="resp-item">
-            <div class="lbl">${fmtDataHora(l.criado_em)}</div>
-            <div class="val">${l.nome} · ${l.email}</div>
-          </div>`).join('')}
-      </div>
+      <summary style="cursor:pointer;font-weight:700;color:var(--green)">Leads da Calculadora (${total})</summary>
+      <div style="margin-top:12px">${corpo}</div>
     </details>`;
+
+  const btn = document.getElementById('btnExportarLeads');
+  if (btn) btn.addEventListener('click', () => {
+    const linhas = [['Nome', 'E-mail', 'Calculadora', 'Data'].map(csvEscape).join(',')];
+    for (const l of leads) linhas.push([l.nome, l.email, l.calculadora || '', fmtDataHora(dataLead(l))].map(csvEscape).join(','));
+    const blob = new Blob(['\ufeff' + linhas.join('\n')], { type: 'text/csv;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `leads-calculadora-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
 }
 
 (async () => {
