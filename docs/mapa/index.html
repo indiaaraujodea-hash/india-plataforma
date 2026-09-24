@@ -99,17 +99,23 @@ main{margin-top:-32px;padding-bottom:80px}
         <div class="field"><label>Seu melhor e-mail</label><input id="respondent_email" type="email" placeholder="Ex.: ana@email.com" required><small>Usado para identificar seu diagnóstico e permitir o acompanhamento estratégico.</small></div>
         <div class="field"><label>Qual modelo você deseja hoje?</label><select id="modelo_desejado"><option value="individual">Viver majoritariamente da clínica individual</option><option value="mixed">Clínica + outros serviços</option><option value="open">Ainda não sei / quero avaliar possibilidades</option></select></div>
       </div>
-      <div class="note">Ao concluir o Mapa, suas respostas e o resultado estratégico serão registrados para acompanhamento. O diagnóstico só pode ser feito uma vez. Não inclua nomes, relatos ou dados clínicos de pacientes.</div>
+      <div class="note">Ao concluir o Mapa, suas respostas e o resultado estratégico serão registrados para acompanhamento. Depois de enviado, esse ciclo não pode ser editado. Não inclua nomes, relatos ou dados clínicos de pacientes.</div>
       <div class="actions"><span></span><button type="button" class="btn" onclick="nextStep()">Continuar</button></div>
     </section>
 
     <section class="step" data-title="Sua realidade econômica hoje">
       <h2>Agora, a realidade do mês.</h2>
       <p class="intro">Use números reais de agora — não o que você acha que deveria faturar ou retirar. A intenção é entender sua situação atual, não criar uma fotografia idealizada.</p>
+      <div class="field" style="margin-bottom:14px">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <input type="checkbox" id="comecandoDoZero" style="width:auto">
+          Estou começando do zero — ainda não tenho clientes na clínica
+        </label>
+      </div>
       <div class="grid3">
         <div class="field"><label>Faturamento médio mensal atual</label><input id="receita_atual" type="number" min="0" step="100" placeholder="Ex.: 6500" required></div>
-        <div class="field"><label>Custos fixos mensais da clínica</label><input id="custos_mensais" type="number" min="0" step="50" placeholder="Ex.: 1800"></div>
-        <div class="field"><label>Custos variáveis mensais, se souber</label><input id="custos_variaveis" type="number" min="0" step="50" placeholder="Ex.: 300"><small>Opcional — deixe em branco se não souber separar.</small></div>
+        <div class="field"><label>Custos fixos mensais da clínica (espaço físico, CRP, internet, plataforma)</label><input id="custos_mensais" type="number" min="0" step="50" placeholder="Ex.: 1800"></div>
+        <div class="field"><label>Custos variáveis mensais, se souber (ex.: material de consultório, taxas de cartão)</label><input id="custos_variaveis" type="number" min="0" step="50" placeholder="Ex.: 300"><small>Opcional — deixe em branco se não souber separar.</small></div>
         <div class="field"><label>Valor médio por sessão</label><input id="valor_medio_sessao" type="number" min="0" step="5" placeholder="Ex.: 150" required></div>
         <div class="field"><label>Quantidade média de atendimentos por semana</label><input id="pacientes_atuais" type="number" min="0" max="80" placeholder="Ex.: 12" required></div>
         <div class="field"><label>Quanto você retira atualmente por mês</label><input id="retirada_atual" type="number" min="0" step="100" placeholder="Ex.: 3000"></div>
@@ -171,8 +177,8 @@ main{margin-top:-32px;padding-bottom:80px}
       <div>
         <div class="rating"><label>Tenho clareza de quem atendo melhor e em quais contextos meu trabalho faz mais sentido.</label><select id="pos_publico_claro"><option value="">—</option><option value="0">0 — não</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4 — muito claro</option></select></div>
         <div class="rating"><label>Consigo nomear meus diferenciais sem depender apenas de formação ou abordagem.</label><select id="pos_diferenciais"><option value="">—</option><option value="0">0 — não</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4 — muito claro</option></select></div>
-        <div class="rating"><label>Minha presença profissional comunica de forma coerente quem sou e para quem trabalho.</label><select id="pos_presenca_coerente"><option value="">—</option><option value="0">0 — não</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4 — muito claro</option></select></div>
-        <div class="rating"><label>Quem chega entende por que poderia me procurar agora, sem eu precisar explicar tudo no privado.</label><select id="pos_entendem_por_que_agora"><option value="">—</option><option value="0">0 — não</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4 — muito claro</option></select></div>
+        <div class="rating"><label>Minha presença online (Instagram, site, perfil) permite entender rapidamente o que eu ofereço.</label><select id="pos_presenca_coerente"><option value="">—</option><option value="0">0 — não</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4 — muito claro</option></select></div>
+        <div class="rating"><label>Minha presença online permite que as pessoas entendam rapidamente meu posicionamento na clínica, sem eu precisar explicar tudo no privado.</label><select id="pos_entendem_por_que_agora"><option value="">—</option><option value="0">0 — não</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4 — muito claro</option></select></div>
         <div class="rating"><label>Minha comunicação ajuda a pessoa a perceber adequação e valor, em vez de comparar apenas preço.</label><select id="pos_comunica_valor"><option value="">—</option><option value="0">0 — não</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4 — muito claro</option></select></div>
       </div>
       <div class="actions"><button type="button" class="btn back" onclick="prevStep()">Voltar</button><button type="button" class="btn" onclick="nextStep()">Continuar</button></div>
@@ -208,7 +214,7 @@ main{margin-top:-32px;padding-bottom:80px}
       <h2>Última leitura: sua energia clínica.</h2>
       <p class="intro">O negócio não pode ser analisado apenas pela planilha. Considere o custo de sustentar a agenda atual.</p>
       <div class="grid2">
-        <div class="field"><label>Como está seu desgaste com a agenda atual?</label><select id="energia_desgaste"><option value="100">Baixo — sustentável</option><option value="70">Moderado — exige atenção</option><option value="40">Alto — já pesa no funcionamento</option><option value="20">Muito alto — difícil sustentar assim</option></select></div>
+        <div class="field"><label>Como está seu desgaste com a agenda atual? (o quanto sustentar essa rotina de atendimentos, do jeito que está hoje, consome sua energia)</label><select id="energia_desgaste"><option value="100">Baixo — sustentável, não me pesa no dia a dia</option><option value="70">Moderado — exige atenção, mas ainda dá conta</option><option value="40">Alto — já pesa no funcionamento da semana</option><option value="20">Muito alto — difícil sustentar assim por muito tempo</option></select></div>
         <div class="field"><label>Hoje, qual sensação mais descreve sua clínica?</label><select id="sensacao_atual"><option>Tenho direção, mas preciso organizar prioridades</option><option>Atendo, mas não sei se o modelo fecha</option><option>Preciso de mais pacientes</option><option>Estou cheia, mas não ganho o que gostaria</option><option>Quero crescer sem aumentar atendimentos</option><option>Tenho muitas frentes e pouca clareza</option></select></div>
       </div>
       <div class="note"><b>Importante:</b> o resultado é uma ferramenta de apoio à decisão da sua clínica. Suas respostas ficam registradas e não podem ser alteradas depois de enviadas.</div>
@@ -294,6 +300,18 @@ function validStep() {
   for (const el of req) { if (!el.value) { el.focus(); el.reportValidity(); return false; } }
   return true;
 }
+
+// Quem está começando do zero não tem faturamento/atendimentos/retirada
+// atuais para informar — preenche 0 automaticamente para não obrigar a
+// pessoa a digitar isso e trava os campos enquanto a opção estiver marcada.
+const comecandoDoZero = document.getElementById('comecandoDoZero');
+const camposZeraveis = ['receita_atual', 'pacientes_atuais', 'retirada_atual'].map((id) => document.getElementById(id));
+comecandoDoZero.addEventListener('change', () => {
+  camposZeraveis.forEach((el) => {
+    el.disabled = comecandoDoZero.checked;
+    if (comecandoDoZero.checked) el.value = '0';
+  });
+});
 
 function coletarRespostas() {
   const respostas = {};
