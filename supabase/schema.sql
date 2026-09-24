@@ -67,7 +67,11 @@ returns trigger
 language plpgsql
 as $$
 begin
-  if not public.is_admin() then
+  -- app.liberacao_automatica é ligado só pela função
+  -- liberar_acesso_por_confirmacao() (abaixo), pelo tempo da própria
+  -- transação — é a liberação automática ao confirmar uma compra, não uma
+  -- cliente se autoliberando.
+  if not public.is_admin() and coalesce(current_setting('app.liberacao_automatica', true), '') <> 'on' then
     if new.diagnostico_liberado is distinct from old.diagnostico_liberado
        or new.diagnostico_liberado_em is distinct from old.diagnostico_liberado_em
        or new.diagnostico_liberado_por is distinct from old.diagnostico_liberado_por then
@@ -100,9 +104,20 @@ language plpgsql
 security definer
 set search_path = public
 as $$
+declare
+  ja_confirmado boolean;
 begin
-  insert into public.profiles (id, email)
-  values (new.id, new.email)
+  -- Se já existe uma solicitação de compra CONFIRMADA com este e-mail (a
+  -- administradora marcou o status como "confirmado" antes da cliente criar
+  -- a conta), libera o diagnóstico automaticamente no primeiro acesso —
+  -- evita depender de um segundo passo manual no Admin.
+  select exists (
+    select 1 from public.solicitacoes_compra
+    where email = new.email and status = 'confirmado'
+  ) into ja_confirmado;
+
+  insert into public.profiles (id, email, diagnostico_liberado, diagnostico_liberado_em)
+  values (new.id, new.email, coalesce(ja_confirmado, false), case when ja_confirmado then now() else null end)
   on conflict (id) do nothing;
   return new;
 end;
@@ -546,3 +561,36 @@ create policy solicitacoes_compra_select_admin on public.solicitacoes_compra
 drop policy if exists solicitacoes_compra_update_admin on public.solicitacoes_compra;
 create policy solicitacoes_compra_update_admin on public.solicitacoes_compra
   for update using (public.is_admin()) with check (public.is_admin());
+
+-- =========================================================
+-- Liberação automática ao confirmar uma solicitação de compra. Cobre os
+-- dois casos:
+-- 1) a cliente já tem conta (mesmo e-mail) quando o status vira
+--    "confirmado" — libera o diagnóstico dela imediatamente;
+-- 2) a cliente ainda não tem conta — handle_new_user() (acima) libera no
+--    momento em que ela cria a conta com o mesmo e-mail.
+-- Funciona tanto clicando em "Liberar acesso" no Admin quanto editando o
+-- campo status direto na tabela pelo painel do Supabase.
+-- =========================================================
+create or replace function public.liberar_acesso_por_confirmacao()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if new.status = 'confirmado' then
+    perform set_config('app.liberacao_automatica', 'on', true);
+    update public.profiles
+    set diagnostico_liberado = true,
+        diagnostico_liberado_em = coalesce(diagnostico_liberado_em, now())
+    where email = new.email and diagnostico_liberado = false;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists solicitacoes_compra_liberar_trigger on public.solicitacoes_compra;
+create trigger solicitacoes_compra_liberar_trigger
+  after insert or update on public.solicitacoes_compra
+  for each row execute function public.liberar_acesso_por_confirmacao();

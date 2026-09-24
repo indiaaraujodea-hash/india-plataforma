@@ -255,7 +255,9 @@ let session;
 
   const profile = await getProfile(session.user.id);
   if (!profile?.diagnostico_liberado) {
-    document.getElementById('checando').innerHTML = `<div class="alert alert-info" style="margin:34px">Seu diagnóstico ainda não foi liberado. Assim que a liberação for confirmada, esta página ficará disponível automaticamente.</div>`;
+    // Quem não tem compra confirmada não vê o diagnóstico — vai para a
+    // página de compra em vez de ficar esperando numa mensagem parada.
+    location.href = '../compra/index.html';
     return;
   }
 

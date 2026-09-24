@@ -199,7 +199,9 @@ import { montarCabecalhoPublico } from '../assets/js/site-header.js';
 avisarSupabaseNaoConfigurado();
 montarCabecalhoPublico({ container: document.getElementById('cabecalhoPublico'), rootPath: '..', paginaAtual: 'compra' });
 
-document.getElementById('btnWhatsapp').href = WHATSAPP_URL || 'https://wa.me/5543984257669';
+const mensagemWhatsapp = 'Olá! Fiz o Pix do Mapa de 30 Dias e vou enviar o comprovante';
+const whatsappBase = WHATSAPP_URL || 'https://wa.me/5543984257669';
+document.getElementById('btnWhatsapp').href = `${whatsappBase}?text=${encodeURIComponent(mensagemWhatsapp)}`;
 
 const btnCopiarPix = document.getElementById('btnCopiarPix');
 btnCopiarPix.addEventListener('click', async () => {
