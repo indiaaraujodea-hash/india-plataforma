@@ -83,6 +83,24 @@
     display:none;font-size:13.5px;color:#8a5a11;background:#fff5e5;border:1px solid #f0d9a8;
     border-radius:8px;padding:14px 16px;text-align:center;
   }
+
+  .pix-copia-cola{margin:0 0 22px}
+  .pix-copia-cola label{display:block;font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--tinta-suave);margin:0 0 8px}
+  .pix-copia-cola-box{
+    display:flex;align-items:center;gap:10px;background:var(--creme);border:1px solid var(--creme-linha);
+    border-radius:8px;padding:10px 12px;
+  }
+  .pix-copia-cola-box code{
+    flex:1;min-width:0;font-family:'Courier New',monospace;font-size:12px;color:var(--tinta);
+    word-break:break-all;line-height:1.4;
+  }
+  .btn-copiar{
+    flex-shrink:0;border:none;border-radius:999px;background:var(--verde-escuro);color:#fff;
+    font-weight:700;font-size:13px;padding:9px 16px;cursor:pointer;font-family:inherit;white-space:nowrap;
+  }
+  .btn-copiar:hover{background:var(--verde)}
+  .btn-copiar.copiado{background:var(--verde)}
+
   .pix-instrucao{font-size:14px;color:var(--tinta-suave);margin:0 0 22px}
   .aviso-tecnico{font-size:12.5px;color:var(--tinta-suave);margin-top:18px;text-align:center}
 
@@ -147,6 +165,14 @@
       O QR Code PIX ainda não foi configurado nesta página. Assim que a imagem original for enviada, ela aparecerá aqui.
     </div>
 
+    <div class="pix-copia-cola">
+      <label>Pix Copia e Cola</label>
+      <div class="pix-copia-cola-box">
+        <code id="pixCopiaColaCodigo">00020126620014br.gov.bcb.pix0114+55439842576690222Clinica de valor -Mapa520400005303986540547.905802BR5923India Araujo de Almeida6006Brasil62290525202609240007U83FET09F6BRR6304E0AE</code>
+        <button type="button" class="btn-copiar" id="btnCopiarPix">Copiar código</button>
+      </div>
+    </div>
+
     <p class="pix-instrucao">Após realizar o PIX, envie sua solicitação para confirmação.</p>
 
     <button class="btn-primary" type="button" id="btnJaPaguei">Já realizei o pagamento</button>
@@ -174,6 +200,30 @@ avisarSupabaseNaoConfigurado();
 montarCabecalhoPublico({ container: document.getElementById('cabecalhoPublico'), rootPath: '..', paginaAtual: 'compra' });
 
 document.getElementById('btnWhatsapp').href = WHATSAPP_URL || 'https://wa.me/5543984257669';
+
+const btnCopiarPix = document.getElementById('btnCopiarPix');
+btnCopiarPix.addEventListener('click', async () => {
+  const codigo = document.getElementById('pixCopiaColaCodigo').textContent.trim();
+  try {
+    await navigator.clipboard.writeText(codigo);
+  } catch (err) {
+    const temp = document.createElement('textarea');
+    temp.value = codigo;
+    temp.style.position = 'fixed';
+    temp.style.opacity = '0';
+    document.body.appendChild(temp);
+    temp.select();
+    document.execCommand('copy');
+    document.body.removeChild(temp);
+  }
+  const textoOriginal = btnCopiarPix.textContent;
+  btnCopiarPix.textContent = 'Copiado!';
+  btnCopiarPix.classList.add('copiado');
+  setTimeout(() => {
+    btnCopiarPix.textContent = textoOriginal;
+    btnCopiarPix.classList.remove('copiado');
+  }, 2000);
+});
 
 // A imagem só ganha src depois de já ter os listeners presos — evita a
 // corrida em que o <img> começa a carregar (e falha) antes do módulo rodar.
