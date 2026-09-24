@@ -47,3 +47,7 @@ O site continua sendo publicado como estático (Netlify, `docs/` — ver `netlif
 - `momento_clinica` de cada diagnóstico: sempre nasce `null`. Só é definido manualmente pelo painel administrativo (`/admin`) até existir uma regra validada.
 
 Quando essas regras forem aprovadas, é só fazer `UPDATE`/`INSERT` nas tabelas de configuração acima — nenhum código precisa mudar.
+
+## 6. Leads da Calculadora (`leads_calculadora`)
+
+Para criar/atualizar a tabela de cadastros da Calculadora da Psicóloga (nome, e-mail, calculadora, data), rode `migracao_leads_calculadora.sql` no SQL Editor. Visitantes só conseguem inserir; a leitura é só para admin (painel `/admin` → "Leads da Calculadora" ou **Table Editor → leads_calculadora**).

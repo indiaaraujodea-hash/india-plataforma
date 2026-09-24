@@ -50,6 +50,10 @@ function fmtDataHora(iso) {
   return new Date(iso).toLocaleString('pt-BR');
 }
 
+function escHtml(v) {
+  return String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
 function csvEscape(v) {
   const s = v === null || v === undefined ? '' : String(v);
   return `"${s.replace(/"/g, '""')}"`;
@@ -370,7 +374,7 @@ async function carregarLeadsCalculadora() {
         ${leads.map((l) => `
           <div class="resp-item">
             <div class="lbl">${fmtDataHora(l.criado_em)}</div>
-            <div class="val">${l.nome} · ${l.email}</div>
+            <div class="val">${escHtml(l.nome)} · ${escHtml(l.email)}${l.calculadora ? ` · <span style="color:#6b7266">${escHtml(l.calculadora)}</span>` : ''}</div>
           </div>`).join('')}
       </div>
     </details>`;
