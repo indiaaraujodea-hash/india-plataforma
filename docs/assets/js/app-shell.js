@@ -60,7 +60,7 @@ export async function mountAppShell(activeKey, session, rootPath = '..') {
 
   const sidebarHtml = `
     <aside class="app-sidebar">
-      <div class="brand-mark"><b>INDIA</b><span>CAFÉ · PESSOAS · NEGÓCIOS</span></div>
+      <div class="brand-mark"><b>INDIA</b><span>PESSOAS · ENCONTROS · NEGÓCIOS</span></div>
       <nav class="app-nav">${navHtml}</nav>
       <a href="#" id="appShellSignOut" class="app-signout">${ICONS.sair}<span>Sair</span></a>
     </aside>`;

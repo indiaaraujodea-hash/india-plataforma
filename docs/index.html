@@ -44,6 +44,8 @@ body{background:#f4efe6}
 .remember-row label{display:flex;align-items:center;gap:8px;color:#4b5148;cursor:pointer}
 .remember-row a{color:#9a6034;text-decoration:none;font-weight:600}
 .mobile-topbar{display:none}
+#switchVerProdutos{margin-top:20px}
+#switchVerProdutos a{font-size:16px}
 
 /* Acima de 960px: layout desktop de 2 colunas (já tratado acima). */
 /* Abaixo de 960px: comportamento de app mobile, não desktop encolhido —
@@ -60,7 +62,7 @@ body{background:#f4efe6}
 </head>
 <body>
 <div class="mobile-topbar">
-  <div class="brand-mark"><b>INDIA</b><span>CAFÉ · PESSOAS · NEGÓCIOS</span></div>
+  <div class="brand-mark"><b>INDIA</b><span>PESSOAS · ENCONTROS · NEGÓCIOS</span></div>
 </div>
 <div class="login-shell">
   <div class="login-left">
@@ -127,14 +129,14 @@ body{background:#f4efe6}
       <div class="switch" id="switchEntrar">Ainda não tem uma conta? <a href="#" id="toCriar">Criar conta</a></div>
       <div class="switch hidden" id="switchCriar">Já tem uma conta? <a href="#" id="toEntrar">Entrar</a></div>
       <div class="switch hidden" id="switchEsqueci"><a href="#" id="toEntrarDeEsqueci">← Voltar para entrar</a></div>
-      <div class="switch"><a href="inicio/index.html">← Ver produtos</a></div>
+      <div class="switch" id="switchVerProdutos"><a href="inicio/index.html">← Ver produtos</a></div>
     </div>
   </div>
 </div>
 
 <footer class="landing-footer">
   <b>INDIA</b>
-  <span>CAFÉ · PESSOAS · NEGÓCIOS</span>
+  <span>PESSOAS · ENCONTROS · NEGÓCIOS</span>
   <div class="flinks">
     <a href="#">Termos de uso</a>
     <a href="#">Privacidade</a>
