@@ -17,7 +17,7 @@ const CSS = `
 .ph-entrar{background:var(--ph-accent,#9a5b34);color:#fff!important;padding:11px 22px;border-radius:999px;font-weight:700}
 @media(max-width:900px){
   .ph-links{position:absolute;top:100%;left:0;right:0;z-index:30;background:#fdfaf4;flex-direction:column;align-items:stretch;gap:0;max-height:0;overflow:hidden;transition:max-height .25s ease;box-shadow:0 12px 24px rgba(20,20,10,.12);border-radius:0 0 14px 14px}
-  .ph-links.ph-aberto{max-height:360px}
+  .ph-links.ph-aberto{max-height:480px}
   .ph-links a{padding:16px 24px;border-bottom:1px solid #ece4d4}
   .ph-entrar{border-radius:0;text-align:center}
   .ph-hamburger{display:flex}
@@ -76,6 +76,11 @@ export async function montarCabecalhoPublico({ container, rootPath = '.', pagina
 
   const btnEntrar = container.querySelector('#phEntrar');
   if (session) {
+    // Logada: atalhos para o ecossistema (mesmo destino padrão do login) e,
+    // para admin, para o painel administrativo.
+    const atalhos = [`<a href="${rootPath}/mapa/index.html">Minha área</a>`];
+    if (profile?.role === 'admin') atalhos.push(`<a href="${rootPath}/admin/index.html">Admin</a>`);
+    btnEntrar.insertAdjacentHTML('beforebegin', atalhos.join(''));
     btnEntrar.textContent = 'Sair';
     btnEntrar.href = '#';
     btnEntrar.addEventListener('click', async (e) => {
