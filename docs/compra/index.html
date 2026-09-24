@@ -76,9 +76,8 @@
     display:flex;justify-content:center;margin:0 0 22px;
   }
   .pix-qr-wrap img{
-    width:220px;height:220px;object-fit:contain;background:#fff;border:1px solid var(--creme-linha);
+    width:min(300px,100%);height:auto;display:block;background:#fff;border:1px solid var(--creme-linha);
     border-radius:8px;padding:10px;
-    image-rendering:crisp-edges;image-rendering:pixelated;
   }
   .pix-qr-fallback{
     display:none;font-size:13.5px;color:#8a5a11;background:#fff5e5;border:1px solid #f0d9a8;
@@ -184,7 +183,7 @@ pixQrImg.addEventListener('error', function () {
   this.style.display = 'none';
   document.getElementById('pixQrFallback').style.display = 'block';
 });
-pixQrImg.src = '../assets/img/pix-qrcode.png';
+pixQrImg.src = '../assets/img/pix-qrcode.jpg';
 
 let dadosCliente = null;
 
