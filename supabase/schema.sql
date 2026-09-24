@@ -59,6 +59,13 @@ alter table public.profiles add column if not exists diagnostico_liberado boolea
 alter table public.profiles add column if not exists diagnostico_liberado_em timestamptz;
 alter table public.profiles add column if not exists diagnostico_liberado_por uuid references public.profiles(id);
 
+-- Liberação de um NOVO CICLO de diagnóstico para quem já fez pelo menos um.
+-- Consumida automaticamente (volta a false) assim que a cliente envia o novo
+-- diagnóstico — cada ciclo extra precisa de uma liberação nova do admin.
+alter table public.profiles add column if not exists novo_diagnostico_liberado boolean not null default false;
+alter table public.profiles add column if not exists novo_diagnostico_liberado_em timestamptz;
+alter table public.profiles add column if not exists novo_diagnostico_liberado_por uuid references public.profiles(id);
+
 -- Só admin pode alterar os campos de liberação — mesmo que a policy de UPDATE
 -- abaixo permita a cliente atualizar seu próprio perfil (nome, telefone etc.),
 -- ela nunca pode se autoliberar. Segurança reforçada no banco, não só na tela.
@@ -76,6 +83,17 @@ begin
        or new.diagnostico_liberado_em is distinct from old.diagnostico_liberado_em
        or new.diagnostico_liberado_por is distinct from old.diagnostico_liberado_por then
       raise exception 'somente administradores podem liberar/bloquear o diagnóstico';
+    end if;
+    -- novo_diagnostico_liberado também não pode ser autoconcedido, exceto o
+    -- próprio motor de diagnóstico (mapa/index.html) consumindo a liberação
+    -- de volta para false depois de usá-la — isso é permitido via a mesma
+    -- GUC de sistema usada na liberação automática de compra.
+    if new.novo_diagnostico_liberado is distinct from old.novo_diagnostico_liberado
+       or new.novo_diagnostico_liberado_em is distinct from old.novo_diagnostico_liberado_em
+       or new.novo_diagnostico_liberado_por is distinct from old.novo_diagnostico_liberado_por then
+      if not (old.novo_diagnostico_liberado = true and new.novo_diagnostico_liberado = false) then
+        raise exception 'somente administradores podem liberar um novo ciclo de diagnóstico';
+      end if;
     end if;
   end if;
   return new;

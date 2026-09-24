@@ -240,6 +240,15 @@ async function carregarFicha(conteudo, userId) {
         <button class="btn ${perfil.diagnostico_liberado ? 'alt' : ''}" id="btnToggleLiberacao" style="padding:8px 14px">${perfil.diagnostico_liberado ? 'Bloquear acesso' : 'Liberar diagnóstico'}</button>
         <span id="liberacaoMsg" class="small"></span>
       </div>
+      ${(diagnosticos && diagnosticos.length > 0) ? `
+      <div class="acessos-box" style="margin-top:10px">
+        <div>
+          <b style="display:block">Novo ciclo de diagnóstico</b>
+          <span id="statusNovoCicloTxt">${perfil.novo_diagnostico_liberado ? `Liberado em ${fmtDataHora(perfil.novo_diagnostico_liberado_em)} — aguardando a cliente refazer` : 'Nenhum novo ciclo liberado'}</span>
+        </div>
+        <button class="btn ${perfil.novo_diagnostico_liberado ? 'alt' : ''}" id="btnLiberarNovoCiclo" style="padding:8px 14px" ${perfil.novo_diagnostico_liberado ? 'disabled' : ''}>${perfil.novo_diagnostico_liberado ? 'Já liberado' : 'Liberar novo diagnóstico'}</button>
+        <span id="novoCicloMsg" class="small"></span>
+      </div>` : ''}
     </div>
 
     <h3 style="color:var(--green);margin:24px 0 4px">Histórico de diagnósticos</h3>
@@ -264,6 +273,21 @@ async function carregarFicha(conteudo, userId) {
     if (error) { msg.textContent = `Erro: ${error.message}`; return; }
     carregarFicha(conteudo, userId);
   });
+
+  const btnLiberarNovoCiclo = document.getElementById('btnLiberarNovoCiclo');
+  if (btnLiberarNovoCiclo) {
+    btnLiberarNovoCiclo.addEventListener('click', async () => {
+      const msg = document.getElementById('novoCicloMsg');
+      const { data: { user } } = await supabase.auth.getUser();
+      const { error } = await supabase.from('profiles').update({
+        novo_diagnostico_liberado: true,
+        novo_diagnostico_liberado_em: new Date().toISOString(),
+        novo_diagnostico_liberado_por: user.id,
+      }).eq('id', userId);
+      if (error) { msg.textContent = `Erro: ${error.message}`; return; }
+      carregarFicha(conteudo, userId);
+    });
+  }
 
   conteudo.querySelectorAll('.ciclo-card').forEach((card) => {
     const diagId = card.dataset.diagId;

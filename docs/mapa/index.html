@@ -242,23 +242,30 @@ const CHECKBOX_IDS = new Set(['estrutura_contrato','estrutura_prontuario','estru
 const NUMBER_IDS = new Set(['receita_atual','custos_mensais','custos_variaveis','valor_medio_sessao','pacientes_atuais','retirada_atual','capacidade_agenda','pacientes_ativos_total','pacientes_concentrados_qtd','novos_pacientes_3meses','canal_indicacao_qtd','canal_instagram_qtd','canal_google_qtd','canal_outro_qtd','pos_publico_claro','pos_diferenciais','pos_presenca_coerente','pos_entendem_por_que_agora','pos_comunica_valor','mod_servico_claro','mod_preco_criterios','mod_novo_servico_resolve','mod_agenda_comporta','energia_desgaste']);
 
 let session;
+let profile;
 (async () => {
   session = await requireAuth('../login/index.html');
   if (!session) return;
   await mountAppShell('mapa', session, '..');
+
+  profile = await getProfile(session.user.id);
+  if (!profile?.diagnostico_liberado) {
+    // Quem não tem compra confirmada não vê o diagnóstico — vai para a
+    // página de compra em vez de ficar esperando numa mensagem parada.
+    location.href = '../compra/index.html';
+    return;
+  }
 
   // "diagnóstico atual" = o mais recente do usuário (histórico por ciclo — nunca sobrescrito).
   const { data: existentes, error } = await supabase
     .from('diagnosticos').select('id').eq('user_id', session.user.id)
     .order('criado_em', { ascending: false }).limit(1);
   if (error) { console.error(error); }
-  if (existentes && existentes.length > 0) { location.href = '../relatorio/index.html'; return; }
-
-  const profile = await getProfile(session.user.id);
-  if (!profile?.diagnostico_liberado) {
-    // Quem não tem compra confirmada não vê o diagnóstico — vai para a
-    // página de compra em vez de ficar esperando numa mensagem parada.
-    location.href = '../compra/index.html';
+  const jaTemDiagnostico = existentes && existentes.length > 0;
+  // Quem já fez um diagnóstico só refaz se o admin liberou um novo ciclo
+  // (profiles.novo_diagnostico_liberado); senão vê o relatório do ciclo atual.
+  if (jaTemDiagnostico && !profile?.novo_diagnostico_liberado) {
+    location.href = '../relatorio/index.html';
     return;
   }
 
@@ -361,6 +368,12 @@ window.enviarDiagnostico = async function () {
       .update({ resultado_calculado: resultado, motor_versao: resultado.motor_versao, status: resultado.status })
       .eq('id', diagRow.id);
     if (updateErr) throw updateErr;
+
+    // Consome a liberação de novo ciclo (se foi essa a via usada) — cada
+    // diagnóstico extra exige uma nova liberação do admin.
+    if (profile?.novo_diagnostico_liberado) {
+      await supabase.from('profiles').update({ novo_diagnostico_liberado: false }).eq('id', session.user.id);
+    }
 
     location.href = '../relatorio/index.html';
   } catch (err) {
