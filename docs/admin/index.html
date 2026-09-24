@@ -365,8 +365,11 @@ async function carregarSolicitacoesCompra() {
 
 async function carregarLeadsCalculadora() {
   const wrap = document.getElementById('leadsCalculadora');
-  // Sem limite: a lista completa também alimenta o CSV.
-  const { data: leads, error } = await supabase.from('leads_calculadora').select('*').order('criado_em', { ascending: false });
+  // Sem limite: a lista completa também alimenta o CSV. Ordena no navegador
+  // para funcionar mesmo se a coluna de data tiver outro nome no banco.
+  const { data: leads, error } = await supabase.from('leads_calculadora').select('*');
+  const dataLead = (l) => l.criado_em || l.created_at || null;
+  if (leads) leads.sort((a, b) => String(dataLead(b) || '').localeCompare(String(dataLead(a) || '')));
   const total = leads ? leads.length : 0;
   let corpo;
   if (error) {
@@ -378,7 +381,7 @@ async function carregarLeadsCalculadora() {
       <button class="btn alt" id="btnExportarLeads" style="padding:6px 12px;font-size:12px;margin-bottom:8px">Baixar planilha (CSV)</button>
       ${leads.map((l) => `
         <div class="resp-item">
-          <div class="lbl">${fmtDataHora(l.criado_em)}</div>
+          <div class="lbl">${fmtDataHora(dataLead(l))}</div>
           <div class="val">${escHtml(l.nome)} · ${escHtml(l.email)}${l.calculadora ? ` · <span style="color:#6b7266">${escHtml(l.calculadora)}</span>` : ''}</div>
         </div>`).join('')}`;
   }
@@ -391,7 +394,7 @@ async function carregarLeadsCalculadora() {
   const btn = document.getElementById('btnExportarLeads');
   if (btn) btn.addEventListener('click', () => {
     const linhas = [['Nome', 'E-mail', 'Calculadora', 'Data'].map(csvEscape).join(',')];
-    for (const l of leads) linhas.push([l.nome, l.email, l.calculadora || '', fmtDataHora(l.criado_em)].map(csvEscape).join(','));
+    for (const l of leads) linhas.push([l.nome, l.email, l.calculadora || '', fmtDataHora(dataLead(l))].map(csvEscape).join(','));
     const blob = new Blob(['\ufeff' + linhas.join('\n')], { type: 'text/csv;charset=utf-8' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);

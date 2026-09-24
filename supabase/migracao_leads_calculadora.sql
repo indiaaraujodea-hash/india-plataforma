@@ -8,6 +8,19 @@ create table if not exists public.leads_calculadora (
   criado_em timestamptz not null default now()
 );
 
+-- Se a tabela já existia com outra estrutura, garante as colunas esperadas.
+alter table public.leads_calculadora
+  add column if not exists criado_em timestamptz not null default now();
+
+-- Aproveita a data original, se a tabela antiga usava "created_at".
+do $$
+begin
+  if exists (select 1 from information_schema.columns
+             where table_schema = 'public' and table_name = 'leads_calculadora' and column_name = 'created_at') then
+    execute 'update public.leads_calculadora set criado_em = created_at where created_at is not null';
+  end if;
+end $$;
+
 alter table public.leads_calculadora
   add column if not exists calculadora text not null default 'Quanto vale a minha sessão?';
 
