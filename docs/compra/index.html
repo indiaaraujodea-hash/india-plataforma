@@ -269,7 +269,11 @@ document.getElementById('btnJaPaguei').addEventListener('click', async () => {
   });
 
   if (error) {
-    erroEl.textContent = 'Não foi possível registrar sua solicitação agora: ' + error.message;
+    console.error('Falha ao registrar solicitação de compra:', error);
+    const whatsappBase = WHATSAPP_URL || 'https://wa.me/5543984257669';
+    const mensagemFallback = 'Olá! Fiz o Pix do Mapa de 30 Dias mas o site não conseguiu registrar minha solicitação agora. Vou te enviar o comprovante por aqui.';
+    const linkFallback = `${whatsappBase}?text=${encodeURIComponent(mensagemFallback)}`;
+    erroEl.innerHTML = `Não foi possível registrar automaticamente sua solicitação agora. Sem problema — <a href="${linkFallback}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;font-weight:700">fale comigo pelo WhatsApp</a> e envie o comprovante por lá.`;
     erroEl.style.display = 'block';
     btn.disabled = false;
     btn.textContent = 'Já realizei o pagamento';
