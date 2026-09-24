@@ -27,7 +27,39 @@
 .product-card{width:340px;display:flex;flex-direction:column}
 .product-card .photo{height:190px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background-size:cover;background-position:center;background-repeat:no-repeat}
 .product-card .photo.p6{background-image:url('../assets/img/calculadora-card.jpg')}
-.product-card .photo.p1{background-image:url('../assets/img/mapa-30-dias.svg');background-size:cover}
+.product-card .photo.p1{background:#f1e9d8;overflow:hidden}
+.product-card .photo.p1 svg{width:100%;height:100%;display:block}
+
+/* ---- Mapa de 30 Dias: a linha se desenha até o pin, o pin "pula" e o
+   ciclo recomeça. Todas as partes usam a mesma duração para ficarem em
+   sincronia. Quem pede menos movimento vê direto o desenho final. ---- */
+.mapa-anim{--ciclo:7s}
+.mapa-anim .traco{stroke-dasharray:100;stroke-dashoffset:100;animation:mapaTraco var(--ciclo) linear infinite}
+.mapa-anim .ponto{transform-box:fill-box;transform-origin:center;opacity:0;animation:var(--ciclo) ease-out infinite}
+.mapa-anim .ponto.p-a{animation-name:mapaPontoA}
+.mapa-anim .ponto.p-b{animation-name:mapaPontoB}
+.mapa-anim .ponto.p-c{animation-name:mapaPontoC}
+.mapa-anim .pin{transform-box:fill-box;transform-origin:50% 100%;opacity:0;animation:mapaPin var(--ciclo) linear infinite}
+.mapa-anim .desenho{animation:mapaCiclo var(--ciclo) linear infinite}
+@keyframes mapaTraco{0%{stroke-dashoffset:100}55%,100%{stroke-dashoffset:0}}
+@keyframes mapaPontoA{0%,2%{opacity:0;transform:scale(.3)}6%,100%{opacity:1;transform:scale(1)}}
+@keyframes mapaPontoB{0%,21%{opacity:0;transform:scale(.3)}25%,100%{opacity:1;transform:scale(1)}}
+@keyframes mapaPontoC{0%,36%{opacity:0;transform:scale(.3)}40%,100%{opacity:1;transform:scale(1)}}
+@keyframes mapaPin{
+  0%,54%{opacity:0;transform:translateY(-14px) scale(.9)}
+  60%{opacity:1;transform:translateY(0) scale(1.06,.94)}
+  65%{transform:translateY(-6px) scale(.98,1.02)}
+  70%{transform:translateY(0) scale(1)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes mapaCiclo{0%{opacity:0}4%,88%{opacity:1}97%,100%{opacity:0}}
+@media (prefers-reduced-motion: reduce){
+  .mapa-anim .traco,.mapa-anim .ponto,.mapa-anim .pin,.mapa-anim .desenho{animation:none;opacity:1;stroke-dashoffset:0;transform:none}
+}
+
+/* selo "Comece por aqui" no canto do card do Mapa */
+.product-card{position:relative}
+.selo-comece{position:absolute;top:14px;left:14px;z-index:2;background:var(--terracota,#9a5b34);color:#fdfaf4;font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:6px 11px;border-radius:999px;box-shadow:0 2px 8px rgba(23,63,49,.18)}
 .product-card .photo.p4{
   background-image:url('../assets/img/mentoria-ilustracao.png');
   background-size:220px auto;background-position:center;background-repeat:no-repeat;
@@ -81,17 +113,46 @@
     </div>
 
     <div class="product-card mapa">
-      <div class="photo p1"></div>
+      <span class="selo-comece">Comece por aqui</span>
+      <div class="photo p1">
+        <svg class="mapa-anim" viewBox="0 0 400 190" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Caminho pontilhado que leva até um pin de destino">
+          <defs>
+            <mask id="mapaMascara" maskUnits="userSpaceOnUse" x="0" y="0" width="400" height="190">
+              <path class="traco" d="M40 150 C 100 150, 110 90, 160 85 S 230 100, 250 60 S 312 70, 309 128" pathLength="100" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round"/>
+            </mask>
+          </defs>
+          <g stroke="#173f31" stroke-width="1.3" fill="none" opacity=".4" transform="translate(185 -14)">
+            <path d="M28 40c9-10 22-11 28-3-10 3-19 2-28 3z"/>
+            <path d="M28 40c2-9 10-16 20-16-2 9-9 14-20 16z"/>
+          </g>
+          <g class="desenho">
+            <path d="M40 150 C 100 150, 110 90, 160 85 S 230 100, 250 60 S 312 70, 309 128" mask="url(#mapaMascara)"
+                  fill="none" stroke="#9a5b34" stroke-width="2" stroke-dasharray="1 9" stroke-linecap="round"/>
+            <circle class="ponto p-a" cx="40" cy="150" r="4.5" fill="#173f31"/>
+            <circle class="ponto p-b" cx="160" cy="85" r="4.5" fill="#173f31"/>
+            <circle class="ponto p-c" cx="250" cy="60" r="4.5" fill="#173f31"/>
+            <g class="pin">
+              <g stroke="#173f31" stroke-width="1.4" fill="none" opacity=".55">
+                <path d="M300 150c0-14 18-14 18 0 0 18-9 26-9 32 0-6-9-14-9-32z"/>
+                <path d="M300 150c8-4 14-2 18 4"/>
+                <path d="M309 148v34"/>
+              </g>
+              <circle cx="309" cy="150" r="5.5" fill="#9a5b34"/>
+              <circle cx="309" cy="150" r="9" fill="none" stroke="#9a5b34" stroke-width="1.2" opacity=".5"/>
+            </g>
+          </g>
+        </svg>
+      </div>
       <div class="body">
         <div class="kicker">Plano prático</div>
         <h3>Seu Mapa de 30 Dias</h3>
-        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Direcionamento claro para colocar seu plano em prática.</p>
+        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Você cuida de todo mundo. Quem cuida da sua clínica?</p>
         <ul>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M6 21V10M12 21V4M18 21v-7"/></svg>Diagnóstico personalizado</li>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>Mapa de desenvolvimento</li>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>Plano de ação em 30 dias</li>
         </ul>
-        <a class="cta" href="#" id="ctaClinica">Quero meu Mapa →</a>
+        <a class="cta" href="../compra/index.html" id="ctaClinica">Quero meu Mapa →</a>
       </div>
     </div>
 
@@ -160,10 +221,6 @@ function ligarBotaoConfiguravel(id, url, mensagemPendente) {
 ligarBotaoConfiguravel('ctaMentoria', WHATSAPP_URL, 'O link do WhatsApp ainda não foi configurado. Assim que for definido em site-config.js, este botão abrirá a conversa diretamente.');
 ligarBotaoConfiguravel('linkInstagram', INSTAGRAM_URL, 'O link do Instagram ainda não foi configurado. Assim que for definido em site-config.js, este link abrirá o perfil diretamente.');
 
-// Venda provisória enquanto o checkout da Eduzz está indisponível: leva à
-// página interna de compra (identificação + PIX manual), não mais à Eduzz.
-const ctaClinica = document.getElementById('ctaClinica');
-ctaClinica.href = '../compra/index.html';
 </script>
 </body>
 </html>
