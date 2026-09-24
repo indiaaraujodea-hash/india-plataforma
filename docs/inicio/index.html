@@ -141,6 +141,7 @@
   <div class="flinks">
     <a href="../sobre/index.html">Sobre a India</a>
     <a href="#" id="linkInstagram">Instagram</a>
+    <a href="#" id="linkTiktok">TikTok</a>
     <a href="#" id="linkContatoFooter">Contato</a>
   </div>
   <span>© 2026 INDIA. Todos os direitos reservados.</span>
@@ -148,7 +149,7 @@
 
 <script type="module">
 import { avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
-import { CONTATO_URL, WHATSAPP_URL, INSTAGRAM_URL } from '../assets/js/site-config.js';
+import { CONTATO_URL, WHATSAPP_URL, INSTAGRAM_URL, TIKTOK_URL } from '../assets/js/site-config.js';
 import { montarCabecalhoPublico } from '../assets/js/site-header.js';
 
 avisarSupabaseNaoConfigurado();
@@ -194,6 +195,7 @@ function ligarBotaoConfiguravel(id, url, mensagemPendente) {
 
 ligarBotaoConfiguravel('ctaMentoria', WHATSAPP_URL, 'O link do WhatsApp ainda não foi configurado. Assim que for definido em site-config.js, este botão abrirá a conversa diretamente.');
 ligarBotaoConfiguravel('linkInstagram', INSTAGRAM_URL, 'O link do Instagram ainda não foi configurado. Assim que for definido em site-config.js, este link abrirá o perfil diretamente.');
+ligarBotaoConfiguravel('linkTiktok', TIKTOK_URL, 'O link do TikTok ainda não foi configurado. Assim que for definido em site-config.js, este link abrirá o perfil diretamente.');
 
 </script>
 </body>
