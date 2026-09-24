@@ -9,4 +9,4 @@ export const WHATSAPP_URL = "https://wa.me/5543984257669";
 export const MANUAL_LIVRO_URL = ""; // página pública/comercial de venda do livro "Manual da Clínica de Valor"
 export const EDUZZ_CHECKOUT_URL = "https://sun.eduzz.com/E9OGG6AGWB";
 export const INSTAGRAM_URL = ""; // ex.: "https://instagram.com/seuusuario"
-export const TIKTOK_URL = ""; // ex.: "https://tiktok.com/@seuusuario"
+export const TIKTOK_URL = "https://tiktok.com/@indiaaa888";
