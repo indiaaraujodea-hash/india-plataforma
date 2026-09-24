@@ -32,10 +32,7 @@
 .product-card{width:340px;display:flex;flex-direction:column}
 .product-card .photo{height:190px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background-size:cover;background-position:center;background-repeat:no-repeat}
 .product-card .photo.p6{background-image:url('../assets/img/calculadora-card.jpg')}
-.product-card .photo.p1{background:#f1e9d8;overflow:hidden}
-/* vídeo da plataforma por dentro, preenchendo o quadro inteiro */
-.product-card .photo.p1{align-items:stretch;justify-content:stretch}
-.product-card .photo.p1 video{width:100%;height:100%;display:block;object-fit:cover;object-position:50% 38%}
+.product-card .photo.p1{background-image:url('../assets/img/mapa-plataforma-poster.jpg?v=2');background-position:50% 38%}
 
 /* selo "Comece por aqui" no canto do card do Mapa */
 .product-card{position:relative}
@@ -90,14 +87,7 @@
 
     <div class="product-card mapa">
       <span class="selo-comece">Comece por aqui</span>
-      <div class="photo p1">
-        <video id="videoMapa" class="video-card" poster="../assets/img/mapa-plataforma-poster.jpg?v=2"
-               autoplay muted loop playsinline preload="metadata"
-               aria-label="Prévia da área da cliente: ferramentas, manual, acompanhamento e plano de ação">
-          <source src="../assets/video/mapa-plataforma.mp4?v=2" type="video/mp4">
-          <source src="../assets/video/mapa-plataforma.webm?v=2" type="video/webm">
-        </video>
-      </div>
+      <div class="photo p1"></div>
       <div class="body">
         <div class="kicker">Plano prático</div>
         <h3>Seu Mapa de 30 Dias</h3>
