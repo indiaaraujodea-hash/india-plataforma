@@ -53,6 +53,8 @@
 .product-card h3{min-height:68px;display:flex;align-items:flex-start;line-height:1.2}
 .product-card .body>p{min-height:62px}
 .product-card ul{min-height:72px;align-content:start}
+/* um card por linha (celular): o alinhamento entre cards não se aplica */
+@media(max-width:640px){.product-card .kicker,.product-card h3,.product-card .body>p,.product-card ul{min-height:0}}
 .product-card .cta{margin-top:auto;white-space:nowrap;font-size:15px;padding:14px 10px}
 .product-card.calculadora .cta{background:var(--ink-green,#173f31)}
 .product-card.mapa .cta{background:var(--terracota,#9a5b34)}
