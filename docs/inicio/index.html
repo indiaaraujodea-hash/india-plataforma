@@ -29,7 +29,11 @@
 
 /* ---- cards: os 3 existentes, largura ajustada para caber lado a lado ---- */
 .landing-cards{gap:18px;padding-left:24px;padding-right:24px;padding-bottom:64px;align-items:stretch}
-.product-card{width:340px;display:flex;flex-direction:column}
+/* 4 cards: lado a lado no computador, 2×2 em telas médias, 1 por linha no celular */
+.landing-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));max-width:1400px}
+.product-card{width:auto;display:flex;flex-direction:column}
+@media(max-width:1180px){.landing-cards{grid-template-columns:repeat(2,minmax(0,340px))}}
+@media(max-width:640px){.landing-cards{grid-template-columns:minmax(0,1fr)}}
 .product-card .photo{height:190px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background-size:cover;background-position:center;background-repeat:no-repeat}
 .product-card .photo.p6{background-image:url('../assets/img/calculadora-card.jpg')}
 .product-card .photo.p1{background-image:url('../assets/img/mapa-30-dias.svg');background-size:cover}
@@ -39,17 +43,21 @@
 .selo-comece{position:absolute;top:14px;left:14px;z-index:2;background:var(--terracota,#9a5b34);color:#fdfaf4;font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:6px 11px;border-radius:999px;box-shadow:0 2px 8px rgba(23,63,49,.18)}
 .product-card .photo.p4{background:#ececea;overflow:hidden;align-items:stretch;justify-content:stretch}
 .product-card .photo.p4 video{width:100%;height:100%;display:block;object-fit:cover;object-position:50% 50%}
+/* card Aulas: animação da roda em loop (os vídeos das aulas ficam na página /aulas) */
+.product-card .photo.p7{background:#ececea;position:relative;overflow:hidden;align-items:stretch;justify-content:stretch}
+.product-card .photo.p7 .video-card{width:100%;height:100%;display:block;object-fit:cover;object-position:50% 50%}
 /* mesma grade vertical nos 3 cards: cada linha (etiqueta/título/texto/lista)
    reserva a mesma altura, e o CTA fica sempre grudado no rodapé do card. */
 .product-card .body{display:flex;flex-direction:column;flex:1;padding:24px 26px 26px}
 .product-card .kicker{min-height:14px}
-.product-card h3{min-height:68px;display:flex;align-items:flex-start}
+.product-card h3{min-height:68px;display:flex;align-items:flex-start;line-height:1.2}
 .product-card .body>p{min-height:42px}
 .product-card ul{min-height:72px;align-content:start}
 .product-card .cta{margin-top:auto;white-space:nowrap;font-size:15px;padding:14px 10px}
 .product-card.calculadora .cta{background:var(--ink-green,#173f31)}
 .product-card.mapa .cta{background:var(--terracota,#9a5b34)}
 .product-card.mentoria .cta{background:var(--ink-green2,#1f4a3a)}
+.product-card.aulas .cta{background:var(--terracota,#9a5b34)}
 .product-card ul li:before{content:none}
 .product-card ul li svg{color:var(--terracota,#9a5b34);flex-shrink:0}
 
@@ -122,6 +130,27 @@
       </div>
     </div>
 
+    <div class="product-card aulas">
+      <div class="photo p7">
+        <video class="video-card" poster="../assets/img/aulas-roda-poster.jpg"
+               autoplay muted loop playsinline preload="metadata"
+               aria-label="Ilustração de um grupo de pessoas conversando em roda">
+          <source src="../assets/video/aulas-roda.mp4" type="video/mp4">
+          <source src="../assets/video/aulas-roda.webm" type="video/webm">
+        </video>
+      </div>
+      <div class="body">
+        <div class="kicker">Aulas</div>
+        <h3>Aulas</h3>
+        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">A clínica como negócio, na prática.</p>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 5.5v13l11-6.5z"/></svg>As Raízes do Negócio</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 5.5v13l11-6.5z"/></svg>A Dor Real da Clínica</li>
+        </ul>
+        <a class="cta" href="../aulas/index.html" id="ctaAulas">Assistir às aulas →</a>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -155,6 +184,7 @@ function ajustarVideosCards() {
 }
 ajustarVideosCards();
 menosMovimento.addEventListener('change', ajustarVideosCards);
+
 
 // Cabeçalho (Início, Sobre, Produtos, Ajuda, Contato, Entrar/Sair) é o
 // componente único compartilhado com as demais páginas do site — mudar o
