@@ -74,6 +74,8 @@
     margin-top:12px;
   }
   .btn-secundario:hover{background:var(--creme)}
+  .oferta-alt{text-align:center;margin-top:16px}
+  .oferta-alt span{display:block;font-size:12.5px;color:var(--tinta-suave);margin-bottom:10px}
 
   .erro{color:var(--terracota);font-size:13px;margin-top:10px;display:none}
 
@@ -152,8 +154,12 @@
       <div class="field"><label>Nome</label><input type="text" id="ofNome" required></div>
       <div class="field"><label>E-mail</label><input type="email" id="ofEmail" required></div>
       <div class="field"><label>WhatsApp</label><input type="tel" id="ofWhatsapp" required placeholder="(00) 00000-0000"></div>
-      <button class="btn-primary" type="submit">Continuar para pagamento →</button>
+      <button class="btn-primary" type="submit">Continuar para pagamento via PIX →</button>
     </form>
+    <div class="oferta-alt" id="ofertaAlt">
+      <span>ou</span>
+      <a class="btn-secundario" id="btnEduzz" href="#" target="_blank" rel="noopener">Pagar com cartão (via Eduzz) →</a>
+    </div>
   </div>
 </div>
 
@@ -199,11 +205,18 @@
 
 <script type="module">
 import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
-import { WHATSAPP_URL } from '../assets/js/site-config.js';
+import { WHATSAPP_URL, EDUZZ_CHECKOUT_URL } from '../assets/js/site-config.js';
 import { montarCabecalhoPublico } from '../assets/js/site-header.js';
 
 avisarSupabaseNaoConfigurado();
 montarCabecalhoPublico({ container: document.getElementById('cabecalhoPublico'), rootPath: '..', paginaAtual: 'compra' });
+
+const btnEduzz = document.getElementById('btnEduzz');
+if (EDUZZ_CHECKOUT_URL) {
+  btnEduzz.href = EDUZZ_CHECKOUT_URL;
+} else {
+  document.getElementById('ofertaAlt').style.display = 'none';
+}
 
 const mensagemWhatsapp = 'Olá! Fiz o Pix do Mapa de 30 Dias e vou enviar o comprovante';
 const whatsappBase = WHATSAPP_URL || 'https://wa.me/5543984257669';
