@@ -6,6 +6,9 @@ export const CONTATO_URL = "https://wa.me/5543984257669";
 export const MENTORIA_GRUPO_URL = ""; // link de contratação/contato da Mentoria em Grupo
 export const MENTORIA_INDIVIDUAL_URL = ""; // link de contratação/contato da Mentoria Individual/Consultoria
 export const WHATSAPP_URL = "https://wa.me/5543984257669";
+// Recebe as inscrições do formulário da página Aulas (via formsubmit.co). Depois de
+// ativar, pode trocar pelo código aleatório que o FormSubmit envia, para não expor o e-mail.
+export const EMAIL_INSCRICOES = "indiaaraujodea@gmail.com";
 export const MANUAL_LIVRO_URL = ""; // página pública/comercial de venda do livro "Manual da Clínica de Valor"
 export const EDUZZ_CHECKOUT_URL = ""; // link real: https://sun.eduzz.com/Z0B111K69A — removido temporariamente, preencha para reativar
 export const INSTAGRAM_URL = ""; // ex.: "https://instagram.com/seuusuario"

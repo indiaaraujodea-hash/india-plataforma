@@ -111,14 +111,16 @@
     </div>
   </div>
 
-  <!-- Inscrição: Netlify Forms (data-netlify) recebe o envio e manda por
-       e-mail para a India — a notificação é configurada no painel da Netlify. -->
+  <!-- Inscrição: enviada pelo FormSubmit (formsubmit.co), que repassa cada
+       inscrição para o e-mail da India. Funciona em qualquer hospedagem
+       estática (o site é publicado pela Cloudflare Pages). -->
   <div class="inscricao" id="inscricao">
     <h2>Quero assistir às aulas completas</h2>
     <p class="sub">Deixe seus dados e a India entra em contato com as informações de acesso.</p>
-    <form name="inscricao-aulas" method="POST" data-netlify="true" netlify-honeypot="empresa" id="formInscricao">
-      <input type="hidden" name="form-name" value="inscricao-aulas">
-      <p class="escondido"><label>Não preencha: <input name="empresa" tabindex="-1" autocomplete="off"></label></p>
+    <form id="formInscricao">
+      <input type="hidden" name="_subject" value="Nova inscrição nas Aulas — site Clínica de Valor">
+      <input type="hidden" name="_template" value="table">
+      <p class="escondido"><label>Não preencha: <input name="_honey" tabindex="-1" autocomplete="off"></label></p>
       <div class="field"><label for="insNome">Nome</label><input id="insNome" name="nome" type="text" autocomplete="name" required></div>
       <div class="field"><label for="insEmail">E-mail</label><input id="insEmail" name="email" type="email" autocomplete="email" required></div>
       <div class="field"><label for="insWhatsapp">WhatsApp</label><input id="insWhatsapp" name="whatsapp" type="tel" autocomplete="tel" placeholder="(00) 00000-0000" required></div>
@@ -131,9 +133,12 @@
 
 <script type="module">
 import { montarCabecalhoPublico } from '../assets/js/site-header.js';
+import { EMAIL_INSCRICOES } from '../assets/js/site-config.js';
 montarCabecalhoPublico({ container: document.getElementById('cabecalhoPublico'), rootPath: '..', paginaAtual: 'aulas' });
 
-// Envia pela Netlify Forms sem sair da página.
+// Envia pelo FormSubmit sem sair da página. No primeiro envio, o FormSubmit
+// manda um e-mail de ativação para EMAIL_INSCRICOES — só depois de confirmar
+// as inscrições passam a chegar.
 const form = document.getElementById('formInscricao');
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -144,12 +149,13 @@ form.addEventListener('submit', async (e) => {
   btn.disabled = true;
   btn.textContent = 'Enviando…';
   try {
-    const resp = await fetch('/', {
+    const resp = await fetch(`https://formsubmit.co/ajax/${EMAIL_INSCRICOES}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams(new FormData(form)).toString(),
+      headers: { Accept: 'application/json' },
+      body: new FormData(form),
     });
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const dados = await resp.json().catch(() => ({}));
+    if (!resp.ok || String(dados.success) !== 'true') throw new Error(dados.message || `HTTP ${resp.status}`);
     document.getElementById('inscricao').innerHTML = `
       <div class="inscricao-ok">
         <div class="icone">✓</div>
