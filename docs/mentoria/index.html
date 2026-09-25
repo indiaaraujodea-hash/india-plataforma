@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#173f31">
+<link rel="icon" href="/assets/img/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/img/icon-180.png">
+<title>Mentoria Clínica de Valor | INDIA</title>
+<meta name="description" content="Mentoria para psicólogas que querem uma clínica sustentável, autêntica e com o próprio jeito de cuidar.">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../assets/css/shell.css">
+<style>
+/* Página da Mentoria — mesmos tokens da Home (style.css + shell.css):
+   creme de fundo, verde INDIA, terracota, Georgia nos títulos, cards
+   arredondados e botões em pílula. As faixas escuras usam o verde do rodapé. */
+html{scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--cream,#f7f3eb)}
+#cabecalhoPublico .ph-header{border-bottom:1px solid var(--line,#e5ded1)}
+
+.m-wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+.m-sec{padding:56px 0}
+.m-sec h2{font-family:Georgia,serif;font-weight:500;color:var(--green,#173f31);font-size:clamp(28px,4vw,36px);line-height:1.15;margin:8px 0 14px}
+.m-sec .lead{color:#4b5148;font-size:17px;max-width:720px;margin:0}
+.eyebrow{color:var(--terracota,#9a5b34)}
+
+/* botões: mesma pílula dos CTAs dos cards da Home */
+.m-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;cursor:pointer;text-decoration:none;font:inherit;font-weight:700;font-size:15px;color:#fff;background:var(--terracota,#9a5b34);padding:15px 26px;border-radius:999px;transition:background .15s}
+.m-btn:hover{background:var(--terracota-dark,#7c4827)}
+.m-btn.verde{background:var(--ink-green,#173f31)}
+.m-btn.verde:hover{background:var(--ink-green2,#1f4a3a)}
+.m-btn.claro{background:var(--cream-paper,#fdfaf4);color:var(--ink-green,#173f31)}
+.m-btn.claro:hover{background:#fff}
+.m-btn:disabled{opacity:.6;cursor:default}
+.m-btn:focus-visible,.m-opcao input:focus-visible+span,.faq summary:focus-visible{outline:3px solid var(--gold,#b58a48);outline-offset:3px}
+
+/* 2.1 abertura */
+.m-hero{padding:64px 0 56px}
+.m-hero h1{font-family:Georgia,serif;font-weight:500;color:var(--green,#173f31);font-size:clamp(38px,6vw,58px);line-height:1.05;letter-spacing:.01em;margin:12px 0 18px;max-width:760px}
+.m-hero p{font-size:clamp(17px,2.2vw,20px);color:#4b5148;max-width:640px;margin:0 0 30px}
+
+/* cards arredondados (mesmo raio/sombra suave dos product-card) */
+.m-card{background:var(--cream-paper,#fdfaf4);border:1px solid var(--line-soft,#ecdfc9);border-radius:22px;padding:28px}
+.m-grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:28px}
+.m-lista{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.m-lista li{display:flex;gap:12px;align-items:flex-start;font-size:15.5px;color:#3d463f;line-height:1.5}
+.m-lista li svg{flex-shrink:0;margin-top:2px;color:var(--terracota,#9a5b34)}
+.m-card h3{font-family:Georgia,serif;font-weight:500;color:var(--ink-green,#173f31);font-size:24px;margin:0 0 16px}
+.m-card.nao{background:transparent;border-style:dashed}
+.m-card.nao li svg{color:var(--muted,#69716b)}
+
+/* 2.4 linha do tempo */
+.m-passos{list-style:none;margin:32px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:14px;position:relative;counter-reset:passo}
+.m-passos:before{content:"";position:absolute;top:21px;left:10%;right:10%;height:1px;background:var(--line,#e5ded1)}
+.m-passos li{position:relative;text-align:center;counter-increment:passo}
+.m-passos .n{width:44px;height:44px;border-radius:50%;background:var(--ink-green,#173f31);color:#fff;display:grid;place-items:center;margin:0 auto 14px;font-family:Georgia,serif;font-size:18px;position:relative}
+.m-passos li:last-child .n{background:var(--terracota,#9a5b34)}
+.m-passos b{display:block;color:var(--ink-green,#173f31);font-size:15px;line-height:1.35}
+
+/* 2.5 modalidades */
+.m-mod{display:flex;flex-direction:column}
+.m-mod .kicker{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--terracota,#9a5b34);font-weight:800}
+.m-mod h3{font-size:28px;margin:6px 0 18px}
+.m-mod .m-lista{margin-bottom:26px}
+.m-mod .m-btn{margin-top:auto;width:100%}
+
+/* 2.6 o que você recebe */
+.m-recebe{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}
+.m-recebe .item{background:var(--cream-paper,#fdfaf4);border:1px solid var(--line-soft,#ecdfc9);border-radius:18px;padding:20px;display:flex;gap:12px;align-items:flex-start;font-size:15px;color:#3d463f}
+.m-recebe .item svg{flex-shrink:0;color:var(--terracota,#9a5b34)}
+
+/* faixas escuras (verde do rodapé do site) */
+.m-escuro{background:var(--ink-green,#173f31);color:#e7e2d6}
+.m-escuro h2{color:#fff}
+.m-escuro .eyebrow{color:var(--gold,#b58a48)}
+.m-metodo blockquote{margin:0;font-family:Georgia,serif;font-size:clamp(20px,2.8vw,27px);line-height:1.45;color:#fdfaf4;max-width:820px}
+
+/* 2.8 depoimentos (seção escondida até haver depoimentos reais autorizados) */
+.m-depo{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}
+
+/* 2.9 perguntas frequentes */
+.faq{margin-top:26px;display:grid;gap:12px;max-width:820px}
+.faq details{background:var(--cream-paper,#fdfaf4);border:1px solid var(--line-soft,#ecdfc9);border-radius:18px}
+.faq summary{cursor:pointer;list-style:none;padding:20px 56px 20px 22px;font-weight:700;color:var(--ink-green,#173f31);font-size:16px;position:relative;border-radius:18px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary:after{content:"+";position:absolute;right:22px;top:50%;transform:translateY(-50%);font-size:24px;font-weight:400;color:var(--terracota,#9a5b34)}
+.faq details[open] summary:after{content:"–"}
+.faq details p{margin:0;padding:0 22px 20px;color:#4b5148;font-size:15.5px}
+
+/* 3. formulário de intenção */
+.m-form-card{background:var(--cream-paper,#fdfaf4);border:1px solid var(--line-soft,#ecdfc9);border-radius:22px;padding:34px;max-width:760px;box-shadow:0 22px 50px rgba(20,20,10,.08)}
+.m-form-card h2{margin-top:4px}
+.m-form-card .lead{margin-bottom:26px}
+.m-campos{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+.m-campos .inteiro{grid-column:1/-1}
+.form-field label,.form-field legend{display:block;font-size:13.5px;font-weight:700;margin-bottom:7px;color:var(--green,#173f31);padding:0}
+.form-field .opc{font-weight:400;color:var(--muted,#69716b)}
+.form-field input,.form-field select,.form-field textarea{font-size:16px;padding:13px 14px;border-radius:12px}
+.form-field textarea{min-height:110px;resize:vertical}
+.form-field input:focus,.form-field select:focus,.form-field textarea:focus{outline:2px solid var(--ink-green,#173f31);outline-offset:1px;border-color:transparent}
+.form-field fieldset{border:0;margin:0;padding:0;min-width:0}
+.form-field .erro-campo{display:none;color:#a43b45;font-size:12.5px;margin-top:6px}
+.form-field.invalido input,.form-field.invalido select,.form-field.invalido textarea{border-color:#d9868d}
+.form-field.invalido .erro-campo{display:block}
+/* modalidade: opções em pílula (radio) */
+.m-opcoes{display:flex;flex-wrap:wrap;gap:10px}
+.form-field label.m-opcao{position:relative;display:inline-block;margin:0;font-weight:400}
+.m-opcao input{position:absolute;opacity:0;width:1px;height:1px}
+.m-opcao span{display:inline-block;padding:11px 18px;border:1px solid var(--line,#e5ded1);border-radius:999px;background:#fff;font-size:15px;cursor:pointer;color:var(--ink,#1f2521)}
+.m-opcao input:checked+span{background:var(--ink-green,#173f31);border-color:var(--ink-green,#173f31);color:#fff;font-weight:700}
+.form-field label.m-consent{display:flex;gap:12px;align-items:flex-start;font-size:14.5px;font-weight:400;color:#3d463f;cursor:pointer;margin:0}
+.m-consent input{width:20px;height:20px;margin:2px 0 0;flex-shrink:0;accent-color:var(--ink-green,#173f31)}
+.m-honey{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.m-enviar{margin-top:8px}
+.m-form-card .alert{font-size:14px}
+.m-ok{text-align:center;padding:10px 0}
+.m-ok .icone{width:56px;height:56px;border-radius:50%;background:var(--ink-green,#173f31);color:#fff;display:grid;place-items:center;font-size:26px;margin:0 auto 16px}
+.m-ok p{color:#3d463f;font-size:16.5px;max-width:520px;margin:0 auto 24px}
+
+/* 2.11 fechamento */
+.m-fecho{text-align:center}
+.m-fecho h2{max-width:720px;margin:0 auto 26px}
+
+@media(max-width:900px){
+  .m-passos{grid-template-columns:1fr;gap:0;max-width:460px}
+  .m-passos:before{top:22px;bottom:22px;left:21px;right:auto;width:1px;height:auto}
+  .m-passos li{display:flex;align-items:center;gap:16px;text-align:left;padding:8px 0}
+  .m-passos .n{margin:0;flex-shrink:0}
+  .m-recebe{grid-template-columns:1fr 1fr}
+  .m-depo{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+  .m-wrap{padding:0 18px}
+  .m-sec{padding:44px 0}
+  .m-hero{padding:44px 0 40px}
+  .m-grid2,.m-campos,.m-recebe{grid-template-columns:1fr}
+  .m-card,.m-form-card{padding:24px 20px;border-radius:20px}
+  .m-hero .m-btn{width:100%}
+}
+</style>
+</head>
+<body>
+<div id="cabecalhoPublico"></div>
+
+<main>
+  <!-- 2.1 Abertura -->
+  <section class="m-hero">
+    <div class="m-wrap">
+      <div class="eyebrow">Acompanhamento</div>
+      <h1>Mentoria Clínica de Valor</h1>
+      <p>Para psicólogas que querem uma clínica sustentável, autêntica e com o próprio jeito de cuidar</p>
+      <a class="m-btn" href="#intencao" data-ir-form>Quero conversar sobre a mentoria</a>
+    </div>
+  </section>
+
+  <!-- 2.2 / 2.3 Para quem é / não é -->
+  <section class="m-sec" style="padding-top:0">
+    <div class="m-wrap">
+      <div class="m-grid2" style="margin-top:0">
+        <div class="m-card">
+          <h3>Para quem é</h3>
+          <ul class="m-lista">
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Psicólogas autônomas com agenda instável</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Que cobram menos do que a clínica precisa para se sustentar</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Que se perdem entre muitas ideias e não sabem qual é o próximo passo</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Que querem crescer sem abrir mão da ética e do cuidado</li>
+          </ul>
+        </div>
+        <div class="m-card nao">
+          <h3>Para quem não é</h3>
+          <ul class="m-lista">
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>Quem procura fórmula pronta ou promessa de resultado rápido</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>Quem não pretende colocar as ações em prática entre os encontros</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2.4 Como funciona -->
+  <section class="m-sec" style="padding-top:8px">
+    <div class="m-wrap">
+      <div class="eyebrow">Como funciona</div>
+      <h2>Do primeiro contato ao acompanhamento</h2>
+      <ol class="m-passos">
+        <li><span class="n">1</span><b>Conversa inicial</b></li>
+        <li><span class="n">2</span><b>Raio-X da sua clínica</b></li>
+        <li><span class="n">3</span><b>Onboarding</b></li>
+        <li><span class="n">4</span><b>1º encontro com seu plano de ação de 30 dias</b></li>
+        <li><span class="n">5</span><b>Acompanhamento da sua evolução</b></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 2.5 Modalidades -->
+  <section class="m-sec">
+    <div class="m-wrap">
+      <div class="eyebrow">Modalidades</div>
+      <h2>Escolha como quer caminhar</h2>
+      <div class="m-grid2">
+        <div class="m-card m-mod">
+          <div class="kicker">Só seu</div>
+          <h3>Individual</h3>
+          <ul class="m-lista">
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>3 meses de acompanhamento</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="5" width="15" height="14" rx="2"/><path d="M17 10l5-3v10l-5-3"/></svg>Encontros online semanais ou quinzenais</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>Plano de ação personalizado</li>
+          </ul>
+          <button type="button" class="m-btn verde" data-modalidade="Individual">Quero a mentoria individual</button>
+        </div>
+        <div class="m-card m-mod">
+          <div class="kicker">Turmas pequenas</div>
+          <h3>Em grupo</h3>
+          <ul class="m-lista">
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>3 meses</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Encontros quinzenais de até 2h, aos sábados</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Um encontro online e um presencial por mês, em Fortaleza</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3.1-6 7-6s7 2.7 7 6"/><circle cx="17" cy="8" r="2.4"/><path d="M16 14.2c2.7.5 4.8 2.6 5 5.8"/></svg>Turmas pequenas</li>
+          </ul>
+          <button type="button" class="m-btn" data-modalidade="Em grupo">Quero entrar no grupo</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2.6 O que você recebe -->
+  <section class="m-sec" style="padding-top:8px">
+    <div class="m-wrap">
+      <div class="eyebrow">O que você recebe</div>
+      <h2>Tudo o que acompanha a mentoria</h2>
+      <div class="m-recebe">
+        <div class="item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 21h18"/><path d="M6 21V10M12 21V4M18 21v-7"/></svg>Diagnóstico da clínica</div>
+        <div class="item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>Plano de ação de 30 dias revisado a cada encontro</div>
+        <div class="item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="5" width="15" height="14" rx="2"/><path d="M17 10l5-3v10l-5-3"/></svg>Encontros gravados</div>
+        <div class="item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Materiais na sua pasta</div>
+        <div class="item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.2A8.5 8.5 0 1 1 21 12z"/></svg>Suporte pelo WhatsApp em horário comercial</div>
+        <div class="item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3.1-6 7-6s7 2.7 7 6"/><circle cx="17" cy="8" r="2.4"/><path d="M16 14.2c2.7.5 4.8 2.6 5 5.8"/></svg>Comunidade com outras psicólogas</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2.7 O método -->
+  <section class="m-sec m-escuro m-metodo">
+    <div class="m-wrap">
+      <div class="eyebrow">O método</div>
+      <blockquote>A mentoria une estratégia de negócio e Abordagem Centrada na Pessoa. Aqui, o comercial é uma extensão do cuidado: você cresce sem deixar de ser quem você é.</blockquote>
+    </div>
+  </section>
+
+  <!-- 2.8 Depoimentos — ESCONDIDA de propósito. Preencher só com depoimentos
+       reais e autorizados; para mostrar, remova o atributo "hidden" da section
+       e o "hidden" de cada card preenchido. Não inventar textos. -->
+  <section class="m-sec" id="depoimentos" hidden>
+    <div class="m-wrap">
+      <div class="eyebrow">Depoimentos</div>
+      <h2>Quem já caminhou com a mentoria</h2>
+      <div class="m-depo">
+        <figure class="m-card" hidden><blockquote></blockquote><figcaption class="small"></figcaption></figure>
+        <figure class="m-card" hidden><blockquote></blockquote><figcaption class="small"></figcaption></figure>
+        <figure class="m-card" hidden><blockquote></blockquote><figcaption class="small"></figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2.9 Perguntas frequentes -->
+  <section class="m-sec">
+    <div class="m-wrap">
+      <div class="eyebrow">Perguntas frequentes</div>
+      <h2>Dúvidas comuns</h2>
+      <div class="faq">
+        <details><summary>Preciso ter CNPJ?</summary><p>Não. A mentoria serve para quem é autônoma ou já tem CNPJ.</p></details>
+        <details><summary>E se eu faltar a um encontro?</summary><p>Os encontros são gravados, e remarcações podem ser feitas com 24h de antecedência.</p></details>
+        <details><summary>Qual a diferença entre a individual e o grupo?</summary><p>Na individual, o acompanhamento é só seu. No grupo, você aprende também com a experiência de outras psicólogas.</p></details>
+        <details><summary>Como faço para entrar?</summary><p>Preencha o formulário de intenção. Eu te chamo no WhatsApp para uma conversa e, se fizer sentido para nós duas, te envio o link de inscrição.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2.10 / 3. Formulário de intenção -->
+  <section class="m-sec" id="intencao" style="scroll-margin-top:12px">
+    <div class="m-wrap">
+      <div class="m-form-card" id="intencaoCard">
+        <div class="eyebrow">Mentoria Clínica de Valor</div>
+        <h2>Formulário de intenção</h2>
+        <p class="lead">A mentoria começa com uma conversa. Conte um pouco sobre você e sua clínica. Eu leio cada resposta e te chamo no WhatsApp.</p>
+
+        <form id="formIntencao" novalidate>
+          <div class="m-honey" aria-hidden="true"><label>Não preencha este campo <input type="text" name="site" tabindex="-1" autocomplete="off"></label></div>
+          <div class="m-campos">
+            <div class="form-field inteiro">
+              <label for="fNome">Nome completo</label>
+              <input id="fNome" name="nome" type="text" autocomplete="name" maxlength="200" required>
+              <span class="erro-campo">Informe seu nome completo.</span>
+            </div>
+            <div class="form-field">
+              <label for="fWhatsapp">WhatsApp com DDD</label>
+              <input id="fWhatsapp" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" placeholder="(00) 00000-0000" maxlength="20" required>
+              <span class="erro-campo">Informe um WhatsApp válido com DDD, ex.: (85) 99999-9999.</span>
+            </div>
+            <div class="form-field">
+              <label for="fEmail">E-mail</label>
+              <input id="fEmail" name="email" type="email" inputmode="email" autocomplete="email" maxlength="254" required>
+              <span class="erro-campo">Informe um e-mail válido.</span>
+            </div>
+            <div class="form-field">
+              <label for="fCidade">Cidade</label>
+              <input id="fCidade" name="cidade" type="text" autocomplete="address-level2" maxlength="120" required>
+              <span class="erro-campo">Informe sua cidade.</span>
+            </div>
+            <div class="form-field">
+              <label for="fTempo">Há quanto tempo atende na clínica?</label>
+              <select id="fTempo" name="tempo_atuacao" required>
+                <option value="">Selecione</option>
+                <option>Menos de 1 ano</option>
+                <option>1 a 3 anos</option>
+                <option>3 a 5 anos</option>
+                <option>Mais de 5 anos</option>
+              </select>
+              <span class="erro-campo">Escolha uma opção.</span>
+            </div>
+            <div class="form-field">
+              <label for="fAtendimentos">Quantos atendimentos faz por semana, em média?</label>
+              <input id="fAtendimentos" name="atendimentos_semana" type="number" inputmode="numeric" min="0" max="200" step="1" required>
+              <span class="erro-campo">Informe um número entre 0 e 200.</span>
+            </div>
+            <div class="form-field">
+              <label for="fFaturamento">Faturamento mensal da clínica hoje</label>
+              <select id="fFaturamento" name="faturamento_mensal" required>
+                <option value="">Selecione</option>
+                <option>Até R$ 3 mil</option>
+                <option>R$ 3 a 6 mil</option>
+                <option>R$ 6 a 10 mil</option>
+                <option>R$ 10 a 15 mil</option>
+                <option>Acima de R$ 15 mil</option>
+              </select>
+              <span class="erro-campo">Escolha uma opção.</span>
+            </div>
+            <div class="form-field inteiro">
+              <label for="fDesafio">Qual é o seu maior desafio hoje na clínica?</label>
+              <textarea id="fDesafio" name="maior_desafio" maxlength="3000" required></textarea>
+              <span class="erro-campo">Conte um pouco sobre o seu maior desafio.</span>
+            </div>
+            <div class="form-field inteiro" id="campoModalidade">
+              <fieldset>
+                <legend>Modalidade de interesse</legend>
+                <div class="m-opcoes">
+                  <label class="m-opcao"><input type="radio" name="modalidade" value="Individual" required><span>Individual</span></label>
+                  <label class="m-opcao"><input type="radio" name="modalidade" value="Em grupo"><span>Em grupo</span></label>
+                  <label class="m-opcao"><input type="radio" name="modalidade" value="Ainda não sei"><span>Ainda não sei</span></label>
+                </div>
+              </fieldset>
+              <span class="erro-campo">Escolha a modalidade de interesse.</span>
+            </div>
+            <div class="form-field inteiro">
+              <label for="fComo">Como conheceu meu trabalho? <span class="opc">(opcional)</span></label>
+              <select id="fComo" name="como_conheceu">
+                <option value="">Selecione</option>
+                <option>Indicação</option>
+                <option>Calculadora ou Mapa</option>
+                <option>Evento ou palestra</option>
+                <option>Outro</option>
+              </select>
+            </div>
+            <div class="form-field inteiro" id="campoConsent">
+              <label class="m-consent"><input type="checkbox" name="consentimento_lgpd" id="fConsent" required>Autorizo o uso destes dados para contato sobre a mentoria, conforme a LGPD.</label>
+              <span class="erro-campo">Para enviar, é preciso autorizar o contato.</span>
+            </div>
+          </div>
+          <div id="formErro" role="alert"></div>
+          <button type="submit" class="m-btn verde m-enviar" id="btnEnviar">Enviar minha intenção</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2.11 Fechamento -->
+  <section class="m-sec m-escuro m-fecho">
+    <div class="m-wrap">
+      <h2>Sua clínica tem um próximo passo. Vamos descobrir juntas qual é.</h2>
+      <a class="m-btn claro" href="#intencao" data-ir-form>Quero conversar sobre a mentoria</a>
+    </div>
+  </section>
+</main>
+
+<footer class="landing-footer">
+  <b>INDIA</b>
+  <span>PESSOAS · ENCONTROS · NEGÓCIOS</span>
+  <div class="flinks">
+    <a href="../sobre/index.html">Sobre a India</a>
+    <a href="#" id="linkContatoFooter">Contato</a>
+  </div>
+  <span>© 2026 INDIA. Todos os direitos reservados.</span>
+</footer>
+
+<script type="module">
+import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
+import { CONTATO_URL, WHATSAPP_URL } from '../assets/js/site-config.js';
+import { montarCabecalhoPublico } from '../assets/js/site-header.js';
+
+avisarSupabaseNaoConfigurado();
+montarCabecalhoPublico({ container: document.getElementById('cabecalhoPublico'), rootPath: '..', paginaAtual: 'mentoria' });
+
+const linkContato = document.getElementById('linkContatoFooter');
+if (CONTATO_URL) { linkContato.href = CONTATO_URL; linkContato.target = '_blank'; }
+
+const WHATSAPP_INDIA = WHATSAPP_URL || 'https://wa.me/5543984257669';
+const form = document.getElementById('formIntencao');
+const secaoForm = document.getElementById('intencao');
+
+// ---------- navegação até o formulário ----------
+function irParaFormulario(focarEm) {
+  secaoForm.scrollIntoView({ block: 'start' });
+  if (focarEm) setTimeout(() => focarEm.focus({ preventScroll: true }), 400);
+}
+document.querySelectorAll('[data-ir-form]').forEach((a) => a.addEventListener('click', (e) => {
+  e.preventDefault();
+  irParaFormulario(document.getElementById('fNome'));
+}));
+// Botões das modalidades: rolam até o formulário já marcando a escolha.
+document.querySelectorAll('[data-modalidade]').forEach((btn) => btn.addEventListener('click', () => {
+  const radio = form.querySelector(`input[name="modalidade"][value="${btn.dataset.modalidade}"]`);
+  if (radio) { radio.checked = true; marcarValido(radio); }
+  irParaFormulario(document.getElementById('fNome'));
+}));
+// Link externo com #intencao ou ?modalidade=individual|grupo
+const modalidadeUrl = { individual: 'Individual', grupo: 'Em grupo' }[new URLSearchParams(location.search).get('modalidade')];
+if (modalidadeUrl) form.querySelector(`input[name="modalidade"][value="${modalidadeUrl}"]`).checked = true;
+
+// ---------- WhatsApp: máscara e normalização ----------
+const campoWhats = document.getElementById('fWhatsapp');
+function soDigitos(v) { return String(v || '').replace(/\D/g, ''); }
+// Aceita (DDD)+número de 8 ou 9 dígitos, com ou sem o 55 na frente.
+function normalizarWhatsapp(v) {
+  let d = soDigitos(v);
+  if ((d.length === 12 || d.length === 13) && d.startsWith('55')) d = d.slice(2);
+  if (d.length !== 10 && d.length !== 11) return null;
+  if (d[0] === '0' || d[1] === '0') return null;          // DDD válido não começa/termina com 0
+  if (d.length === 11 && d[2] !== '9') return null;       // celular com 9 dígitos começa com 9
+  return `55${d}`;
+}
+campoWhats.addEventListener('input', () => {
+  let d = soDigitos(campoWhats.value);
+  if (d.length > 11 && d.startsWith('55')) d = d.slice(2);
+  d = d.slice(0, 11);
+  let f = d;
+  if (d.length > 2) f = `(${d.slice(0, 2)}) ${d.slice(2)}`;
+  if (d.length > 6) {
+    const meio = d.length === 11 ? 7 : 6;
+    f = `(${d.slice(0, 2)}) ${d.slice(2, meio)}-${d.slice(meio)}`;
+  }
+  campoWhats.value = f;
+});
+
+// ---------- validação ----------
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const validadores = {
+  nome: (v) => v.trim().length >= 2 && v.trim().includes(' '),
+  whatsapp: (v) => normalizarWhatsapp(v) !== null,
+  email: (v) => EMAIL_RE.test(v.trim()),
+  cidade: (v) => v.trim().length >= 2,
+  tempo_atuacao: (v) => v !== '',
+  atendimentos_semana: (v) => /^\d{1,3}$/.test(v.trim()) && Number(v) <= 200,
+  faturamento_mensal: (v) => v !== '',
+  maior_desafio: (v) => v.trim().length >= 3,
+};
+function campoDe(el) { return el.closest('.form-field'); }
+function marcarValido(el) { campoDe(el)?.classList.remove('invalido'); }
+function validar() {
+  let primeiroInvalido = null;
+  for (const [nome, ok] of Object.entries(validadores)) {
+    const el = form.elements[nome];
+    const valido = ok(el.value);
+    campoDe(el).classList.toggle('invalido', !valido);
+    if (!valido && !primeiroInvalido) primeiroInvalido = el;
+  }
+  const modalidade = form.querySelector('input[name="modalidade"]:checked');
+  document.getElementById('campoModalidade').classList.toggle('invalido', !modalidade);
+  if (!modalidade && !primeiroInvalido) primeiroInvalido = form.querySelector('input[name="modalidade"]');
+  const consent = document.getElementById('fConsent');
+  document.getElementById('campoConsent').classList.toggle('invalido', !consent.checked);
+  if (!consent.checked && !primeiroInvalido) primeiroInvalido = consent;
+  return primeiroInvalido;
+}
+form.addEventListener('input', (e) => { if (campoDe(e.target)?.classList.contains('invalido')) validarCampo(e.target); });
+form.addEventListener('change', (e) => validarCampo(e.target));
+function validarCampo(el) {
+  if (el.name === 'modalidade') return marcarValido(el);
+  if (el.name === 'consentimento_lgpd') return campoDe(el).classList.toggle('invalido', !el.checked);
+  const ok = validadores[el.name];
+  if (ok) campoDe(el).classList.toggle('invalido', !ok(el.value));
+}
+
+// ---------- envio ----------
+// Um id por tentativa: se a pessoa clicar de novo depois de uma falha de rede,
+// o mesmo id evita salvar a mesma intenção duas vezes.
+let idIntencao = crypto.randomUUID();
+let enviando = false;
+const btn = document.getElementById('btnEnviar');
+const erroBox = document.getElementById('formErro');
+
+function mostrarErro(msg) {
+  erroBox.innerHTML = `<div class="alert alert-error">${msg} Se preferir, <a href="${WHATSAPP_INDIA}" target="_blank" rel="noopener" style="font-weight:700">fale comigo pelo WhatsApp</a>.</div>`;
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (enviando) return;                       // bloqueia clique duplo
+  erroBox.innerHTML = '';
+  if (form.elements.site.value) return;       // honeypot preenchido: robô
+
+  const invalido = validar();
+  if (invalido) {
+    erroBox.innerHTML = '<div class="alert alert-error">Confira os campos destacados antes de enviar.</div>';
+    invalido.focus();
+    return;
+  }
+
+  enviando = true;
+  btn.disabled = true;
+  btn.textContent = 'Enviando…';
+
+  const dados = {
+    id: idIntencao,
+    nome: form.elements.nome.value.trim().replace(/\s+/g, ' '),
+    whatsapp: normalizarWhatsapp(form.elements.whatsapp.value),
+    email: form.elements.email.value.trim().toLowerCase(),
+    cidade: form.elements.cidade.value.trim(),
+    tempo_atuacao: form.elements.tempo_atuacao.value,
+    atendimentos_semana: Number(form.elements.atendimentos_semana.value),
+    faturamento_mensal: form.elements.faturamento_mensal.value,
+    maior_desafio: form.elements.maior_desafio.value.trim(),
+    modalidade: form.querySelector('input[name="modalidade"]:checked').value,
+    como_conheceu: form.elements.como_conheceu.value || null,
+    consentimento_lgpd: true,
+  };
+
+  const { error } = await supabase.from('aplicacoes_mentoria').insert(dados);
+  // 23505 = este id já foi salvo numa tentativa anterior (ex.: a resposta se
+  // perdeu na rede) — a intenção está no banco, então segue como sucesso.
+  if (error && error.code !== '23505') {
+    console.error('Falha ao salvar intenção:', error);
+    mostrarErro('Não foi possível enviar sua intenção agora. Verifique sua conexão e tente novamente.');
+    enviando = false;
+    btn.disabled = false;
+    btn.textContent = 'Enviar minha intenção';
+    return;
+  }
+
+  // Aviso por e-mail para a India. A intenção já está salva: se o e-mail
+  // falhar, ela continua no banco e aparece em /admin/aplicacoes/.
+  supabase.functions.invoke('notificar-mentoria', { body: { id: idIntencao } })
+    .then(({ error: erroFn }) => { if (erroFn) console.warn('Aviso por e-mail não enviado:', erroFn); })
+    .catch((err) => console.warn('Aviso por e-mail não enviado:', err));
+
+  document.getElementById('intencaoCard').innerHTML = `
+    <div class="m-ok" role="status">
+      <div class="icone" aria-hidden="true">✓</div>
+      <h2>Recebi sua intenção!</h2>
+      <p>Em até 2 dias úteis te chamo no WhatsApp para conversarmos. Se fizer sentido para nós duas, te envio o link de inscrição.</p>
+      <a class="m-btn verde" href="${WHATSAPP_INDIA}" target="_blank" rel="noopener">Falar com a India agora</a>
+    </div>`;
+  secaoForm.scrollIntoView({ block: 'start' });
+  idIntencao = crypto.randomUUID();
+});
+</script>
+</body>
+</html>
