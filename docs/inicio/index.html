@@ -41,8 +41,7 @@
 /* selo "Comece por aqui" no canto do card do Mapa */
 .product-card{position:relative}
 .selo-comece{position:absolute;top:14px;left:14px;z-index:2;background:var(--terracota,#9a5b34);color:#fdfaf4;font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:6px 11px;border-radius:999px;box-shadow:0 2px 8px rgba(23,63,49,.18)}
-.product-card .photo.p4{background:#ececea;overflow:hidden;align-items:stretch;justify-content:stretch}
-.product-card .photo.p4 video{width:100%;height:100%;display:block;object-fit:cover;object-position:50% 50%}
+.product-card .photo.p4{background:#173f31 url('../assets/img/mentoria-india.jpg') 82% 20%/cover no-repeat}
 /* card Aulas: animação da roda em loop (os vídeos das aulas ficam na página /aulas) */
 .product-card .photo.p7{background:#ececea;position:relative;overflow:hidden;align-items:stretch;justify-content:stretch}
 .product-card .photo.p7 .video-card{width:100%;height:100%;display:block;object-fit:cover;object-position:50% 50%}
@@ -51,8 +50,10 @@
 .product-card .body{display:flex;flex-direction:column;flex:1;padding:24px 26px 26px}
 .product-card .kicker{min-height:14px}
 .product-card h3{min-height:68px;display:flex;align-items:flex-start;line-height:1.2}
-.product-card .body>p{min-height:42px}
+.product-card .body>p{min-height:62px}
 .product-card ul{min-height:72px;align-content:start}
+/* um card por linha (celular): o alinhamento entre cards não se aplica */
+@media(max-width:640px){.product-card .kicker,.product-card h3,.product-card .body>p,.product-card ul{min-height:0}}
 .product-card .cta{margin-top:auto;white-space:nowrap;font-size:15px;padding:14px 10px}
 .product-card.calculadora .cta{background:var(--ink-green,#173f31)}
 .product-card.mapa .cta{background:var(--terracota,#9a5b34)}
@@ -110,23 +111,17 @@
     </div>
 
     <div class="product-card mentoria">
-      <div class="photo p4">
-        <video class="video-card" poster="../assets/img/mentoria-poster.jpg"
-               autoplay muted loop playsinline preload="metadata"
-               aria-label="Ilustração de um grupo de pessoas conversando em roda">
-          <source src="../assets/video/mentoria.mp4" type="video/mp4">
-          <source src="../assets/video/mentoria.webm" type="video/webm">
-        </video>
-      </div>
+      <div class="photo p4" role="img" aria-label="India sorrindo e gesticulando, como numa conversa de mentoria"></div>
       <div class="body">
-        <div class="kicker">Mentorias</div>
-        <h3>Mentorias</h3>
-        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Em grupo ou individual.</p>
+        <div class="kicker">Acompanhamento</div>
+        <h3>Mentoria Clínica de Valor</h3>
+        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Da clínica que você tem para a clínica que se sustenta, com direção, acompanhamento e plano de ação.</p>
         <ul>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3.1-6 7-6s7 2.7 7 6"/><circle cx="17" cy="8" r="2.4"/><path d="M16 14.2c2.7.5 4.8 2.6 5 5.8"/></svg>Mentoria em grupo</li>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>Mentoria individual</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>Diagnóstico e plano de ação de 30 dias</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3.1-6 7-6s7 2.7 7 6"/><circle cx="17" cy="8" r="2.4"/><path d="M16 14.2c2.7.5 4.8 2.6 5 5.8"/></svg>Encontros individuais ou em grupo</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>Acompanhamento da sua evolução</li>
         </ul>
-        <a class="cta" href="#" id="ctaMentoria">Conhecer as mentorias →</a>
+        <a class="cta" href="../mentoria/index.html" id="ctaMentoria">Quero conhecer a mentoria →</a>
       </div>
     </div>
 
@@ -168,7 +163,7 @@
 
 <script type="module">
 import { avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
-import { CONTATO_URL, WHATSAPP_URL, INSTAGRAM_URL, TIKTOK_URL } from '../assets/js/site-config.js';
+import { CONTATO_URL, INSTAGRAM_URL, TIKTOK_URL } from '../assets/js/site-config.js';
 import { montarCabecalhoPublico } from '../assets/js/site-header.js';
 
 avisarSupabaseNaoConfigurado();
@@ -213,7 +208,6 @@ function ligarBotaoConfiguravel(id, url, mensagemPendente) {
   });
 }
 
-ligarBotaoConfiguravel('ctaMentoria', WHATSAPP_URL, 'O link do WhatsApp ainda não foi configurado. Assim que for definido em site-config.js, este botão abrirá a conversa diretamente.');
 ligarBotaoConfiguravel('linkInstagram', INSTAGRAM_URL, 'O link do Instagram ainda não foi configurado. Assim que for definido em site-config.js, este link abrirá o perfil diretamente.');
 ligarBotaoConfiguravel('linkTiktok', TIKTOK_URL, 'O link do TikTok ainda não foi configurado. Assim que for definido em site-config.js, este link abrirá o perfil diretamente.');
 

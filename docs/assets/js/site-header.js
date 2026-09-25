@@ -1,8 +1,8 @@
 import { getSession, getProfile, signOut } from './auth.js';
 import { CONTATO_URL } from './site-config.js';
 
-// Componente único do cabeçalho público (Início, Sobre, Produtos, Ajuda,
-// Contato, Entrar/Sair) — qualquer página do site que chamar
+// Componente único do cabeçalho público (Início, Sobre, Produtos, Mentoria,
+// Ajuda, Contato, Entrar/Sair) — qualquer página do site que chamar
 // montarCabecalhoPublico() usa exatamente o mesmo menu, na mesma ordem, com
 // o mesmo comportamento. Mudar o menu no futuro é mudar só este arquivo.
 const ESTILO_ID = 'site-header-estilo';
@@ -17,7 +17,7 @@ const CSS = `
 .ph-entrar{background:var(--ph-accent,#9a5b34);color:#fff!important;padding:11px 22px;border-radius:999px;font-weight:700}
 @media(max-width:900px){
   .ph-links{position:absolute;top:100%;left:0;right:0;z-index:30;background:#fdfaf4;flex-direction:column;align-items:stretch;gap:0;max-height:0;overflow:hidden;transition:max-height .25s ease;box-shadow:0 12px 24px rgba(20,20,10,.12);border-radius:0 0 14px 14px}
-  .ph-links.ph-aberto{max-height:480px}
+  .ph-links.ph-aberto{max-height:640px}
   .ph-links a{padding:16px 24px;border-bottom:1px solid #ece4d4}
   .ph-entrar{border-radius:0;text-align:center}
   .ph-hamburger{display:flex}
@@ -47,6 +47,7 @@ export async function montarCabecalhoPublico({ container, rootPath = '.', pagina
     { label: 'Início', href: paginaAtual === 'inicio' ? '#' : homeHref },
     { label: 'Sobre', href: `${rootPath}/sobre/index.html` },
     { label: 'Produtos', href: paginaAtual === 'inicio' ? '#produtos' : `${homeHref}#produtos` },
+    { label: 'Mentoria', href: `${rootPath}/mentoria/index.html` },
     { label: 'Ajuda', acao: 'ajuda' },
     { label: 'Contato', acao: 'contato' },
   ];

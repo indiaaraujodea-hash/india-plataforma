@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="robots" content="noindex">
+<title>Intenções de mentoria | Clínica de Valor</title>
+<link rel="stylesheet" href="../../style.css">
+<link rel="stylesheet" href="../../assets/css/shell.css">
+<style>
+.filtros{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 6px}
+.filtros button{font:inherit;font-size:13px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+.filtros button.ativo{background:var(--green);border-color:var(--green);color:#fff;font-weight:700}
+.apl{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:14px}
+.apl-topo{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start}
+.apl-topo h3{margin:0;color:var(--green);font-size:20px}
+.apl-topo .small{margin-top:2px}
+.apl-dados{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:4px 18px;margin-top:12px}
+.apl-dados .resp-item{border-bottom:1px solid var(--line);padding:8px 0}
+.apl-dados .lbl,.apl-desafio .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.apl-dados .val{font-size:14px;margin-top:2px;word-break:break-word}
+.apl-desafio{margin-top:12px}
+.apl-desafio .val{font-size:14px;margin-top:4px;white-space:pre-wrap;background:var(--cream);border-radius:10px;padding:12px}
+.apl-acoes{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px}
+.apl-acoes select{font:inherit;font-size:14px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.apl-acoes .btn{padding:10px 16px;font-size:14px}
+.badge-erro{background:#fbe9ea;color:#a43b45}
+</style>
+</head>
+<body>
+<main class="wrap" style="max-width:1100px">
+  <section class="section">
+    <div class="eyebrow">Painel Administrativo</div>
+    <h1 class="serif" style="font-size:36px;color:var(--green);margin:8px 0">Intenções de mentoria</h1>
+    <p class="small">Respostas do formulário da página <a href="../../mentoria/index.html">/mentoria/</a>. Mude o status conforme a conversa avança.</p>
+    <div class="filtros" id="filtros"></div>
+    <div id="conteudo"><p>Carregando…</p></div>
+  </section>
+</main>
+<footer>INDIA · CAFÉ, PESSOAS E NEGÓCIOS DE VALOR · Clínica de Valor</footer>
+
+<script type="module">
+import { supabase, avisarSupabaseNaoConfigurado } from '../../assets/js/supabase-client.js';
+import { requireAdmin } from '../../assets/js/auth.js';
+import { mountAppShell } from '../../assets/js/app-shell.js';
+
+avisarSupabaseNaoConfigurado();
+
+const STATUS = ['nova', 'conversa marcada', 'link enviado', 'inscrita', 'não seguiu'];
+const STATUS_LABEL = { nova: 'Nova', 'conversa marcada': 'Conversa marcada', 'link enviado': 'Link enviado', inscrita: 'Inscrita', 'não seguiu': 'Não seguiu' };
+
+function escHtml(v) {
+  return String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function fmtDataHora(iso) { return iso ? new Date(iso).toLocaleString('pt-BR') : '—'; }
+function fmtWhatsapp(d) {
+  const local = String(d || '').replace(/^55/, '');
+  const meio = local.length === 11 ? 7 : 6;
+  return `(${local.slice(0, 2)}) ${local.slice(2, meio)}-${local.slice(meio)}`;
+}
+
+let aplicacoes = [];
+let filtro = 'todas';
+
+function renderFiltros() {
+  const cont = (s) => aplicacoes.filter((a) => s === 'todas' || a.status === s).length;
+  document.getElementById('filtros').innerHTML = ['todas', ...STATUS].map((s) =>
+    `<button type="button" data-filtro="${escHtml(s)}" class="${filtro === s ? 'ativo' : ''}">${s === 'todas' ? 'Todas' : STATUS_LABEL[s]} (${cont(s)})</button>`).join('');
+  document.querySelectorAll('[data-filtro]').forEach((b) => b.addEventListener('click', () => { filtro = b.dataset.filtro; render(); }));
+}
+
+function render() {
+  renderFiltros();
+  const conteudo = document.getElementById('conteudo');
+  const lista = aplicacoes.filter((a) => filtro === 'todas' || a.status === filtro);
+  if (lista.length === 0) {
+    conteudo.innerHTML = `<div class="alert alert-info">${aplicacoes.length === 0 ? 'Nenhuma intenção recebida ainda.' : 'Nenhuma intenção com este status.'}</div>`;
+    return;
+  }
+  conteudo.innerHTML = lista.map((a) => {
+    const aviso = a.email_notificacao_em
+      ? `<span class="badge badge-ok">E-mail enviado</span>`
+      : (a.email_notificacao_erro
+        ? `<span class="badge badge-erro" title="${escHtml(a.email_notificacao_erro)}">E-mail não enviado</span>`
+        : `<span class="badge badge-pending">E-mail pendente</span>`);
+    const waLink = `https://wa.me/${a.whatsapp}?text=${encodeURIComponent(`Olá, ${a.nome.split(' ')[0]}! Aqui é a India. Recebi sua intenção para a Mentoria Clínica de Valor.`)}`;
+    const dados = [
+      ['WhatsApp', fmtWhatsapp(a.whatsapp)], ['E-mail', a.email], ['Cidade', a.cidade],
+      ['Tempo de clínica', a.tempo_atuacao], ['Atendimentos/semana', a.atendimentos_semana],
+      ['Faturamento mensal', a.faturamento_mensal], ['Modalidade', a.modalidade], ['Como conheceu', a.como_conheceu || '—'],
+    ];
+    return `
+      <article class="apl" data-id="${a.id}">
+        <div class="apl-topo">
+          <div>
+            <h3>${escHtml(a.nome)}</h3>
+            <div class="small">${fmtDataHora(a.criado_em)} · ${escHtml(a.modalidade)}</div>
+          </div>
+          <div>${aviso}</div>
+        </div>
+        <div class="apl-dados">
+          ${dados.map(([k, v]) => `<div class="resp-item"><div class="lbl">${k}</div><div class="val">${escHtml(v)}</div></div>`).join('')}
+        </div>
+        <div class="apl-desafio"><div class="lbl">Maior desafio hoje</div><div class="val">${escHtml(a.maior_desafio)}</div></div>
+        <div class="apl-acoes">
+          <label class="small" for="st-${a.id}">Status</label>
+          <select id="st-${a.id}" class="sel-status">
+            ${STATUS.map((s) => `<option value="${escHtml(s)}" ${a.status === s ? 'selected' : ''}>${STATUS_LABEL[s]}</option>`).join('')}
+          </select>
+          <span class="small msg-status" role="status"></span>
+          <a class="btn" href="${waLink}" target="_blank" rel="noopener">Abrir WhatsApp</a>
+          <a class="btn alt" href="mailto:${escHtml(a.email)}">Responder por e-mail</a>
+        </div>
+      </article>`;
+  }).join('');
+
+  conteudo.querySelectorAll('.sel-status').forEach((sel) => sel.addEventListener('change', async () => {
+    const card = sel.closest('[data-id]');
+    const msg = card.querySelector('.msg-status');
+    const id = card.dataset.id;
+    sel.disabled = true;
+    msg.textContent = 'Salvando…';
+    const { error } = await supabase.from('aplicacoes_mentoria').update({ status: sel.value }).eq('id', id);
+    sel.disabled = false;
+    if (error) {
+      msg.textContent = `Erro: ${error.message}`;
+      sel.value = aplicacoes.find((a) => a.id === id).status;
+      return;
+    }
+    aplicacoes.find((a) => a.id === id).status = sel.value;
+    msg.textContent = 'Salvo.';
+    renderFiltros();
+  }));
+}
+
+(async () => {
+  const ctx = await requireAdmin('../../index.html', '../../login/index.html');
+  if (!ctx) return;
+  await mountAppShell('admin', ctx.session, '../..');
+  const { data, error } = await supabase.from('aplicacoes_mentoria').select('*').order('criado_em', { ascending: false });
+  if (error) {
+    document.getElementById('conteudo').innerHTML = `<div class="alert alert-error">Erro ao carregar as intenções: ${escHtml(error.message)}</div>`;
+    return;
+  }
+  aplicacoes = data || [];
+  render();
+})();
+</script>
+</body>
+</html>
