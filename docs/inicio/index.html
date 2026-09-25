@@ -20,6 +20,8 @@
   padding-bottom:8px;
 }
 .landing-copy{max-width:640px;padding:56px 40px 20px}
+/* com o menu fixo no topo, a âncora "Produtos" não fica escondida atrás dele */
+#produtos{scroll-margin-top:96px}
 .landing-copy .eyebrow{color:var(--gold,#b58a48)}
 .landing-copy h1{color:var(--green,#173f31);font-size:clamp(38px,5vw,54px);letter-spacing:.02em;text-transform:uppercase}
 .landing-copy p{color:#4b5148;font-size:18px;max-width:520px}
@@ -67,8 +69,8 @@
 </style>
 </head>
 <body>
+<div id="cabecalhoPublico"></div>
 <div class="landing-hero">
-  <div id="cabecalhoPublico"></div>
 
   <div class="landing-copy">
     <h1>Sua Clínica ACP Sustentável</h1>
