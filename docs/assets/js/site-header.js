@@ -75,7 +75,7 @@ export async function montarCabecalhoPublico({ container, rootPath = '.', pagina
         ${itens.map((i) => (i.acao
           ? `<a href="#" data-acao="${i.acao}">${i.label}</a>`
           : `<a href="${i.href}">${i.label}</a>`)).join('')}
-        <a class="ph-entrar" href="${rootPath}/index.html" id="phEntrar">Entrar</a>
+        <a class="ph-entrar" href="${rootPath}/login/index.html" id="phEntrar">Entrar</a>
       </div>
     </div>`;
 
@@ -106,7 +106,7 @@ export async function montarCabecalhoPublico({ container, rootPath = '.', pagina
     btnEntrar.href = '#';
     btnEntrar.addEventListener('click', async (e) => {
       e.preventDefault();
-      await signOut(`${rootPath}/index.html`);
+      await signOut(`${rootPath}/inicio/index.html`);
     });
   }
 
@@ -119,7 +119,7 @@ export async function montarCabecalhoPublico({ container, rootPath = '.', pagina
   container.querySelector('[data-acao="ajuda"]').addEventListener('click', async (e) => {
     e.preventDefault();
     if (!session) {
-      location.href = `${rootPath}/index.html?redirect=${encodeURIComponent('inicio/index.html')}`;
+      location.href = `${rootPath}/login/index.html?redirect=${encodeURIComponent('/inicio/index.html')}`;
       return;
     }
     const { abrirModalAjuda } = await import(`${rootPath}/assets/js/ajuda-modal.js`);
