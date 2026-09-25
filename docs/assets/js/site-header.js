@@ -7,6 +7,8 @@ import { CONTATO_URL } from './site-config.js';
 // o mesmo comportamento. Mudar o menu no futuro é mudar só este arquivo.
 const ESTILO_ID = 'site-header-estilo';
 const CSS = `
+.ph-fixo{position:sticky;top:0;z-index:50}
+.ph-fixo .ph-header{box-shadow:0 1px 0 rgba(23,63,49,.04)}
 .ph-header{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;background:var(--ph-bg,#f7f3eb);position:relative;flex-wrap:wrap;gap:14px}
 .ph-brand{display:flex;flex-direction:column;text-decoration:none;line-height:1.15}
 .ph-brand b{font-family:Georgia,'Cambria',serif;font-size:20px;letter-spacing:.06em;color:var(--ph-ink,#173f31)}
@@ -17,10 +19,17 @@ const CSS = `
 .ph-entrar{background:var(--ph-accent,#9a5b34);color:#fff!important;padding:11px 22px;border-radius:999px;font-weight:700}
 @media(max-width:900px){
   .ph-links{position:absolute;top:100%;left:0;right:0;z-index:30;background:#fdfaf4;flex-direction:column;align-items:stretch;gap:0;max-height:0;overflow:hidden;transition:max-height .25s ease;box-shadow:0 12px 24px rgba(20,20,10,.12);border-radius:0 0 14px 14px}
-  .ph-links.ph-aberto{max-height:640px}
+  .ph-links.ph-aberto{max-height:640px;max-height:calc(100dvh - 90px);overflow-y:auto}
   .ph-links a{padding:16px 24px;border-bottom:1px solid #ece4d4}
   .ph-entrar{border-radius:0;text-align:center}
   .ph-hamburger{display:flex}
+  /* celular: logo e botão do menu sempre na mesma linha, cabeçalho baixo (ele fica fixo no topo) */
+  .ph-header{padding:12px 18px;flex-wrap:nowrap}
+  .ph-brand{min-width:0}
+}
+@media(max-width:400px){
+  .ph-brand b{font-size:18px}
+  .ph-brand span{font-size:8.5px;letter-spacing:.12em;white-space:nowrap}
 }
 `;
 
@@ -41,6 +50,10 @@ function instalarEstilo() {
 export async function montarCabecalhoPublico({ container, rootPath = '.', paginaAtual = '' }) {
   if (!container) return null;
   instalarEstilo();
+  // Menu sempre visível no topo ao rolar (principalmente no celular), para a
+  // pessoa achar Produtos/Mentoria de qualquer página. O login tem layout
+  // próprio e fica de fora.
+  if (paginaAtual !== 'login') container.classList.add('ph-fixo');
 
   const homeHref = `${rootPath}/inicio/index.html`;
   const itens = [
@@ -62,14 +75,21 @@ export async function montarCabecalhoPublico({ container, rootPath = '.', pagina
         ${itens.map((i) => (i.acao
           ? `<a href="#" data-acao="${i.acao}">${i.label}</a>`
           : `<a href="${i.href}">${i.label}</a>`)).join('')}
-        <a class="ph-entrar" href="${rootPath}/index.html" id="phEntrar">Entrar</a>
+        <a class="ph-entrar" href="${rootPath}/login/index.html" id="phEntrar">Entrar</a>
       </div>
     </div>`;
 
   const phLinks = container.querySelector('#phLinks');
-  container.querySelector('#phHamburger').addEventListener('click', function () {
+  const phHamburger = container.querySelector('#phHamburger');
+  phHamburger.addEventListener('click', function () {
     const aberto = phLinks.classList.toggle('ph-aberto');
     this.setAttribute('aria-expanded', aberto ? 'true' : 'false');
+  });
+  // Ao tocar num item (ex.: "Produtos" na própria Home), o menu do celular fecha.
+  phLinks.addEventListener('click', (e) => {
+    if (!e.target.closest('a')) return;
+    phLinks.classList.remove('ph-aberto');
+    phHamburger.setAttribute('aria-expanded', 'false');
   });
 
   const session = await getSession();
@@ -86,7 +106,7 @@ export async function montarCabecalhoPublico({ container, rootPath = '.', pagina
     btnEntrar.href = '#';
     btnEntrar.addEventListener('click', async (e) => {
       e.preventDefault();
-      await signOut(`${rootPath}/index.html`);
+      await signOut(`${rootPath}/inicio/index.html`);
     });
   }
 
@@ -99,7 +119,7 @@ export async function montarCabecalhoPublico({ container, rootPath = '.', pagina
   container.querySelector('[data-acao="ajuda"]').addEventListener('click', async (e) => {
     e.preventDefault();
     if (!session) {
-      location.href = `${rootPath}/index.html?redirect=${encodeURIComponent('inicio/index.html')}`;
+      location.href = `${rootPath}/login/index.html?redirect=${encodeURIComponent('/inicio/index.html')}`;
       return;
     }
     const { abrirModalAjuda } = await import(`${rootPath}/assets/js/ajuda-modal.js`);
