@@ -37,13 +37,11 @@ section{padding:92px 0}section[id]{scroll-margin-top:84px}
 .hero .lead{font-size:18px;max-width:610px;line-height:1.5;margin-bottom:28px}
 .actions{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
 .price{color:var(--green);font-size:14px;font-weight:700}
-.steps-card{width:100%;max-width:400px;justify-self:end;background:var(--green);color:#e7ece6;border-top:5px solid var(--gold);min-height:295px;padding:26px;display:flex;flex-direction:column;justify-content:space-between;gap:26px}
-.steps-card .topline{font-size:10px;letter-spacing:.17em;text-transform:uppercase;color:#cdb37f}
-.steps-card ol{list-style:none;margin:0;padding:0}
-.steps-card li{display:flex;align-items:baseline;gap:16px;padding:13px 0;border-bottom:1px solid rgba(205,179,127,.35);font:21px Georgia,serif;color:#fffdf9}
-.steps-card li:first-child{border-top:1px solid rgba(205,179,127,.35)}
-.steps-card li span{font:12px Arial,sans-serif;letter-spacing:.1em;color:#cdb37f}
-.steps-card small{font-size:13px;color:#c9d3cb}
+.video-card{width:100%;max-width:400px;justify-self:end;background:var(--green);color:#e7ece6;border-top:5px solid var(--gold);padding:20px 20px 22px;display:flex;flex-direction:column;gap:16px}
+.video-card .topline{display:flex;justify-content:space-between;font-size:10px;letter-spacing:.17em;text-transform:uppercase;color:#cdb37f}
+.video-card video{display:block;width:100%;max-height:min(520px,70vh);aspect-ratio:450/642;object-fit:contain;background:#0f1f19;border:1px solid rgba(205,179,127,.35)}
+.video-card strong{display:block;font:24px/1.15 Georgia,serif;font-weight:400;color:#fffdf9}
+.video-card small{font-size:13px;color:#c9d3cb}
 
 /* a ideia por trás do Mapa: foto e texto no mesmo bege */
 .story{background:var(--beige);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
@@ -77,7 +75,7 @@ footer b{font:23px Georgia,serif;color:#fff}footer a{text-decoration:none}
 
 @media(max-width:850px){
   .hero-grid,.story-grid,.offer-grid{grid-template-columns:1fr;gap:36px}
-  .steps-card{justify-self:start}
+  .video-card{justify-self:start}
   .four-grid{grid-template-columns:repeat(2,1fr)}
   .feature:nth-child(2){border-right:0}.feature:nth-child(-n+2){border-bottom:1px solid var(--line)}.feature:nth-child(3){padding-left:0}
 }
@@ -86,7 +84,7 @@ footer b{font:23px Georgia,serif;color:#fff}footer a{text-decoration:none}
   section{padding:60px 0}.hero{padding:40px 0 60px}
   .credit{margin-bottom:30px}.hero .lead{font-size:16px}
   .actions .button{width:100%}.actions .price{width:100%;text-align:center}
-  .steps-card{max-width:none;min-height:0}
+  .video-card{max-width:none}
   .story-photo{height:300px}
   .story .button,.features .button{width:100%}
   .four-grid{grid-template-columns:1fr}
@@ -110,14 +108,12 @@ a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
     <p class="lead">Um diagnóstico com perguntas feitas para a clínica na ACP. Suas respostas dão origem a um Mapa da sua realidade e a um plano de ação de 30 dias.</p>
     <div class="actions"><a class="button" href="#comprar">Quero meu Mapa</a><span class="price">R$ 47,90 · pagamento único</span></div>
   </div>
-  <div class="steps-card">
-    <span class="topline">INDIA / Seu Mapa de 30 Dias</span>
-    <ol>
-      <li><span>01</span>Diagnóstico</li>
-      <li><span>02</span>Mapa</li>
-      <li><span>03</span>Plano de 30 dias</li>
-    </ol>
-    <small>Das suas respostas a um próximo passo claro.</small>
+  <div class="video-card">
+    <div class="topline"><span>INDIA / Por dentro</span><span>Vídeo</span></div>
+    <video src="../assets/video/mapa-por-dentro.mp4" poster="../assets/img/mapa-por-dentro-poster.jpg"
+           autoplay muted loop playsinline controls preload="metadata"
+           aria-label="Gravação da tela da plataforma mostrando o Meu Mapa da Clínica, o plano de ação de 30 dias e o Manual"></video>
+    <div><strong>Conheça o Mapa por dentro</strong><small>Diagnóstico, Mapa e plano de 30 dias na plataforma.</small></div>
   </div>
 </div></section>
 
@@ -159,6 +155,10 @@ a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 <script type="module">
 import { montarCabecalhoPublico } from '../assets/js/site-header.js';
 montarCabecalhoPublico({ container: document.getElementById('cabecalhoPublico'), rootPath: '..', paginaAtual: 'mapa-30-dias' });
+
+// Quem pede menos movimento vê o vídeo parado (pode dar play pelos controles).
+const video = document.querySelector('.video-card video');
+if (video && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { video.removeAttribute('autoplay'); video.pause(); }
 </script>
 </body>
 </html>
