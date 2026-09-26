@@ -43,7 +43,25 @@
 /* selo "Comece por aqui" no canto do card do Mapa */
 .product-card{position:relative}
 .selo-comece{position:absolute;top:14px;left:14px;z-index:2;background:var(--terracota,#9a5b34);color:#fdfaf4;font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:6px 11px;border-radius:999px;box-shadow:0 2px 8px rgba(23,63,49,.18)}
-.product-card .photo.p4{background:#eceeea url('../assets/img/mentoria-card.jpg') 35% 40%/cover no-repeat}
+.product-card .photo.p4{background:linear-gradient(to bottom,rgba(233,224,214,0) 78%,#e9e0d6),url('../assets/img/india-mapa.jpg') 72% 30%/cover no-repeat,#e9e0d6}
+/* foto sem esticar nem ampliar, deslocada para a direita: as costas/braço
+   (a ~87% da largura da foto) encostam na borda direita do card; o espaço
+   que sobra à esquerda é o próprio bege do fundo, com transição suave. */
+@supports (width:1cqw){
+  .product-card.mentoria{container-type:inline-size}
+  .product-card .photo.p4{
+    --foto-l:max(100cqw,285px);
+    background:
+      linear-gradient(to bottom,rgba(233,224,214,0) 78%,#e9e0d6),
+      linear-gradient(to right,#e9e0d6 calc(var(--foto-l) * .13),rgba(233,224,214,0) calc(var(--foto-l) * .24)),
+      url('../assets/img/india-mapa.jpg') right calc(var(--foto-l) * -.13) top/var(--foto-l) auto no-repeat,
+      #e9e0d6;
+  }
+}
+/* card Mentoria: foto e texto no mesmo bege do fundo da foto */
+.product-card.mentoria{background:#e9e0d6}
+/* card Mapa: a imagem também abre a página do Mapa de 30 Dias */
+.product-card .photo-link{display:block;text-decoration:none}
 /* card Aulas: animação da roda em loop (os vídeos das aulas ficam na página /aulas) */
 .product-card .photo.p7{background:#ececea;position:relative;overflow:hidden;align-items:stretch;justify-content:stretch}
 .product-card .photo.p7 .video-card{width:100%;height:100%;display:block;object-fit:cover;object-position:50% 50%}
@@ -101,7 +119,7 @@
 
     <div class="product-card mapa">
       <span class="selo-comece">Comece por aqui</span>
-      <div class="photo p1"></div>
+      <a class="photo-link" href="../mapa-30-dias/index.html" aria-label="Conhecer o Mapa de 30 Dias" tabindex="-1"><div class="photo p1"></div></a>
       <div class="body">
         <div class="kicker">Plano prático</div>
         <h3>Seu Mapa de 30 Dias</h3>
@@ -111,12 +129,12 @@
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>Mapa de desenvolvimento</li>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>Plano de ação em 30 dias</li>
         </ul>
-        <a class="cta" href="../compra/index.html" id="ctaClinica">Quero meu Mapa →</a>
+        <a class="cta" href="../mapa-30-dias/index.html" id="ctaClinica">Quero meu Mapa →</a>
       </div>
     </div>
 
     <div class="product-card mentoria">
-      <div class="photo p4" role="img" aria-label="Mentoria: India sorrindo e gesticulando, como numa conversa"></div>
+      <div class="photo p4" role="img" aria-label="India Araújo de Almeida sorrindo, de braços cruzados, em fundo bege"></div>
       <div class="body">
         <div class="kicker">Acompanhamento</div>
         <h3>Mentoria Clínica de Valor</h3>
