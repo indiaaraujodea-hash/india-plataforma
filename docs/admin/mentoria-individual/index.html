@@ -46,6 +46,19 @@
 .encontro-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--line);padding:10px 0}
 .nota-privada{background:#fdf4e3;border:1px solid #ecd8a8;border-radius:10px;padding:12px;margin-top:10px;font-size:13.5px;white-space:pre-wrap}
 .aviso-revisao{background:#eef3f0;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--green2,#245744);margin-bottom:16px}
+.exercicios-prioridade{border-top:1px solid var(--line);margin-top:14px;padding-top:12px}
+.exercicios-prioridade h4{margin:0 0 8px;font-size:13.5px;color:var(--green)}
+.exercicio-atribuido{border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:8px;background:var(--paper,#fbfaf7)}
+.exercicio-atribuido .topo{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.exercicio-atribuido .topo b{color:var(--green)}
+.exercicio-atribuido .resposta-box{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px;margin-top:8px;font-size:13px}
+.exercicio-atribuido .resposta-box ol{margin:4px 0 0;padding-left:18px}
+.exercicio-atribuido textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit;font-size:13px;min-height:50px;margin-top:6px}
+.exercicio-atribuido .acoes{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.exercicio-atribuido .acoes button{font-size:12px;padding:6px 12px}
+.vincular-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.vincular-row select{flex:1;min-width:160px;border:1px solid var(--line);border-radius:8px;padding:7px 9px;font:inherit;font-size:13px}
+.vincular-row input[type=date]{border:1px solid var(--line);border-radius:8px;padding:7px 9px;font:inherit;font-size:13px}
 </style>
 </head>
 <body>
@@ -142,7 +155,9 @@ function religarEventosPrioridades(mentoriaId, diagnosticoId, cicloAtual) {
     coletarPrioridadesDoDOM();
     const { error } = await supabase.from('mentoria_planos_mensais')
       .upsert({ mentoria_id: mentoriaId, diagnostico_id: diagnosticoId, ciclo: cicloAtual, prioridades: prioridadesAtuais, status: 'rascunho' }, { onConflict: 'mentoria_id,ciclo' });
-    document.getElementById('planoMsg').textContent = error ? `Erro: ${error.message}` : 'Rascunho salvo.';
+    if (error) { document.getElementById('planoMsg').textContent = `Erro: ${error.message}`; return; }
+    await carregarFicha();
+    document.getElementById('planoMsg').textContent = 'Rascunho salvo.';
   };
   const liberarBtn = document.getElementById('btnRevisarLiberar');
   if (liberarBtn) liberarBtn.onclick = async () => {
@@ -155,6 +170,50 @@ function religarEventosPrioridades(mentoriaId, diagnosticoId, cicloAtual) {
     document.getElementById('planoMsg').textContent = (e1 || e2) ? `Erro: ${(e1 || e2).message}` : 'Liberado — a mentorada verá assim que tiver acesso ativo.';
     if (!e1 && !e2) carregarFicha();
   };
+}
+
+function renderExercicioAtribuido(ea, exercicio, notasDoExercicio) {
+  const resposta = ea.resposta || null;
+  const perguntas = (exercicio && exercicio.perguntas) || [];
+  return `
+    <div class="exercicio-atribuido" data-atribuicao="${ea.id}">
+      <div class="topo">
+        <span><b>${exercicio ? exercicio.titulo : '(exercício removido da biblioteca)'}</b> — prazo ${fmtData(ea.prazo)}</span>
+        <span class="badge-status ${ea.status}">${ea.status}${resposta && resposta.concluido ? ' · concluído pela mentorada' : ''}</span>
+      </div>
+      ${ea.status === 'rascunho' ? `<div class="acoes"><button type="button" class="btn alt" data-liberar-exercicio="${ea.id}">Liberar para a mentorada →</button></div>` : ''}
+      ${resposta ? `
+        <div class="resposta-box">
+          <b>Resposta da mentorada</b>
+          ${resposta.respostas && resposta.respostas.length ? `<ol>${resposta.respostas.map((r, i) => `<li>${perguntas[i] ? `<i>${perguntas[i]}</i><br>` : ''}${r}</li>`).join('')}</ol>` : ''}
+          ${resposta.texto_livre ? `<p>${resposta.texto_livre}</p>` : ''}
+          <div class="small" style="margin-top:4px;opacity:.7">${ea.respondido_em ? new Date(ea.respondido_em).toLocaleString('pt-BR') : ''}</div>
+        </div>` : (ea.status === 'liberado' ? '<p class="small" style="margin-top:8px">Aguardando resposta da mentorada.</p>' : '')}
+
+      <label class="small" style="display:block;margin-top:10px;font-weight:700">Orientação visível para a mentorada</label>
+      <textarea class="orientacao-input" placeholder="Só aparece pra ela depois que você salvar aqui.">${ea.orientacao_visivel || ''}</textarea>
+      <div class="acoes"><button type="button" class="btn alt" data-salvar-orientacao="${ea.id}">Salvar orientação (visível pra ela)</button></div>
+
+      <label class="small" style="display:block;margin-top:10px;font-weight:700">Comentário privado (só você vê)</label>
+      ${notasDoExercicio.map((n) => `<div class="nota-privada" style="margin-top:6px">${n.texto}<div class="small" style="margin-top:4px;opacity:.7">${new Date(n.criado_em).toLocaleString('pt-BR')}</div></div>`).join('')}
+      <textarea class="nota-input" placeholder="Nota interna sobre essa resposta — nunca visível pra ela."></textarea>
+      <div class="acoes"><button type="button" class="btn alt" data-salvar-nota="${ea.id}">Salvar comentário privado</button></div>
+    </div>`;
+}
+
+function renderExerciciosPrioridade(i, acaoTexto, exerciciosDaPrioridade, biblioteca, notasPorAtribuicao) {
+  const opcoes = biblioteca.map((ex) => `<option value="${ex.id}">${ex.titulo}</option>`).join('');
+  return `
+    <div class="exercicios-prioridade" data-prioridade-idx="${i}">
+      <h4>Exercícios — Prioridade ${i + 1}${acaoTexto ? `: ${acaoTexto}` : ''}</h4>
+      ${exerciciosDaPrioridade.map((ea) => renderExercicioAtribuido(ea, biblioteca.find((b) => b.id === ea.exercicio_id) || ea.exercicio_biblioteca_cache, notasPorAtribuicao[ea.id] || [])).join('')}
+      ${biblioteca.length ? `
+        <div class="vincular-row">
+          <select class="select-exercicio">${opcoes}</select>
+          <input type="date" class="input-prazo-exercicio">
+          <button type="button" class="btn alt" data-vincular-prioridade="${i}" style="padding:7px 14px;font-size:12.5px">Vincular exercício</button>
+        </div>` : '<p class="small" style="margin-top:8px">A biblioteca ainda está vazia — crie exercícios na <a href="../exercicios/index.html">Biblioteca de Exercícios</a>.</p>'}
+    </div>`;
 }
 
 function coletarPrioridadesDoDOM() {
@@ -191,6 +250,16 @@ async function carregarFicha() {
   const plano = planos && planos[0];
   const { data: encontros } = await supabase.from('mentoria_encontros').select('*').eq('mentoria_id', mentoria.id).order('numero', { ascending: true });
   const { data: notas } = await supabase.from('mentoria_notas_privadas').select('*').eq('mentoria_id', mentoria.id).order('criado_em', { ascending: false });
+  const { data: biblioteca } = await supabase.from('exercicios_biblioteca').select('*').eq('ativo', true).order('titulo', { ascending: true });
+  const { data: exerciciosAtribuidos } = plano
+    ? await supabase.from('mentoria_exercicios_atribuidos').select('*').eq('mentoria_id', mentoria.id).eq('plano_id', plano.id)
+    : { data: [] };
+
+  const notasGerais = (notas || []).filter((n) => !n.exercicio_atribuido_id);
+  const notasPorAtribuicao = {};
+  (notas || []).filter((n) => n.exercicio_atribuido_id).forEach((n) => {
+    (notasPorAtribuicao[n.exercicio_atribuido_id] = notasPorAtribuicao[n.exercicio_atribuido_id] || []).push(n);
+  });
 
   prioridadesAtuais = (plano && plano.prioridades) || [];
 
@@ -238,6 +307,15 @@ async function carregarFicha() {
     </div>
 
     <div class="mi-card">
+      <h3 style="margin:0 0 4px;color:var(--green)">Exercícios do plano</h3>
+      ${plano && plano.id
+        ? (prioridadesAtuais.length
+            ? prioridadesAtuais.map((p, i) => renderExerciciosPrioridade(i, p.acao, (exerciciosAtribuidos || []).filter((ea) => ea.prioridade_idx === i), biblioteca || [], notasPorAtribuicao)).join('')
+            : '<p class="small">Adicione prioridades no Plano de Ação acima para poder vincular exercícios.</p>')
+        : '<p class="small">Salve o rascunho do Plano de Ação acima primeiro — os exercícios se vinculam a uma prioridade já salva.</p>'}
+    </div>
+
+    <div class="mi-card">
       <h3 style="margin:0 0 10px;color:var(--green)">Encontros</h3>
       ${(encontros && encontros.length) ? encontros.map((e) => `
         <div class="encontro-row">
@@ -250,12 +328,58 @@ async function carregarFicha() {
 
     <div class="mi-card">
       <h3 style="margin:0 0 10px;color:var(--green)">Notas privadas (só você vê)</h3>
-      ${(notas || []).map((n) => `<div class="nota-privada">${n.texto}<div class="small" style="margin-top:6px;opacity:.7">${new Date(n.criado_em).toLocaleString('pt-BR')}</div></div>`).join('') || '<p class="small">Nenhuma nota ainda.</p>'}
+      ${notasGerais.map((n) => `<div class="nota-privada">${n.texto}<div class="small" style="margin-top:6px;opacity:.7">${new Date(n.criado_em).toLocaleString('pt-BR')}</div></div>`).join('') || '<p class="small">Nenhuma nota ainda.</p>'}
     </div>
   `;
 
   redesenharPrioridades();
   religarEventosPrioridades(mentoria.id, diag ? diag.id : null, diag ? diag.ciclo : 1);
+  if (plano && plano.id) religarEventosExercicios(plano.id, diag ? diag.ciclo : 1);
+}
+
+function religarEventosExercicios(planoId, cicloAtual) {
+  document.querySelectorAll('[data-vincular-prioridade]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const wrap = btn.closest('.exercicios-prioridade');
+      const exercicioId = wrap.querySelector('.select-exercicio').value;
+      const prazo = wrap.querySelector('.input-prazo-exercicio').value || null;
+      if (!exercicioId) return;
+      const { data: { user } } = await supabase.auth.getUser();
+      const { error } = await supabase.from('mentoria_exercicios_atribuidos').insert({
+        mentoria_id: (await supabase.from('mentoria_planos_mensais').select('mentoria_id').eq('id', planoId).single()).data.mentoria_id,
+        plano_id: planoId, prioridade_idx: Number(wrap.dataset.prioridadeIdx), exercicio_id: exercicioId,
+        ciclo: cicloAtual, prazo, status: 'rascunho', criado_por: user.id,
+      });
+      if (error) { alert('Erro ao vincular: ' + error.message); return; }
+      carregarFicha();
+    });
+  });
+  document.querySelectorAll('[data-liberar-exercicio]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      const { error } = await supabase.from('mentoria_exercicios_atribuidos').update({ status: 'liberado', liberado_em: new Date().toISOString(), liberado_por: user.id }).eq('id', btn.dataset.liberarExercicio);
+      if (error) { alert('Erro ao liberar: ' + error.message); return; }
+      carregarFicha();
+    });
+  });
+  document.querySelectorAll('[data-salvar-orientacao]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const texto = btn.closest('.exercicio-atribuido').querySelector('.orientacao-input').value.trim();
+      const { error } = await supabase.from('mentoria_exercicios_atribuidos').update({ orientacao_visivel: texto, orientacao_em: new Date().toISOString() }).eq('id', btn.dataset.salvarOrientacao);
+      btn.parentElement.insertAdjacentHTML('beforeend', error ? `<span class="aviso-campo">Erro: ${error.message}</span>` : '<span class="small" style="color:#245744"> Salvo.</span>');
+    });
+  });
+  document.querySelectorAll('[data-salvar-nota]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const box = btn.closest('.exercicio-atribuido');
+      const texto = box.querySelector('.nota-input').value.trim();
+      if (!texto) return;
+      const mentoriaId = (await supabase.from('mentoria_exercicios_atribuidos').select('mentoria_id').eq('id', btn.dataset.salvarNota).single()).data.mentoria_id;
+      const { error } = await supabase.from('mentoria_notas_privadas').insert({ mentoria_id: mentoriaId, exercicio_atribuido_id: btn.dataset.salvarNota, texto });
+      if (error) { alert('Erro: ' + error.message); return; }
+      carregarFicha();
+    });
+  });
 }
 
 (async () => {
