@@ -159,9 +159,9 @@ async function carregarLista() {
 }
 
 (async () => {
-  const session = await requireAdmin('../../index.html', '../../login/index.html');
-  if (!session) return;
-  await mountAppShell('admin', session, '../..');
+  const ctx = await requireAdmin('../../index.html', '../../login/index.html');
+  if (!ctx) return;
+  await mountAppShell('admin', ctx.session, '../..');
   document.getElementById('btnNovo').addEventListener('click', () => { abrirFormulario(null); window.scrollTo(0, 0); });
   await carregarLista();
 })();

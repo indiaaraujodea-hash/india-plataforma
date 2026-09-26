@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Minha Mentoria | Clínica de Valor</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../assets/css/shell.css">
+<style>
+.tabs-bar{display:flex;gap:4px;flex-wrap:wrap;margin-top:18px;border-bottom:1px solid var(--line-soft);padding-bottom:0}
+.tabs-bar button{font:inherit;font-size:13.5px;padding:10px 16px;border:none;background:none;color:var(--muted2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs-bar button.active{color:var(--ink-green);font-weight:700;border-bottom-color:var(--ink-green)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.mi-lentes{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:14px}
+.lente{border:1px solid var(--line-soft);border-radius:12px;padding:14px;background:#fff}
+.lente h4{margin:0 0 8px;font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--terracota-dark)}
+.lente .conclusao{font-size:14px;font-weight:700;margin-bottom:4px;color:var(--ink-green)}
+.lente .a-confirmar{margin-top:8px;font-size:12.5px;background:#fdf4e3;border-left:3px solid #b67a22;padding:8px 10px;border-radius:4px}
+.prioridade-card{border:1px solid var(--line-soft);border-radius:12px;padding:14px 16px;margin-top:10px;background:#fff}
+.prioridade-card b{color:var(--ink-green);font-size:14.5px}
+.prioridade-card .meta{font-size:12.5px;color:var(--muted2);margin-top:6px;display:flex;gap:14px;flex-wrap:wrap}
+.aula-card{border:1px solid var(--line-soft);border-radius:12px;padding:14px;margin-top:10px;background:#fff;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.exercicio-card{border:1px solid var(--line-soft);border-radius:12px;padding:16px;margin-top:12px;background:#fff}
+.exercicio-card .topo{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.exercicio-card .topo b{color:var(--ink-green);font-size:15px}
+.badge-status{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:4px 10px;border-radius:999px}
+.badge-status.pendente{background:#fdf4e3;color:#8a5a11}
+.badge-status.concluido{background:#e7f1ea;color:#245744}
+.bloco-item{border:1px solid var(--line-soft);border-radius:8px;padding:10px;margin-top:8px;background:var(--paper,#fbfaf7)}
+.bloco-item textarea,.bloco-item input[type=text]{width:100%;border:1px solid var(--line-soft);border-radius:8px;padding:8px 10px;font:inherit;font-size:13.5px;margin-top:6px}
+.checklist-row{display:flex;align-items:center;gap:8px;margin-top:4px;font-size:13.5px}
+.orientacao-box{background:#fdf4e3;border-radius:8px;padding:10px 12px;margin-top:10px;font-size:13.5px}
+.encontro-card{border:1px solid var(--line-soft);border-radius:12px;padding:16px;margin-top:12px;background:#fff}
+.encontro-card textarea{width:100%;border:1px solid var(--line-soft);border-radius:8px;padding:8px 10px;font:inherit;font-size:13.5px;min-height:60px;margin-top:6px}
+.encontro-card label{display:block;font-size:12px;color:var(--muted2);text-transform:uppercase;letter-spacing:.03em;margin:10px 0 4px}
+.decisoes-box{background:var(--sidebar-active-bg);border-radius:8px;padding:10px 12px;margin-top:8px;font-size:13.5px}
+@media print{
+  .app-sidebar,.app-topbar,.tabs-bar,.no-print{display:none !important}
+  .tab-panel{display:block !important}
+  .app-content{padding:0 !important}
+}
+</style>
+</head>
+<body>
+
+<div class="plan-header">
+  <div class="eyebrow">Mentoria Individual</div>
+  <h1>Minha Mentoria</h1>
+  <p class="lead" style="color:var(--muted2)">Seu diagnóstico, plano e acompanhamento — só o que já foi liberado pra você.</p>
+</div>
+
+<div id="aviso"></div>
+
+<div id="conteudo" style="display:none">
+  <div class="tabs-bar no-print">
+    <button type="button" class="active" data-tab="diagnostico">Diagnóstico</button>
+    <button type="button" data-tab="plano">Plano do mês</button>
+    <button type="button" data-tab="aulas">Aulas</button>
+    <button type="button" data-tab="exercicios">Exercícios</button>
+    <button type="button" data-tab="encontros">Encontros</button>
+  </div>
+  <button type="button" class="btn alt no-print" id="btnImprimir" style="margin-top:14px;padding:8px 16px;font-size:13px">Imprimir / Salvar PDF</button>
+
+  <div class="tab-panel active" data-tab="diagnostico">
+    <div class="plan-card" style="margin-top:16px">
+      <div class="kicker">Diagnóstico</div>
+      <div class="mi-lentes" id="lentesWrap"></div>
+    </div>
+  </div>
+
+  <div class="tab-panel" data-tab="plano">
+    <div class="plan-card" style="margin-top:16px">
+      <div class="kicker">Plano de Ação — 30 dias</div>
+      <div id="prioridadesWrap"></div>
+    </div>
+  </div>
+
+  <div class="tab-panel" data-tab="aulas">
+    <div class="plan-card" style="margin-top:16px">
+      <div class="kicker">Aulas</div>
+      <div id="aulasWrap"></div>
+    </div>
+  </div>
+
+  <div class="tab-panel" data-tab="exercicios">
+    <div class="plan-card" style="margin-top:16px">
+      <div class="kicker">Exercícios</div>
+      <div id="exerciciosWrap"></div>
+    </div>
+  </div>
+
+  <div class="tab-panel" data-tab="encontros">
+    <div class="plan-card" style="margin-top:16px">
+      <div class="kicker">Encontros</div>
+      <div id="encontrosWrap"></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
+import { requireAuth } from '../assets/js/auth.js';
+import { mountAppShell } from '../assets/js/app-shell.js';
+
+avisarSupabaseNaoConfigurado();
+
+const fmtData = (iso) => iso ? new Date(iso + (iso.length === 10 ? 'T00:00:00' : '')).toLocaleDateString('pt-BR') : '—';
+let mentoriaId = null;
+
+function renderLente(nome, l) {
+  if (!l) return '';
+  return `<div class="lente"><h4>${nome}</h4><div class="conclusao">${l.conclusao || '—'}</div>${l.a_confirmar ? `<div class="a-confirmar">A confirmar: ${l.a_confirmar}</div>` : ''}</div>`;
+}
+
+function renderBlocoConteudo(b) {
+  if (b.tipo === 'texto') return `<p style="margin:0">${b.texto}</p>`;
+  if (b.tipo === 'pergunta') return `<p style="margin:0"><i>${b.texto}</i></p>`;
+  if (b.tipo === 'checklist') return (b.itens || []).map(() => '').join('');
+  if (b.tipo === 'tabela') return '';
+  return '';
+}
+
+function renderBlocoInput(b, i, respostaAtual, atribuicaoId) {
+  const r = (respostaAtual && respostaAtual[i]) || null;
+  if (b.tipo === 'texto') return '';
+  if (b.tipo === 'pergunta') return `<textarea class="bloco-resposta" data-bloco-idx="${i}" placeholder="Sua resposta">${r || ''}</textarea>`;
+  if (b.tipo === 'checklist') {
+    const marcados = Array.isArray(r) ? r : [];
+    return (b.itens || []).map((it, j) => `<div class="checklist-row"><input type="checkbox" class="bloco-checklist" data-bloco-idx="${i}" data-item-idx="${j}" ${marcados[j] ? 'checked' : ''}> ${it}</div>`).join('');
+  }
+  if (b.tipo === 'tabela') {
+    const linhas = Array.isArray(r) && r.length ? r : Array.from({ length: b.linhas_iniciais || 3 }).map(() => (b.colunas || []).map(() => ''));
+    return `<table style="width:100%;border-collapse:collapse;margin-top:6px" class="bloco-tabela" data-bloco-idx="${i}">
+      <tr>${(b.colunas || []).map((c) => `<th style="border:1px solid var(--line-soft);padding:4px;font-size:12px;text-align:left">${c}</th>`).join('')}</tr>
+      ${linhas.map((linha, li) => `<tr>${(b.colunas || []).map((c, ci) => `<td style="border:1px solid var(--line-soft);padding:2px"><input type="text" class="bloco-tabela-cel" data-linha="${li}" data-col="${ci}" value="${linha[ci] || ''}" style="width:100%;border:none;padding:4px;font:inherit;font-size:12.5px"></td>`).join('')}</tr>`).join('')}
+    </table>`;
+  }
+  return '';
+}
+
+function coletarRespostaBlocos(card, blocos) {
+  return blocos.map((b, i) => {
+    if (b.tipo === 'pergunta') {
+      const el = card.querySelector(`.bloco-resposta[data-bloco-idx="${i}"]`);
+      return el ? el.value.trim() : null;
+    }
+    if (b.tipo === 'checklist') {
+      return [...card.querySelectorAll(`.bloco-checklist[data-bloco-idx="${i}"]`)].map((c) => c.checked);
+    }
+    if (b.tipo === 'tabela') {
+      const tabela = card.querySelector(`.bloco-tabela[data-bloco-idx="${i}"]`);
+      if (!tabela) return [];
+      const linhasN = Math.max(0, ...[...tabela.querySelectorAll('[data-linha]')].map((el) => Number(el.dataset.linha) + 1));
+      return Array.from({ length: linhasN }).map((_, li) => [...tabela.querySelectorAll(`[data-linha="${li}"]`)].sort((a, c) => Number(a.dataset.col) - Number(c.dataset.col)).map((el) => el.value));
+    }
+    return null;
+  });
+}
+
+async function carregar() {
+  const session = await requireAuth('../login/index.html');
+  if (!session) return;
+  await mountAppShell('mentoria', session, '..');
+
+  const aviso = document.getElementById('aviso');
+  const { data: mentoria, error } = await supabase.from('mentoria_individual').select('*').eq('user_id', session.user.id).eq('status', 'ativa').maybeSingle();
+  if (error) { aviso.innerHTML = `<div class="alert alert-error">${error.message}</div>`; return; }
+  if (!mentoria) { aviso.innerHTML = `<div class="alert alert-info">Sua Mentoria Individual ainda não está disponível aqui. Fale com a equipe INDIA se você já iniciou o processo.</div>`; return; }
+  mentoriaId = mentoria.id;
+  document.getElementById('conteudo').style.display = '';
+
+  document.querySelectorAll('.tabs-bar button').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tabs-bar button').forEach((b) => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelector(`.tab-panel[data-tab="${btn.dataset.tab}"]`).classList.add('active');
+    });
+  });
+  document.getElementById('btnImprimir').addEventListener('click', () => window.print());
+
+  const { data: diagnosticos } = await supabase.from('mentoria_diagnosticos').select('*').eq('mentoria_id', mentoria.id).eq('status', 'liberado').order('ciclo', { ascending: false }).limit(1);
+  const diag = diagnosticos && diagnosticos[0];
+  const lentes = (diag && diag.analise) || {};
+  document.getElementById('lentesWrap').innerHTML = [
+    renderLente('Demanda / Captação', lentes.demanda_captacao), renderLente('Conversão', lentes.conversao),
+    renderLente('Financeiro / Caixa', lentes.financeiro_caixa), renderLente('Capacidade / Agenda', lentes.capacidade_agenda),
+    renderLente('Concentração de receita', lentes.concentracao_receita), renderLente('Previsibilidade', lentes.previsibilidade),
+  ].join('') || '<p class="small">Seu diagnóstico ainda não foi liberado.</p>';
+
+  const { data: planos } = await supabase.from('mentoria_planos_mensais').select('*').eq('mentoria_id', mentoria.id).eq('status', 'liberado').order('ciclo', { ascending: false }).limit(1);
+  const plano = planos && planos[0];
+  document.getElementById('prioridadesWrap').innerHTML = plano
+    ? (plano.prioridades || []).map((p) => `
+        <div class="prioridade-card">
+          <b>${p.acao}</b>
+          <div class="meta">
+            <span>Responsável: ${p.responsavel || 'você'}</span>
+            <span>Prazo: ${fmtData(p.prazo)}</span>
+            ${p.indicador ? `<span>Indicador: ${p.indicador}</span>` : ''}
+          </div>
+        </div>`).join('') || '<p class="small">Nenhuma prioridade neste ciclo.</p>'
+    : '<p class="small">Seu plano deste mês ainda não foi liberado.</p>';
+
+  const { data: aulasLiberadas } = await supabase.from('mentoria_aulas_liberadas').select('*, aulas_biblioteca(*)').eq('mentoria_id', mentoria.id);
+  document.getElementById('aulasWrap').innerHTML = (aulasLiberadas && aulasLiberadas.length)
+    ? aulasLiberadas.map((al) => { const a = al.aulas_biblioteca; return `
+        <div class="aula-card">
+          <div><b style="color:var(--ink-green)">${a.titulo}</b>${a.descricao ? `<div class="small">${a.descricao}</div>` : ''}</div>
+          <div>${a.video_url ? `<a class="btn alt" href="${a.video_url}" target="_blank" rel="noopener" style="padding:7px 14px;font-size:12.5px">Assistir ↗</a>` : ''}${a.arquivo_url ? `<a class="btn alt" href="${a.arquivo_url}" target="_blank" rel="noopener" style="padding:7px 14px;font-size:12.5px">Material ↗</a>` : ''}</div>
+        </div>`; }).join('')
+    : '<p class="small">Nenhuma aula liberada ainda.</p>';
+
+  const { data: exerciciosAtribuidos } = await supabase.from('mentoria_exercicios_atribuidos').select('*').eq('mentoria_id', mentoria.id).eq('status', 'liberado').order('prazo', { ascending: true });
+  const idsBiblioteca = (exerciciosAtribuidos || []).filter((ea) => ea.exercicio_id).map((ea) => ea.exercicio_id);
+  const { data: biblioteca } = idsBiblioteca.length ? await supabase.from('exercicios_biblioteca').select('*').in('id', idsBiblioteca) : { data: [] };
+
+  document.getElementById('exerciciosWrap').innerHTML = (exerciciosAtribuidos && exerciciosAtribuidos.length)
+    ? exerciciosAtribuidos.map((ea) => {
+        const exercicio = (biblioteca || []).find((b) => b.id === ea.exercicio_id);
+        const blocos = ea.blocos_adhoc || (exercicio && exercicio.blocos && exercicio.blocos.length ? exercicio.blocos : null);
+        const titulo = ea.titulo_adhoc || (exercicio ? exercicio.titulo : '');
+        const resposta = ea.resposta || {};
+        const concluido = !!resposta.concluido;
+        return `
+          <div class="exercicio-card" data-atribuicao="${ea.id}">
+            <div class="topo"><b>${titulo}</b><span class="badge-status ${concluido ? 'concluido' : 'pendente'}">${concluido ? 'concluído' : `prazo ${fmtData(ea.prazo)}`}</span></div>
+            ${exercicio && exercicio.objetivo ? `<p class="small" style="margin-top:6px">${exercicio.objetivo}</p>` : ''}
+            ${exercicio && exercicio.instrucoes ? `<p class="small">${exercicio.instrucoes}</p>` : ''}
+            ${blocos ? blocos.map((b, i) => `<div class="bloco-item">${renderBlocoConteudo(b)}${renderBlocoInput(b, i, resposta.blocos_respostas, ea.id)}</div>`).join('') : (exercicio && exercicio.perguntas || []).map((p, i) => `<div class="bloco-item"><p style="margin:0"><i>${p}</i></p><textarea class="pergunta-antiga-resposta" data-idx="${i}">${(resposta.respostas || [])[i] || ''}</textarea></div>`).join('')}
+            ${ea.orientacao_visivel ? `<div class="orientacao-box"><b>Orientação da INDIA:</b> ${ea.orientacao_visivel}</div>` : ''}
+            <div class="no-print" style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap">
+              <button type="button" class="btn alt" data-salvar-exercicio="${ea.id}" style="padding:8px 14px;font-size:12.5px">Salvar resposta</button>
+              <label style="display:flex;align-items:center;gap:6px;font-size:13px"><input type="checkbox" class="marcar-concluido" ${concluido ? 'checked' : ''} style="width:auto"> Marcar como concluído</label>
+            </div>
+            <p class="small" id="msgExercicio-${ea.id}" style="margin-top:6px"></p>
+          </div>`;
+      }).join('')
+    : '<p class="small">Nenhum exercício liberado ainda.</p>';
+
+  document.querySelectorAll('[data-salvar-exercicio]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const ea = (exerciciosAtribuidos || []).find((e) => e.id === btn.dataset.salvarExercicio);
+      const card = btn.closest('.exercicio-card');
+      const exercicio = (biblioteca || []).find((b) => b.id === ea.exercicio_id);
+      const blocos = ea.blocos_adhoc || (exercicio && exercicio.blocos && exercicio.blocos.length ? exercicio.blocos : null);
+      const concluido = card.querySelector('.marcar-concluido').checked;
+      let novaResposta;
+      if (blocos) {
+        novaResposta = { blocos_respostas: coletarRespostaBlocos(card, blocos), concluido };
+      } else {
+        const respostas = [...card.querySelectorAll('.pergunta-antiga-resposta')].map((el) => el.value.trim());
+        novaResposta = { respostas, concluido };
+      }
+      const { error } = await supabase.from('mentoria_exercicios_atribuidos').update({ resposta: novaResposta, respondido_em: new Date().toISOString() }).eq('id', ea.id);
+      document.getElementById(`msgExercicio-${ea.id}`).textContent = error ? `Erro: ${error.message}` : 'Resposta salva.';
+    });
+  });
+
+  const { data: encontros } = await supabase.from('mentoria_encontros').select('*').eq('mentoria_id', mentoria.id).order('numero', { ascending: true });
+  document.getElementById('encontrosWrap').innerHTML = (encontros && encontros.length)
+    ? encontros.map((e) => `
+        <div class="encontro-card" data-encontro="${e.id}">
+          <b style="color:var(--ink-green)">Encontro ${e.numero}${e.data_agendada ? ` — ${fmtData(e.data_agendada)}` : ''}</b>
+          ${(e.decisoes || e.proximas_acoes) ? `<div class="decisoes-box">${e.decisoes ? `<div><b>Decisões:</b> ${e.decisoes}</div>` : ''}${e.proximas_acoes ? `<div style="margin-top:4px"><b>Próximas ações:</b> ${e.proximas_acoes}</div>` : ''}</div>` : ''}
+          ${!e.checkin_em ? `
+            <label>Como foram os últimos 15 dias?</label><textarea class="checkin-15dias"></textarea>
+            <label>O que funcionou?</label><textarea class="checkin-funcionou"></textarea>
+            <label>O que não funcionou?</label><textarea class="checkin-nao-funcionou"></textarea>
+            <label>Alguma dúvida para o encontro?</label><textarea class="checkin-duvida"></textarea>
+            <button type="button" class="btn alt no-print" data-enviar-checkin="${e.id}" style="margin-top:10px;padding:8px 14px;font-size:12.5px">Enviar check-in</button>
+          ` : `<p class="small" style="margin-top:8px">Check-in enviado em ${fmtData(e.checkin_em)}.</p>`}
+          ${(e.realizado && e.nota_pos_encontro == null) ? `
+            <label>De 0 a 10, como você avalia este encontro?</label><input type="number" min="0" max="10" class="pos-nota" style="border:1px solid var(--line-soft);border-radius:8px;padding:8px 10px;font:inherit;width:80px">
+            <label>Algum insight que ficou?</label><textarea class="pos-insight"></textarea>
+            <button type="button" class="btn alt no-print" data-enviar-pos="${e.id}" style="margin-top:8px;padding:8px 14px;font-size:12.5px">Enviar</button>
+          ` : ''}
+          <p class="small" id="msgEncontro-${e.id}" style="margin-top:6px"></p>
+        </div>`).join('')
+    : '<p class="small">Nenhum encontro agendado ainda.</p>';
+
+  document.querySelectorAll('[data-enviar-checkin]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const card = btn.closest('.encontro-card');
+      const checkin = {
+        ultimos_15_dias: card.querySelector('.checkin-15dias').value.trim(),
+        funcionou: card.querySelector('.checkin-funcionou').value.trim(),
+        nao_funcionou: card.querySelector('.checkin-nao-funcionou').value.trim(),
+        duvida: card.querySelector('.checkin-duvida').value.trim(),
+      };
+      const { error } = await supabase.from('mentoria_encontros').update({ checkin_respostas: checkin, checkin_em: new Date().toISOString() }).eq('id', btn.dataset.enviarCheckin);
+      document.getElementById(`msgEncontro-${btn.dataset.enviarCheckin}`).textContent = error ? `Erro: ${error.message}` : 'Check-in enviado.';
+    });
+  });
+  document.querySelectorAll('[data-enviar-pos]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const card = btn.closest('.encontro-card');
+      const nota = Number(card.querySelector('.pos-nota').value) || null;
+      const insight = card.querySelector('.pos-insight').value.trim();
+      const { error } = await supabase.from('mentoria_encontros').update({ nota_pos_encontro: nota, insight_pos_encontro: insight }).eq('id', btn.dataset.enviarPos);
+      document.getElementById(`msgEncontro-${btn.dataset.enviarPos}`).textContent = error ? `Erro: ${error.message}` : 'Enviado, obrigada!';
+    });
+  });
+}
+
+carregar();
+</script>
+</body>
+</html>

@@ -1,0 +1,812 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="robots" content="noindex">
+<title>Mentoria Individual | Painel Administrativo</title>
+<link rel="stylesheet" href="../../../style.css">
+<link rel="stylesheet" href="../../../assets/css/shell.css">
+<style>
+.mi-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:16px}
+.mi-lentes{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-top:14px}
+.lente{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--paper,#fbfaf7)}
+.lente h4{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--green)}
+.lente .conclusao{font-size:14px;font-weight:700;margin-bottom:6px}
+.lente .dado{font-size:13px;color:var(--ink);margin-bottom:4px}
+.lente .conta{font-size:12px;color:var(--muted);margin-bottom:4px}
+.lente .meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.tag-tipo{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:3px 9px;border-radius:999px}
+.tag-tipo.confirmado{background:#e7f1ea;color:#245744}
+.tag-tipo.confirmado_e_declarado{background:#e7f1ea;color:#245744}
+.tag-tipo.declarado{background:#fff5e5;color:#8a5a11}
+.tag-tipo.ausente{background:#eee;color:#666}
+.tag-tipo.conflito{background:#fbe9ea;color:#a43b45}
+.tag-tipo.ambiguo{background:#fbe9ea;color:#a43b45}
+.lente .data-ref{font-size:11.5px;color:var(--muted)}
+.lente .a-confirmar{margin-top:8px;font-size:12.5px;background:#fff5e5;border-left:3px solid #b67a22;padding:8px 10px;border-radius:4px}
+.conflitos-box{margin-top:18px}
+.conflito-item{border:1px solid #f0c7ca;background:#fbe9ea;border-radius:12px;padding:14px 16px;margin-top:10px}
+.conflito-item h4{margin:0 0 6px;color:#a43b45;font-size:14px}
+.conflito-item .valores{display:flex;gap:16px;flex-wrap:wrap;margin:8px 0;font-size:13px}
+.conflito-item .valores b{display:block;font-size:11px;color:var(--muted);text-transform:uppercase}
+.conflito-item .acao{font-size:12.5px;color:var(--ink);margin-top:6px;font-style:italic}
+.badge-status{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:4px 10px;border-radius:999px}
+.badge-status.rascunho{background:#eee;color:#666}
+.badge-status.revisado{background:#fff5e5;color:#8a5a11}
+.badge-status.liberado{background:#e7f1ea;color:#245744}
+.aviso-campo{font-size:12px;color:#a43b45;margin-top:2px}
+.prioridade-form{border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:12px;background:#fff}
+.prioridade-form .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.prioridade-form label{display:block;font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin:8px 0 4px}
+.prioridade-form input,.prioridade-form textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit;font-size:13.5px}
+.prioridade-form textarea{min-height:50px}
+.remover-prioridade{background:none;border:none;color:var(--muted);text-decoration:underline;font-size:12.5px;cursor:pointer;margin-top:8px}
+.encontro-card{border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:10px;background:#fff}
+.encontro-card .topo{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.encontro-card textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit;font-size:13.5px;min-height:50px;margin-top:6px}
+.encontro-card label{display:block;font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin:10px 0 4px}
+.checkin-box{background:var(--paper,#fbfaf7);border:1px solid var(--line);border-radius:8px;padding:10px;margin-top:8px;font-size:13px}
+.nota-privada{background:#fdf4e3;border:1px solid #ecd8a8;border-radius:10px;padding:12px;margin-top:10px;font-size:13.5px;white-space:pre-wrap}
+.aviso-revisao{background:#eef3f0;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--green2,#245744);margin-bottom:16px}
+.exercicios-prioridade{border-top:1px solid var(--line);margin-top:14px;padding-top:12px}
+.exercicios-prioridade h4{margin:0 0 8px;font-size:13.5px;color:var(--green)}
+.exercicio-atribuido{border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:8px;background:var(--paper,#fbfaf7)}
+.exercicio-atribuido .topo{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.exercicio-atribuido .topo b{color:var(--green)}
+.exercicio-atribuido .resposta-box{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px;margin-top:8px;font-size:13px}
+.exercicio-atribuido .resposta-box ol{margin:4px 0 0;padding-left:18px}
+.exercicio-atribuido textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit;font-size:13px;min-height:50px;margin-top:6px}
+.exercicio-atribuido .acoes{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.exercicio-atribuido .acoes button{font-size:12px;padding:6px 12px}
+.vincular-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.vincular-row select{flex:1;min-width:160px;border:1px solid var(--line);border-radius:8px;padding:7px 9px;font:inherit;font-size:13px}
+.vincular-row input[type=date]{border:1px solid var(--line);border-radius:8px;padding:7px 9px;font:inherit;font-size:13px}
+
+.tabs-bar{display:flex;gap:4px;flex-wrap:wrap;margin-top:18px;border-bottom:1px solid var(--line);padding-bottom:0}
+.tabs-bar button{font:inherit;font-size:13.5px;padding:10px 16px;border:none;background:none;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs-bar button.active{color:var(--green);font-weight:700;border-bottom-color:var(--green)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+.ativacao-box{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px}
+.ativacao-box input[type=email]{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit;font-size:13.5px;min-width:220px}
+.convite-texto{background:var(--paper,#fbfaf7);border:1px solid var(--line);border-radius:8px;padding:10px;font-size:12.5px;margin-top:8px;white-space:pre-wrap}
+
+.aula-card{border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:10px;background:#fff;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.aula-card b{color:var(--green)}
+
+.adhoc-form{border:1px dashed var(--line);border-radius:12px;padding:16px;margin-top:16px;background:var(--paper,#fbfaf7)}
+.adhoc-form label{display:block;font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin:10px 0 4px}
+.adhoc-form input,.adhoc-form textarea,.adhoc-form select{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit;font-size:13.5px}
+.bloco-item{border:1px solid var(--line);border-radius:8px;padding:10px;margin-top:8px;background:#fff}
+.bloco-item .row{display:flex;gap:8px;align-items:center}
+.bloco-item button{background:none;border:none;color:var(--muted);text-decoration:underline;font-size:12px;cursor:pointer}
+.checklist-item-row,.tabela-col-row{display:flex;gap:6px;margin-top:4px}
+
+.historico-item{border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:10px;background:#fff}
+.historico-item h4{margin:0 0 6px;color:var(--green)}
+
+@media print{
+  .app-sidebar,.app-topbar,.tabs-bar,.exercicio-atribuido .acoes,.nota-privada,#painelAtivacao,.no-print{display:none !important}
+  .tab-panel{display:block !important}
+  .app-content{padding:0 !important}
+}
+</style>
+</head>
+<body>
+<main class="wrap" style="max-width:1000px">
+  <section class="section">
+    <div class="eyebrow">Painel Administrativo · Mentorias · Individuais</div>
+    <h1 class="serif" style="font-size:34px;color:var(--green);margin:8px 0" id="tituloFicha">Mentoria Individual</h1>
+    <p style="margin:0 0 6px" class="no-print"><a href="../index.html" class="small">← Voltar para Individuais</a></p>
+    <div class="aviso-revisao no-print" id="avisoAmbiente" style="display:none">
+      Ambiente de revisão — nenhum dado real de acesso foi ativado e nada foi publicado.
+    </div>
+    <div id="conteudo"><p>Carregando…</p></div>
+  </section>
+</main>
+<footer class="no-print">INDIA · CAFÉ, PESSOAS E NEGÓCIOS DE VALOR · Clínica de Valor</footer>
+
+<script type="module">
+import { supabase, avisarSupabaseNaoConfigurado } from '../../../assets/js/supabase-client.js';
+import { requireAdmin } from '../../../assets/js/auth.js';
+import { mountAppShell } from '../../../assets/js/app-shell.js';
+
+avisarSupabaseNaoConfigurado();
+
+const TIPO_LABEL = {
+  confirmado: 'Confirmado', confirmado_e_declarado: 'Confirmado + declarado',
+  declarado: 'Declarado pela mentorada', inferencia: 'Inferência', ausente: 'Dado ausente', conflito: 'Conflito', ambiguo: 'Ambíguo',
+};
+const fmtData = (iso) => iso ? new Date(iso + (iso.length === 10 ? 'T00:00:00' : '')).toLocaleDateString('pt-BR') : '—';
+const fmtDataHora = (iso) => iso ? new Date(iso).toLocaleString('pt-BR') : '—';
+
+function renderLente(nome, l) {
+  if (!l) return '';
+  const tipoClasse = (l.tipo || '').replace(/[^a-z_]/g, '');
+  return `
+    <div class="lente">
+      <h4>${nome}</h4>
+      <div class="conclusao">${l.conclusao || '—'}</div>
+      <div class="dado"><b>Dado:</b> ${l.dado || '—'}</div>
+      <div class="conta"><b>Conta:</b> ${l.conta || '—'}</div>
+      <div class="meta">
+        <span class="tag-tipo ${tipoClasse}">${TIPO_LABEL[l.tipo] || l.tipo || '—'}</span>
+        <span class="data-ref">${fmtData(l.data_referencia)}</span>
+      </div>
+      ${l.a_confirmar ? `<div class="a-confirmar"><b>A confirmar:</b> ${l.a_confirmar}</div>` : ''}
+    </div>`;
+}
+
+function renderConflito(c) {
+  const valoresHtml = Object.entries(c.valores || {}).map(([fonte, v]) =>
+    `<div><b>${fonte}</b>${typeof v === 'object' ? JSON.stringify(v) : v}</div>`).join('');
+  return `
+    <div class="conflito-item">
+      <h4>⚠ Conflito não resolvido — ${c.campo}</h4>
+      <div>${c.descricao}</div>
+      <div class="valores">${valoresHtml}</div>
+      <div class="acao">Ação sugerida: ${c.acao_sugerida}</div>
+    </div>`;
+}
+
+let prioridadesAtuais = [];
+let contexto = {}; // guarda ids/estado usados pelos handlers religados a cada render
+
+function renderPrioridade(p, i) {
+  return `
+    <div class="prioridade-form" data-idx="${i}">
+      <label>Ação concreta</label><textarea class="p-acao">${p.acao || ''}</textarea>
+      <div class="grid2">
+        <div><label>Responsável</label><input type="text" class="p-responsavel" value="${p.responsavel || 'Aline'}"></div>
+        <div><label>Prazo</label><input type="date" class="p-prazo" value="${p.prazo || ''}"></div>
+      </div>
+      <div class="grid2">
+        <div><label>Indicador</label><input type="text" class="p-indicador" value="${p.indicador || ''}"></div>
+        <div><label>Linha de base</label><input type="text" class="p-linha_base" value="${p.linha_base || ''}"></div>
+      </div>
+      <label>Critério de conclusão</label><textarea class="p-criterio">${p.criterio_conclusao || ''}</textarea>
+      <button type="button" class="remover-prioridade" data-remove="${i}">Remover esta prioridade</button>
+    </div>`;
+}
+
+function coletarPrioridadesDoDOM() {
+  prioridadesAtuais = [...document.querySelectorAll('.prioridade-form')].map((el) => ({
+    acao: el.querySelector('.p-acao').value.trim(),
+    responsavel: el.querySelector('.p-responsavel').value.trim(),
+    prazo: el.querySelector('.p-prazo').value,
+    indicador: el.querySelector('.p-indicador').value.trim(),
+    linha_base: el.querySelector('.p-linha_base').value.trim(),
+    criterio_conclusao: el.querySelector('.p-criterio').value.trim(),
+  }));
+}
+
+function redesenharPrioridades() {
+  document.getElementById('prioridadesWrap').innerHTML = prioridadesAtuais.map(renderPrioridade).join('') || '<p class="small">Nenhuma prioridade ainda — clique em "+ Adicionar prioridade".</p>';
+  document.querySelectorAll('[data-remove]').forEach((btn) => {
+    btn.addEventListener('click', () => { prioridadesAtuais.splice(Number(btn.dataset.remove), 1); redesenharPrioridades(); });
+  });
+}
+
+// ---------- Blocos de exercício (texto / pergunta / checklist / tabela) ----------
+function renderBlocoConteudo(b) {
+  if (b.tipo === 'texto') return `<p>${b.texto}</p>`;
+  if (b.tipo === 'pergunta') return `<p><i>${b.texto}</i></p>`;
+  if (b.tipo === 'checklist') return `<ul style="margin:4px 0;padding-left:18px">${(b.itens || []).map((it) => `<li>${it}</li>`).join('')}</ul>`;
+  if (b.tipo === 'tabela') return `<table style="width:100%;border-collapse:collapse;margin-top:4px"><tr>${(b.colunas || []).map((c) => `<th style="border:1px solid var(--line);padding:4px;font-size:12px;text-align:left">${c}</th>`).join('')}</tr>${Array.from({ length: b.linhas_iniciais || 3 }).map(() => `<tr>${(b.colunas || []).map(() => `<td style="border:1px solid var(--line);padding:4px">&nbsp;</td>`).join('')}</tr>`).join('')}</table>`;
+  return '';
+}
+
+function renderBlocoResposta(b, i, respostaBlocos) {
+  const r = (respostaBlocos && respostaBlocos[i]) || null;
+  if (b.tipo === 'pergunta') return `<div class="small"><b>Resposta:</b> ${r != null ? r : '<i>ainda não respondeu</i>'}</div>`;
+  if (b.tipo === 'checklist') {
+    const marcados = Array.isArray(r) ? r : [];
+    return `<div class="small"><b>Marcados:</b> ${(b.itens || []).map((it, j) => `${marcados[j] ? '☑' : '☐'} ${it}`).join(' · ')}</div>`;
+  }
+  if (b.tipo === 'tabela') {
+    if (!r || !r.length) return '<div class="small"><i>Tabela ainda não preenchida.</i></div>';
+    return `<table style="width:100%;border-collapse:collapse;margin-top:4px">${r.map((linha) => `<tr>${linha.map((v) => `<td style="border:1px solid var(--line);padding:4px;font-size:12.5px">${v || ''}</td>`).join('')}</tr>`).join('')}</table>`;
+  }
+  return '';
+}
+
+function renderExercicioAtribuido(ea, exercicio, notasDoExercicio) {
+  const resposta = ea.resposta || null;
+  const blocos = ea.blocos_adhoc || (exercicio && exercicio.blocos && exercicio.blocos.length ? exercicio.blocos : null);
+  const titulo = ea.titulo_adhoc || (exercicio ? exercicio.titulo : '(exercício removido)');
+  const perguntasAntigas = (!blocos && exercicio && exercicio.perguntas) || [];
+  return `
+    <div class="exercicio-atribuido" data-atribuicao="${ea.id}">
+      <div class="topo">
+        <span><b>${titulo}</b> — prazo ${fmtData(ea.prazo)}</span>
+        <span class="badge-status ${ea.status}">${ea.status}${resposta && resposta.concluido ? ' · concluído pela mentorada' : ''}</span>
+      </div>
+      ${blocos ? `<div style="margin-top:8px">${blocos.map((b, i) => `<div class="bloco-item" style="background:#fff">${renderBlocoConteudo(b)}${renderBlocoResposta(b, i, resposta && resposta.blocos_respostas)}</div>`).join('')}</div>` : ''}
+      ${ea.status === 'rascunho' ? `<div class="acoes"><button type="button" class="btn alt" data-liberar-exercicio="${ea.id}">Liberar para a mentorada →</button></div>` : ''}
+      ${(!blocos && resposta) ? `
+        <div class="resposta-box">
+          <b>Resposta da mentorada</b>
+          ${resposta.respostas && resposta.respostas.length ? `<ol>${resposta.respostas.map((r, i) => `<li>${perguntasAntigas[i] ? `<i>${perguntasAntigas[i]}</i><br>` : ''}${r}</li>`).join('')}</ol>` : ''}
+          ${resposta.texto_livre ? `<p>${resposta.texto_livre}</p>` : ''}
+          <div class="small" style="margin-top:4px;opacity:.7">${ea.respondido_em ? fmtDataHora(ea.respondido_em) : ''}</div>
+        </div>` : ((!blocos && !resposta && ea.status === 'liberado') ? '<p class="small" style="margin-top:8px">Aguardando resposta da mentorada.</p>' : '')}
+
+      <label class="small" style="display:block;margin-top:10px;font-weight:700">Orientação visível para a mentorada</label>
+      <textarea class="orientacao-input" placeholder="Só aparece pra ela depois que você salvar aqui.">${ea.orientacao_visivel || ''}</textarea>
+      <div class="acoes"><button type="button" class="btn alt" data-salvar-orientacao="${ea.id}">Salvar orientação (visível pra ela)</button></div>
+
+      <label class="small" style="display:block;margin-top:10px;font-weight:700">Comentário privado (só você vê)</label>
+      ${notasDoExercicio.map((n) => `<div class="nota-privada" style="margin-top:6px">${n.texto}<div class="small" style="margin-top:4px;opacity:.7">${fmtDataHora(n.criado_em)}</div></div>`).join('')}
+      <textarea class="nota-input" placeholder="Nota interna sobre essa resposta — nunca visível pra ela."></textarea>
+      <div class="acoes"><button type="button" class="btn alt" data-salvar-nota="${ea.id}">Salvar comentário privado</button></div>
+    </div>`;
+}
+
+function renderExerciciosPrioridade(i, acaoTexto, exerciciosDaPrioridade, biblioteca, notasPorAtribuicao) {
+  const opcoes = biblioteca.map((ex) => `<option value="${ex.id}">${ex.titulo}</option>`).join('');
+  return `
+    <div class="exercicios-prioridade" data-prioridade-idx="${i}">
+      <h4>Exercícios — Prioridade ${i + 1}${acaoTexto ? `: ${acaoTexto}` : ''}</h4>
+      ${exerciciosDaPrioridade.map((ea) => renderExercicioAtribuido(ea, biblioteca.find((b) => b.id === ea.exercicio_id), notasPorAtribuicao[ea.id] || [])).join('')}
+      ${biblioteca.length ? `
+        <div class="vincular-row">
+          <select class="select-exercicio">${opcoes}</select>
+          <input type="date" class="input-prazo-exercicio">
+          <button type="button" class="btn alt" data-vincular-prioridade="${i}" style="padding:7px 14px;font-size:12.5px">Vincular da biblioteca</button>
+        </div>` : '<p class="small" style="margin-top:8px">A biblioteca ainda está vazia — <a href="../../exercicios/index.html">crie exercícios reutilizáveis</a> ou use "Criar exercício específico" abaixo.</p>'}
+      <button type="button" class="btn alt" data-abrir-adhoc="${i}" style="margin-top:8px;padding:7px 14px;font-size:12.5px">+ Criar exercício específico para esta prioridade</button>
+      <div class="adhoc-wrap" data-adhoc-wrap="${i}"></div>
+    </div>`;
+}
+
+function blocoFormHtml(idx) {
+  return `
+    <div class="bloco-item" data-bloco="${idx}">
+      <div class="row">
+        <select class="bloco-tipo">
+          <option value="texto">Texto / instrução</option>
+          <option value="pergunta">Pergunta</option>
+          <option value="checklist">Checklist</option>
+          <option value="tabela">Tabela</option>
+        </select>
+        <button type="button" data-remover-bloco="${idx}">remover</button>
+      </div>
+      <div class="bloco-campos"></div>
+    </div>`;
+}
+
+function renderBlocoCampos(blocoEl) {
+  const tipo = blocoEl.querySelector('.bloco-tipo').value;
+  const campos = blocoEl.querySelector('.bloco-campos');
+  if (tipo === 'texto' || tipo === 'pergunta') {
+    campos.innerHTML = `<textarea class="bloco-texto" placeholder="${tipo === 'pergunta' ? 'Escreva a pergunta' : 'Escreva o texto/instrução'}"></textarea>`;
+  } else if (tipo === 'checklist') {
+    campos.innerHTML = `<div class="checklist-itens"><div class="checklist-item-row"><input type="text" class="checklist-item" placeholder="Item do checklist"><button type="button" data-add-checklist-item>+</button></div></div>`;
+  } else if (tipo === 'tabela') {
+    campos.innerHTML = `<input type="text" class="tabela-colunas" placeholder="Colunas separadas por vírgula (ex.: Faixa de valor, Nº pacientes)"><label style="margin-top:6px">Linhas em branco para preencher</label><input type="number" class="tabela-linhas" value="3" min="1" max="20">`;
+  }
+}
+
+function abrirFormularioAdhoc(prioridadeIdx) {
+  const wrap = document.querySelector(`[data-adhoc-wrap="${prioridadeIdx}"]`);
+  if (wrap.dataset.aberto === '1') { wrap.innerHTML = ''; wrap.dataset.aberto = '0'; return; }
+  wrap.dataset.aberto = '1';
+  wrap.innerHTML = `
+    <div class="adhoc-form">
+      <label>Título do exercício</label><input type="text" class="adhoc-titulo">
+      <label>Prazo</label><input type="date" class="adhoc-prazo">
+      <div class="adhoc-blocos"></div>
+      <button type="button" class="btn alt" data-add-bloco style="margin-top:10px;padding:7px 14px;font-size:12.5px">+ Adicionar bloco</button>
+      <label style="display:flex;align-items:center;gap:8px;margin-top:14px;text-transform:none;font-size:13px">
+        <input type="checkbox" class="adhoc-salvar-modelo" style="width:auto"> Salvar também como modelo reutilizável na Biblioteca
+      </label>
+      <div style="display:flex;gap:10px;margin-top:12px">
+        <button type="button" class="btn" data-criar-adhoc="${prioridadeIdx}" style="padding:9px 16px;font-size:13.5px">Criar e vincular</button>
+        <button type="button" class="btn alt" data-cancelar-adhoc="${prioridadeIdx}" style="padding:9px 16px;font-size:13.5px">Cancelar</button>
+      </div>
+      <p class="small" id="adhocMsg-${prioridadeIdx}" style="margin-top:8px"></p>
+    </div>`;
+
+  let blocoSeq = 0;
+  const blocosWrap = wrap.querySelector('.adhoc-blocos');
+  function addBloco() {
+    const idx = blocoSeq++;
+    blocosWrap.insertAdjacentHTML('beforeend', blocoFormHtml(idx));
+    const blocoEl = blocosWrap.querySelector(`[data-bloco="${idx}"]`);
+    renderBlocoCampos(blocoEl);
+    blocoEl.querySelector('.bloco-tipo').addEventListener('change', () => renderBlocoCampos(blocoEl));
+    blocoEl.querySelector(`[data-remover-bloco="${idx}"]`).addEventListener('click', () => blocoEl.remove());
+  }
+  wrap.querySelector('[data-add-bloco]').addEventListener('click', addBloco);
+  addBloco();
+
+  blocosWrap.addEventListener('click', (e) => {
+    if (e.target.matches('[data-add-checklist-item]')) {
+      const itens = e.target.closest('.checklist-itens');
+      itens.insertAdjacentHTML('beforeend', `<div class="checklist-item-row"><input type="text" class="checklist-item" placeholder="Item do checklist"><button type="button" data-add-checklist-item>+</button></div>`);
+    }
+  });
+
+  wrap.querySelector(`[data-cancelar-adhoc="${prioridadeIdx}"]`).addEventListener('click', () => { wrap.innerHTML = ''; wrap.dataset.aberto = '0'; });
+  wrap.querySelector(`[data-criar-adhoc="${prioridadeIdx}"]`).addEventListener('click', async () => {
+    const titulo = wrap.querySelector('.adhoc-titulo').value.trim();
+    if (!titulo) { document.getElementById(`adhocMsg-${prioridadeIdx}`).textContent = 'Título é obrigatório.'; return; }
+    const prazo = wrap.querySelector('.adhoc-prazo').value || null;
+    const blocos = [...blocosWrap.querySelectorAll('.bloco-item')].map((el) => {
+      const tipo = el.querySelector('.bloco-tipo').value;
+      if (tipo === 'texto' || tipo === 'pergunta') return { tipo, texto: el.querySelector('.bloco-texto').value.trim() };
+      if (tipo === 'checklist') return { tipo, itens: [...el.querySelectorAll('.checklist-item')].map((i) => i.value.trim()).filter(Boolean) };
+      if (tipo === 'tabela') return { tipo, colunas: el.querySelector('.tabela-colunas').value.split(',').map((c) => c.trim()).filter(Boolean), linhas_iniciais: Number(el.querySelector('.tabela-linhas').value) || 3 };
+      return null;
+    }).filter(Boolean);
+
+    const salvarModelo = wrap.querySelector('.adhoc-salvar-modelo').checked;
+    const { data: { user } } = await supabase.auth.getUser();
+    let exercicioIdBiblioteca = null;
+    if (salvarModelo) {
+      const { data: novo, error: eb } = await supabase.from('exercicios_biblioteca').insert({
+        titulo, blocos, perguntas: blocos.filter((b) => b.tipo === 'pergunta').map((b) => b.texto), criado_por: user.id,
+      }).select().single();
+      if (eb) { document.getElementById(`adhocMsg-${prioridadeIdx}`).textContent = `Erro ao salvar modelo: ${eb.message}`; return; }
+      exercicioIdBiblioteca = novo.id;
+    }
+
+    const { error } = await supabase.from('mentoria_exercicios_atribuidos').insert({
+      mentoria_id: contexto.mentoriaId, plano_id: contexto.planoId, prioridade_idx: prioridadeIdx,
+      exercicio_id: exercicioIdBiblioteca, titulo_adhoc: exercicioIdBiblioteca ? null : titulo,
+      blocos_adhoc: exercicioIdBiblioteca ? null : blocos,
+      ciclo: contexto.cicloAtual, prazo, status: 'rascunho', criado_por: user.id,
+    });
+    if (error) { document.getElementById(`adhocMsg-${prioridadeIdx}`).textContent = `Erro: ${error.message}`; return; }
+    await carregarFicha();
+    document.querySelector('.tabs-bar button[data-tab="exercicios"]').click();
+  });
+}
+
+// ---------- Ativação / vínculo de conta ----------
+function renderAtivacao(mentoria) {
+  if (mentoria.user_id) {
+    return `<div id="painelAtivacao" class="mi-card"><h3 style="margin:0 0 4px;color:var(--green)">Acesso à plataforma</h3><p class="small" style="margin:0">Conta vinculada e ativa — "Minha Mentoria" já aparece pra ela ao entrar.</p></div>`;
+  }
+  if (mentoria.email_previsto) {
+    const loginUrl = `${location.origin}/index.html`;
+    const textoConvite = `Oi ${mentoria.nome_completo.split(' ')[0]}! Sua Mentoria Individual já está pronta na plataforma. Acesse ${loginUrl} e crie sua conta com o e-mail ${mentoria.email_previsto} (ou entre, se já tiver conta) — assim que você acessar, "Minha Mentoria" aparece no seu menu.`;
+    return `
+      <div id="painelAtivacao" class="mi-card">
+        <h3 style="margin:0 0 4px;color:var(--green)">Acesso à plataforma</h3>
+        <p class="small" style="margin:0 0 8px">E-mail previsto: <b>${mentoria.email_previsto}</b> — aguardando ela criar/usar a conta.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button type="button" class="btn alt" id="btnGerarConvite" style="padding:8px 14px;font-size:13px">Obter link/texto de convite</button>
+          <button type="button" class="btn alt" id="btnVincularExistente" style="padding:8px 14px;font-size:13px">Já tem conta? Vincular por e-mail</button>
+        </div>
+        <div id="conviteTexto" class="convite-texto" style="display:none">${textoConvite}</div>
+        <p class="small" id="ativacaoMsg" style="margin-top:8px"></p>
+      </div>`;
+  }
+  return `
+    <div id="painelAtivacao" class="mi-card">
+      <h3 style="margin:0 0 4px;color:var(--green)">Ativar Mentoria Individual</h3>
+      <p class="small" style="margin:0 0 8px">Confirme o e-mail que a Aline vai usar (o mesmo do cadastro na plataforma, se ela já tiver conta).</p>
+      <div class="ativacao-box">
+        <input type="email" id="inputEmailPrevisto" placeholder="email@exemplo.com">
+        <button type="button" class="btn" id="btnAtivar" style="padding:9px 16px;font-size:13.5px">Ativar</button>
+      </div>
+      <p class="small" id="ativacaoMsg" style="margin-top:8px"></p>
+    </div>`;
+}
+
+function religarEventosAtivacao(mentoria) {
+  const btnAtivar = document.getElementById('btnAtivar');
+  if (btnAtivar) btnAtivar.addEventListener('click', async () => {
+    const email = document.getElementById('inputEmailPrevisto').value.trim();
+    if (!email) return;
+    const { error } = await supabase.from('mentoria_individual').update({ email_previsto: email }).eq('id', mentoria.id);
+    document.getElementById('ativacaoMsg').textContent = error ? `Erro: ${error.message}` : '';
+    if (!error) carregarFicha();
+  });
+  const btnConvite = document.getElementById('btnGerarConvite');
+  if (btnConvite) btnConvite.addEventListener('click', () => {
+    document.getElementById('conviteTexto').style.display = 'block';
+  });
+  const btnVincular = document.getElementById('btnVincularExistente');
+  if (btnVincular) btnVincular.addEventListener('click', async () => {
+    const { data: perfil, error: eSel } = await supabase.from('profiles').select('id').eq('email', mentoria.email_previsto).maybeSingle();
+    if (eSel) { document.getElementById('ativacaoMsg').textContent = `Erro: ${eSel.message}`; return; }
+    if (!perfil) { document.getElementById('ativacaoMsg').textContent = 'Nenhuma conta encontrada com esse e-mail ainda.'; return; }
+    const { error } = await supabase.from('mentoria_individual').update({ user_id: perfil.id }).eq('id', mentoria.id);
+    document.getElementById('ativacaoMsg').textContent = error ? `Erro: ${error.message}` : 'Vinculado!';
+    if (!error) carregarFicha();
+  });
+}
+
+// ---------- Tabs ----------
+function religarTabs() {
+  document.querySelectorAll('.tabs-bar button').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tabs-bar button').forEach((b) => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelector(`.tab-panel[data-tab="${btn.dataset.tab}"]`).classList.add('active');
+    });
+  });
+}
+
+async function carregarFicha() {
+  const conteudo = document.getElementById('conteudo');
+  const params = new URLSearchParams(location.search);
+  const idBusca = params.get('id');
+  const nomeBusca = params.get('nome') || 'Aline';
+
+  const query = supabase.from('mentoria_individual').select('*');
+  const { data: mentorias, error: mErr } = idBusca ? await query.eq('id', idBusca) : await query.ilike('nome_completo', `%${nomeBusca}%`);
+  if (mErr) { conteudo.innerHTML = `<div class="alert alert-error">${mErr.message}</div>`; return; }
+  if (!mentorias || mentorias.length === 0) { conteudo.innerHTML = `<p>Nenhuma mentoria individual encontrada.</p>`; return; }
+  const mentoria = mentorias[0];
+  document.getElementById('tituloFicha').textContent = mentoria.nome_completo;
+
+  const { data: diagnosticos } = await supabase.from('mentoria_diagnosticos').select('*').eq('mentoria_id', mentoria.id).order('ciclo', { ascending: false });
+  const diag = diagnosticos && diagnosticos[0];
+  const historico = (diagnosticos || []).slice(1);
+  const { data: planos } = await supabase.from('mentoria_planos_mensais').select('*').eq('mentoria_id', mentoria.id).eq('ciclo', diag ? diag.ciclo : 1).limit(1);
+  const plano = planos && planos[0];
+  const { data: todosPlanos } = await supabase.from('mentoria_planos_mensais').select('*').eq('mentoria_id', mentoria.id);
+  const { data: encontros } = await supabase.from('mentoria_encontros').select('*').eq('mentoria_id', mentoria.id).order('numero', { ascending: true });
+  const { data: notas } = await supabase.from('mentoria_notas_privadas').select('*').eq('mentoria_id', mentoria.id).order('criado_em', { ascending: false });
+  const { data: biblioteca } = await supabase.from('exercicios_biblioteca').select('*').eq('ativo', true).order('titulo', { ascending: true });
+  const { data: exerciciosAtribuidos } = plano
+    ? await supabase.from('mentoria_exercicios_atribuidos').select('*').eq('mentoria_id', mentoria.id).eq('plano_id', plano.id)
+    : { data: [] };
+  const { data: aulasBiblioteca } = await supabase.from('aulas_biblioteca').select('*').eq('ativo', true).order('ordem', { ascending: true });
+  const { data: aulasLiberadas } = await supabase.from('mentoria_aulas_liberadas').select('*').eq('mentoria_id', mentoria.id);
+
+  contexto = { mentoriaId: mentoria.id, planoId: plano ? plano.id : null, cicloAtual: diag ? diag.ciclo : 1 };
+
+  const notasGerais = (notas || []).filter((n) => !n.exercicio_atribuido_id);
+  const notasPorAtribuicao = {};
+  (notas || []).filter((n) => n.exercicio_atribuido_id).forEach((n) => {
+    (notasPorAtribuicao[n.exercicio_atribuido_id] = notasPorAtribuicao[n.exercicio_atribuido_id] || []).push(n);
+  });
+
+  prioridadesAtuais = (plano && plano.prioridades) || [];
+  const lentes = (diag && diag.analise) || {};
+  const conflitos = (diag && diag.conflitos) || [];
+  const idsAulasLiberadas = new Set((aulasLiberadas || []).map((a) => a.aula_id));
+
+  conteudo.innerHTML = `
+    <div class="mi-card">
+      <h2 style="margin:0;color:var(--green)">${mentoria.nome_completo}</h2>
+      <div class="small" style="margin-top:4px">
+        Status da mentoria: <b>${mentoria.status}</b> · Cadência: <b>${mentoria.cadencia_encontros}</b> ·
+        Conta na plataforma: <b>${mentoria.user_id ? 'ativada' : 'ainda não ativada'}</b>
+      </div>
+    </div>
+
+    ${renderAtivacao(mentoria)}
+
+    <div class="tabs-bar no-print">
+      <button type="button" class="active" data-tab="diagnostico">Diagnóstico</button>
+      <button type="button" data-tab="plano">Plano do mês</button>
+      <button type="button" data-tab="aulas">Aulas</button>
+      <button type="button" data-tab="exercicios">Exercícios</button>
+      <button type="button" data-tab="encontros">Encontros</button>
+      <button type="button" data-tab="historico">Histórico</button>
+    </div>
+
+    <div class="tab-panel active" data-tab="diagnostico">
+      <div class="mi-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+          <h3 style="margin:0;color:var(--green)">Diagnóstico — ciclo ${diag ? diag.ciclo : '—'}</h3>
+          <span class="badge-status ${diag ? diag.status : ''}">${diag ? diag.status : 'sem diagnóstico'}</span>
+        </div>
+        <div class="mi-lentes">
+          ${renderLente('Demanda / Captação', lentes.demanda_captacao)}
+          ${renderLente('Conversão', lentes.conversao)}
+          ${renderLente('Financeiro / Caixa', lentes.financeiro_caixa)}
+          ${renderLente('Capacidade / Agenda', lentes.capacidade_agenda)}
+          ${renderLente('Concentração de receita', lentes.concentracao_receita)}
+          ${renderLente('Previsibilidade', lentes.previsibilidade)}
+        </div>
+        <div class="conflitos-box">
+          <h3 style="color:#a43b45;font-size:16px;margin:0 0 4px">Conflitos a confirmar (${conflitos.length})</h3>
+          ${conflitos.map(renderConflito).join('') || '<p class="small">Nenhum conflito detectado.</p>'}
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" data-tab="plano">
+      <div class="mi-card">
+        <h3 style="margin:0 0 4px;color:var(--green)">Plano de Ação — 30 dias (até 3 prioridades)</h3>
+        <p class="small" style="margin:0 0 10px">Rascunho editável. Nada é enviado à mentorada até você clicar em "Revisar e liberar". A entrega é sempre mensal — 90 dias é só visão sua, interna.</p>
+        <div id="prioridadesWrap"></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+          <button type="button" class="btn alt" id="btnAddPrioridade" style="padding:9px 16px;font-size:13.5px">+ Adicionar prioridade</button>
+          <button type="button" class="btn alt" id="btnSalvarRascunho" style="padding:9px 16px;font-size:13.5px">Salvar rascunho</button>
+          <button type="button" class="btn" id="btnRevisarLiberar" style="padding:9px 16px;font-size:13.5px">Revisar e liberar →</button>
+        </div>
+        <p class="small" id="planoMsg" style="margin-top:8px"></p>
+        ${diag && !diag.encerrado ? `<div style="margin-top:16px;border-top:1px solid var(--line);padding-top:12px">
+          <button type="button" class="btn alt" id="btnFecharMes" style="padding:9px 16px;font-size:13.5px">Fechar o mês e preparar rascunho do próximo →</button>
+          <p class="small" style="margin-top:6px">Compara planejado × realizado deste ciclo e já cria o rascunho do ciclo ${(diag ? diag.ciclo : 1) + 1}, para sua revisão.</p>
+        </div>` : ''}
+        ${diag && diag.encerrado && diag.comparacao_planejado_realizado ? `<div class="mi-card" style="margin-top:14px;background:var(--paper,#fbfaf7)">
+          <h4 style="margin:0 0 6px;color:var(--green)">Fechamento deste ciclo</h4>
+          <pre style="white-space:pre-wrap;font:inherit;font-size:13px;margin:0">${JSON.stringify(diag.comparacao_planejado_realizado, null, 2)}</pre>
+        </div>` : ''}
+      </div>
+    </div>
+
+    <div class="tab-panel" data-tab="aulas">
+      <div class="mi-card">
+        <h3 style="margin:0 0 4px;color:var(--green)">Aulas</h3>
+        <p class="small" style="margin:0 0 10px">Cadastradas em <a href="../../aulas/index.html">Biblioteca de Aulas</a>. Libere aqui as que fazem sentido pra ela agora.</p>
+        ${(aulasBiblioteca || []).map((a) => `
+          <div class="aula-card">
+            <div>
+              <b>${a.titulo}</b>
+              ${a.descricao ? `<div class="small">${a.descricao}</div>` : ''}
+              ${a.video_url ? `<a href="${a.video_url}" target="_blank" rel="noopener" class="small">Vídeo ↗</a>` : ''}
+            </div>
+            ${idsAulasLiberadas.has(a.id)
+              ? '<span class="badge-status liberado">liberada</span>'
+              : `<button type="button" class="btn alt" data-liberar-aula="${a.id}" style="padding:7px 14px;font-size:12.5px">Liberar</button>`}
+          </div>`).join('') || '<p class="small">Nenhuma aula cadastrada ainda.</p>'}
+      </div>
+    </div>
+
+    <div class="tab-panel" data-tab="exercicios">
+      <div class="mi-card">
+        <h3 style="margin:0 0 4px;color:var(--green)">Exercícios do plano</h3>
+        ${plano && plano.id
+          ? (prioridadesAtuais.length
+              ? prioridadesAtuais.map((p, i) => renderExerciciosPrioridade(i, p.acao, (exerciciosAtribuidos || []).filter((ea) => ea.prioridade_idx === i), biblioteca || [], notasPorAtribuicao)).join('')
+              : '<p class="small">Adicione prioridades na aba "Plano do mês" para poder vincular exercícios.</p>')
+          : '<p class="small">Salve o rascunho do Plano do mês primeiro — os exercícios se vinculam a uma prioridade já salva.</p>'}
+      </div>
+    </div>
+
+    <div class="tab-panel" data-tab="encontros">
+      <div class="mi-card">
+        <h3 style="margin:0 0 10px;color:var(--green)">Encontros</h3>
+        <button type="button" class="btn alt no-print" id="btnAddEncontro" style="padding:8px 14px;font-size:13px;margin-bottom:10px">+ Agendar encontro</button>
+        ${(encontros && encontros.length) ? encontros.map((e) => `
+          <div class="encontro-card" data-encontro="${e.id}">
+            <div class="topo">
+              <b>Encontro ${e.numero}${e.data_agendada ? ` — ${fmtData(e.data_agendada)}` : ''}</b>
+              <span class="badge-status ${e.realizado ? 'liberado' : 'rascunho'}">${e.realizado ? 'realizado' : 'agendado'}</span>
+            </div>
+            ${e.checkin_respostas ? `<div class="checkin-box"><b>Check-in da mentorada:</b> ${JSON.stringify(e.checkin_respostas)}</div>` : '<p class="small" style="margin-top:6px">Sem check-in enviado ainda.</p>'}
+            ${e.nota_pos_encontro != null ? `<div class="small" style="margin-top:6px"><b>Nota dela pro encontro:</b> ${e.nota_pos_encontro}/10 — ${e.insight_pos_encontro || ''}</div>` : ''}
+            <label>Decisões (a mentorada vê)</label><textarea class="encontro-decisoes">${e.decisoes || ''}</textarea>
+            <label>Próximas ações (a mentorada vê)</label><textarea class="encontro-proximas">${e.proximas_acoes || ''}</textarea>
+            <div class="acoes no-print"><button type="button" class="btn alt" data-marcar-realizado="${e.id}" style="padding:7px 14px;font-size:12.5px">${e.realizado ? 'Marcar como agendado' : 'Marcar como realizado'}</button>
+            <button type="button" class="btn alt" data-salvar-encontro="${e.id}" style="padding:7px 14px;font-size:12.5px">Salvar decisões/ações</button></div>
+            <label style="margin-top:12px">Nota privada deste encontro (só você vê)</label>
+            ${notasGerais.filter((n) => n.encontro_id === e.id).map((n) => `<div class="nota-privada">${n.texto}</div>`).join('')}
+            <textarea class="encontro-nota-privada" placeholder="Nota interna sobre este encontro."></textarea>
+            <div class="acoes no-print"><button type="button" class="btn alt" data-salvar-nota-encontro="${e.id}" style="padding:7px 14px;font-size:12.5px">Salvar nota privada</button></div>
+          </div>`).join('') : '<p class="small">Nenhum encontro registrado ainda.</p>'}
+      </div>
+
+      <div class="mi-card">
+        <h3 style="margin:0 0 10px;color:var(--green)">Notas privadas gerais (só você vê)</h3>
+        ${notasGerais.filter((n) => !n.encontro_id).map((n) => `<div class="nota-privada">${n.texto}<div class="small" style="margin-top:6px;opacity:.7">${fmtDataHora(n.criado_em)}</div></div>`).join('') || '<p class="small">Nenhuma nota ainda.</p>'}
+        <div style="margin-top:10px"><textarea id="notaGeralInput" style="width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit;font-size:13.5px;min-height:50px" placeholder="Nova nota privada geral..."></textarea>
+        <button type="button" class="btn alt no-print" id="btnSalvarNotaGeral" style="margin-top:8px;padding:7px 14px;font-size:12.5px">Salvar nota</button></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" data-tab="historico">
+      <div class="mi-card">
+        <h3 style="margin:0 0 10px;color:var(--green)">Histórico de ciclos</h3>
+        ${historico.length ? historico.map((h) => {
+          const planoHist = (todosPlanos || []).find((p) => p.ciclo === h.ciclo);
+          return `<div class="historico-item">
+            <h4>Ciclo ${h.ciclo}${h.encerrado ? ' · encerrado' : ''}</h4>
+            <div class="small">Diagnóstico: ${h.status}</div>
+            ${planoHist ? `<div class="small">Plano: ${planoHist.status} — ${(planoHist.prioridades || []).map((p) => p.acao).join(' · ') || 'sem prioridades'}</div>` : ''}
+          </div>`;
+        }).join('') : '<p class="small">Ainda não há ciclos anteriores.</p>'}
+      </div>
+    </div>
+  `;
+
+  religarTabs();
+  religarEventosAtivacao(mentoria);
+  redesenharPrioridades();
+  religarEventosPrioridades(mentoria.id, diag ? diag.id : null, diag ? diag.ciclo : 1);
+  if (plano && plano.id) religarEventosExercicios();
+  religarEventosAulas(mentoria.id, aulasBiblioteca || []);
+  religarEventosEncontros(mentoria.id, encontros || []);
+  religarEventosNotaGeral(mentoria.id);
+}
+
+function religarEventosPrioridades(mentoriaId, diagnosticoId, cicloAtual) {
+  document.querySelectorAll('[data-remove]').forEach((btn) => {
+    btn.addEventListener('click', () => { prioridadesAtuais.splice(Number(btn.dataset.remove), 1); redesenharPrioridades(); });
+  });
+  const addBtn = document.getElementById('btnAddPrioridade');
+  if (addBtn) addBtn.onclick = () => {
+    if (prioridadesAtuais.length >= 3) { alert('Máximo de 3 prioridades por mês.'); return; }
+    prioridadesAtuais.push({ acao: '', responsavel: 'Aline', prazo: '', indicador: '', linha_base: '', criterio_conclusao: '' });
+    redesenharPrioridades();
+  };
+  const salvarBtn = document.getElementById('btnSalvarRascunho');
+  if (salvarBtn) salvarBtn.onclick = async () => {
+    coletarPrioridadesDoDOM();
+    const { error } = await supabase.from('mentoria_planos_mensais')
+      .upsert({ mentoria_id: mentoriaId, diagnostico_id: diagnosticoId, ciclo: cicloAtual, prioridades: prioridadesAtuais, status: 'rascunho' }, { onConflict: 'mentoria_id,ciclo' });
+    if (error) { document.getElementById('planoMsg').textContent = `Erro: ${error.message}`; return; }
+    await carregarFicha();
+    document.querySelector('.tabs-bar button[data-tab="plano"]').click();
+    document.getElementById('planoMsg').textContent = 'Rascunho salvo.';
+  };
+  const liberarBtn = document.getElementById('btnRevisarLiberar');
+  if (liberarBtn) liberarBtn.onclick = async () => {
+    if (!confirm('Isso libera o diagnóstico e o plano de 30 dias para a mentorada assim que ela tiver acesso ativo. Confirmar?')) return;
+    coletarPrioridadesDoDOM();
+    const { data: { user } } = await supabase.auth.getUser();
+    const agora = new Date().toISOString();
+    const { error: e1 } = await supabase.from('mentoria_diagnosticos').update({ status: 'liberado', revisado_em: agora, revisado_por: user.id, liberado_em: agora, liberado_por: user.id }).eq('id', diagnosticoId);
+    const { error: e2 } = await supabase.from('mentoria_planos_mensais').upsert({ mentoria_id: mentoriaId, diagnostico_id: diagnosticoId, ciclo: cicloAtual, prioridades: prioridadesAtuais, status: 'liberado', liberado_em: agora, liberado_por: user.id }, { onConflict: 'mentoria_id,ciclo' });
+    if (e1 || e2) { document.getElementById('planoMsg').textContent = `Erro: ${(e1 || e2).message}`; return; }
+    await carregarFicha();
+    document.querySelector('.tabs-bar button[data-tab="plano"]').click();
+    document.getElementById('planoMsg').textContent = 'Liberado — a mentorada verá assim que tiver acesso ativo.';
+  };
+  const fecharBtn = document.getElementById('btnFecharMes');
+  if (fecharBtn) fecharBtn.onclick = async () => {
+    if (!confirm(`Fechar o ciclo ${cicloAtual} e criar o rascunho do ciclo ${cicloAtual + 1}?`)) return;
+    const { data: { user } } = await supabase.auth.getUser();
+    const { data: exercicios } = await supabase.from('mentoria_exercicios_atribuidos').select('*').eq('mentoria_id', mentoriaId).eq('ciclo', cicloAtual);
+    const comparacao = {
+      prioridades_planejadas: prioridadesAtuais.length,
+      exercicios_vinculados: (exercicios || []).length,
+      exercicios_concluidos: (exercicios || []).filter((e) => e.resposta && e.resposta.concluido).length,
+      detalhe: prioridadesAtuais.map((p, i) => ({
+        prioridade: p.acao,
+        exercicios: (exercicios || []).filter((e) => e.prioridade_idx === i).map((e) => ({ titulo: e.titulo_adhoc || '(biblioteca)', concluido: !!(e.resposta && e.resposta.concluido) })),
+      })),
+    };
+    const agora = new Date().toISOString();
+    await supabase.from('mentoria_diagnosticos').update({ encerrado: true, encerrado_em: agora, encerrado_por: user.id, comparacao_planejado_realizado: comparacao }).eq('id', diagnosticoId);
+
+    const { data: diagAtual } = await supabase.from('mentoria_diagnosticos').select('*').eq('id', diagnosticoId).single();
+    const { data: novoDiag, error: eNovo } = await supabase.from('mentoria_diagnosticos').insert({
+      mentoria_id: mentoriaId, ciclo: cicloAtual + 1, respostas: diagAtual.respostas, analise: diagAtual.analise, conflitos: diagAtual.conflitos, status: 'rascunho',
+    }).select().single();
+    if (eNovo) { alert('Erro ao criar próximo ciclo: ' + eNovo.message); return; }
+    await supabase.from('mentoria_planos_mensais').insert({ mentoria_id: mentoriaId, diagnostico_id: novoDiag.id, ciclo: cicloAtual + 1, prioridades: [], status: 'rascunho' });
+    await carregarFicha();
+  };
+}
+
+function religarEventosExercicios() {
+  document.querySelectorAll('[data-vincular-prioridade]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const wrap = btn.closest('.exercicios-prioridade');
+      const exercicioId = wrap.querySelector('.select-exercicio').value;
+      const prazo = wrap.querySelector('.input-prazo-exercicio').value || null;
+      if (!exercicioId) return;
+      const { data: { user } } = await supabase.auth.getUser();
+      const { error } = await supabase.from('mentoria_exercicios_atribuidos').insert({
+        mentoria_id: contexto.mentoriaId, plano_id: contexto.planoId, prioridade_idx: Number(wrap.dataset.prioridadeIdx), exercicio_id: exercicioId,
+        ciclo: contexto.cicloAtual, prazo, status: 'rascunho', criado_por: user.id,
+      });
+      if (error) { alert('Erro ao vincular: ' + error.message); return; }
+      await carregarFicha();
+      document.querySelector('.tabs-bar button[data-tab="exercicios"]').click();
+    });
+  });
+  document.querySelectorAll('[data-abrir-adhoc]').forEach((btn) => {
+    btn.addEventListener('click', () => abrirFormularioAdhoc(Number(btn.dataset.abrirAdhoc)));
+  });
+  document.querySelectorAll('[data-liberar-exercicio]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      const { error } = await supabase.from('mentoria_exercicios_atribuidos').update({ status: 'liberado', liberado_em: new Date().toISOString(), liberado_por: user.id }).eq('id', btn.dataset.liberarExercicio);
+      if (error) { alert('Erro ao liberar: ' + error.message); return; }
+      await carregarFicha();
+      document.querySelector('.tabs-bar button[data-tab="exercicios"]').click();
+    });
+  });
+  document.querySelectorAll('[data-salvar-orientacao]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const texto = btn.closest('.exercicio-atribuido').querySelector('.orientacao-input').value.trim();
+      const { error } = await supabase.from('mentoria_exercicios_atribuidos').update({ orientacao_visivel: texto, orientacao_em: new Date().toISOString() }).eq('id', btn.dataset.salvarOrientacao);
+      btn.parentElement.insertAdjacentHTML('beforeend', error ? `<span class="aviso-campo">Erro: ${error.message}</span>` : '<span class="small" style="color:#245744"> Salvo.</span>');
+    });
+  });
+  document.querySelectorAll('[data-salvar-nota]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const box = btn.closest('.exercicio-atribuido');
+      const texto = box.querySelector('.nota-input').value.trim();
+      if (!texto) return;
+      const { error } = await supabase.from('mentoria_notas_privadas').insert({ mentoria_id: contexto.mentoriaId, exercicio_atribuido_id: btn.dataset.salvarNota, texto });
+      if (error) { alert('Erro: ' + error.message); return; }
+      await carregarFicha();
+      document.querySelector('.tabs-bar button[data-tab="exercicios"]').click();
+    });
+  });
+}
+
+function religarEventosAulas(mentoriaId, aulasBiblioteca) {
+  document.querySelectorAll('[data-liberar-aula]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      const { error } = await supabase.from('mentoria_aulas_liberadas').insert({ mentoria_id: mentoriaId, aula_id: btn.dataset.liberarAula, liberado_por: user.id });
+      if (error) { alert('Erro: ' + error.message); return; }
+      await carregarFicha();
+      document.querySelector('.tabs-bar button[data-tab="aulas"]').click();
+    });
+  });
+}
+
+function religarEventosEncontros(mentoriaId, encontros) {
+  const addBtn = document.getElementById('btnAddEncontro');
+  if (addBtn) addBtn.addEventListener('click', async () => {
+    const proximoNumero = (encontros.length ? Math.max(...encontros.map((e) => e.numero)) : 0) + 1;
+    const data = prompt('Data do encontro (AAAA-MM-DD):', '');
+    const { error } = await supabase.from('mentoria_encontros').insert({ mentoria_id: mentoriaId, ciclo: contexto.cicloAtual, numero: proximoNumero, data_agendada: data || null });
+    if (error) { alert('Erro: ' + error.message); return; }
+    await carregarFicha();
+    document.querySelector('.tabs-bar button[data-tab="encontros"]').click();
+  });
+  document.querySelectorAll('[data-marcar-realizado]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const card = btn.closest('.encontro-card');
+      const atual = card.querySelector('.badge-status').textContent.trim() === 'realizado';
+      const { data: { user } } = await supabase.auth.getUser();
+      const { error } = await supabase.from('mentoria_encontros').update({ realizado: !atual, registrado_em: new Date().toISOString(), registrado_por: user.id }).eq('id', btn.dataset.marcarRealizado);
+      if (error) { alert('Erro: ' + error.message); return; }
+      await carregarFicha();
+      document.querySelector('.tabs-bar button[data-tab="encontros"]').click();
+    });
+  });
+  document.querySelectorAll('[data-salvar-encontro]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const card = btn.closest('.encontro-card');
+      const decisoes = card.querySelector('.encontro-decisoes').value.trim();
+      const proximas = card.querySelector('.encontro-proximas').value.trim();
+      const { data: { user } } = await supabase.auth.getUser();
+      const { error } = await supabase.from('mentoria_encontros').update({ decisoes, proximas_acoes: proximas, registrado_em: new Date().toISOString(), registrado_por: user.id }).eq('id', btn.dataset.salvarEncontro);
+      btn.parentElement.insertAdjacentHTML('beforeend', error ? `<span class="aviso-campo">Erro: ${error.message}</span>` : '<span class="small" style="color:#245744"> Salvo.</span>');
+    });
+  });
+  document.querySelectorAll('[data-salvar-nota-encontro]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const card = btn.closest('.encontro-card');
+      const texto = card.querySelector('.encontro-nota-privada').value.trim();
+      if (!texto) return;
+      const { error } = await supabase.from('mentoria_notas_privadas').insert({ mentoria_id: mentoriaId, encontro_id: btn.dataset.salvarNotaEncontro, texto });
+      if (error) { alert('Erro: ' + error.message); return; }
+      await carregarFicha();
+      document.querySelector('.tabs-bar button[data-tab="encontros"]').click();
+    });
+  });
+}
+
+function religarEventosNotaGeral(mentoriaId) {
+  const btn = document.getElementById('btnSalvarNotaGeral');
+  if (btn) btn.addEventListener('click', async () => {
+    const texto = document.getElementById('notaGeralInput').value.trim();
+    if (!texto) return;
+    const { error } = await supabase.from('mentoria_notas_privadas').insert({ mentoria_id: mentoriaId, texto });
+    if (error) { alert('Erro: ' + error.message); return; }
+    await carregarFicha();
+    document.querySelector('.tabs-bar button[data-tab="encontros"]').click();
+  });
+}
+
+(async () => {
+  const ctx = await requireAdmin('../../../index.html', '../../../login/index.html');
+  if (!ctx) return;
+  await mountAppShell('admin', ctx.session, '../../..');
+  try { if (new URLSearchParams(location.search).get('revisao') === '1') document.getElementById('avisoAmbiente').style.display = 'block'; } catch (e) {}
+  await carregarFicha();
+})();
+</script>
+</body>
+</html>
