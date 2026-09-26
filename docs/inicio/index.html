@@ -44,6 +44,20 @@
 .product-card{position:relative}
 .selo-comece{position:absolute;top:14px;left:14px;z-index:2;background:var(--terracota,#9a5b34);color:#fdfaf4;font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:6px 11px;border-radius:999px;box-shadow:0 2px 8px rgba(23,63,49,.18)}
 .product-card .photo.p4{background:linear-gradient(to bottom,rgba(233,224,214,0) 78%,#e9e0d6),url('../assets/img/india-mapa.jpg') 72% 30%/cover no-repeat,#e9e0d6}
+/* foto sem esticar nem ampliar, deslocada para a direita: as costas/braço
+   (a ~87% da largura da foto) encostam na borda direita do card; o espaço
+   que sobra à esquerda é o próprio bege do fundo, com transição suave. */
+@supports (width:1cqw){
+  .product-card.mentoria{container-type:inline-size}
+  .product-card .photo.p4{
+    --foto-l:max(100cqw,285px);
+    background:
+      linear-gradient(to bottom,rgba(233,224,214,0) 78%,#e9e0d6),
+      linear-gradient(to right,#e9e0d6 calc(var(--foto-l) * .13),rgba(233,224,214,0) calc(var(--foto-l) * .24)),
+      url('../assets/img/india-mapa.jpg') right calc(var(--foto-l) * -.13) top/var(--foto-l) auto no-repeat,
+      #e9e0d6;
+  }
+}
 /* card Mentoria: foto e texto no mesmo bege do fundo da foto */
 .product-card.mentoria{background:#e9e0d6}
 /* card Mapa: a imagem também abre a página do Mapa de 30 Dias */
