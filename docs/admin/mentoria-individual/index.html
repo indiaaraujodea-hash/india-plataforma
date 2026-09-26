@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="robots" content="noindex">
+<title>Mentoria Individual | Painel Administrativo</title>
+<link rel="stylesheet" href="../../style.css">
+<link rel="stylesheet" href="../../assets/css/shell.css">
+<style>
+.mi-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:16px}
+.mi-lentes{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-top:14px}
+.lente{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--paper,#fbfaf7)}
+.lente h4{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--green)}
+.lente .conclusao{font-size:14px;font-weight:700;margin-bottom:6px}
+.lente .dado{font-size:13px;color:var(--ink);margin-bottom:4px}
+.lente .conta{font-size:12px;color:var(--muted);margin-bottom:4px}
+.lente .meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.tag-tipo{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:3px 9px;border-radius:999px}
+.tag-tipo.confirmado{background:#e7f1ea;color:#245744}
+.tag-tipo.confirmado_e_declarado{background:#e7f1ea;color:#245744}
+.tag-tipo.declarado{background:#fff5e5;color:#8a5a11}
+.tag-tipo.ausente{background:#eee;color:#666}
+.tag-tipo.conflito{background:#fbe9ea;color:#a43b45}
+.tag-tipo.ambiguo{background:#fbe9ea;color:#a43b45}
+.lente .data-ref{font-size:11.5px;color:var(--muted)}
+.lente .a-confirmar{margin-top:8px;font-size:12.5px;background:#fff5e5;border-left:3px solid #b67a22;padding:8px 10px;border-radius:4px}
+.conflitos-box{margin-top:18px}
+.conflito-item{border:1px solid #f0c7ca;background:#fbe9ea;border-radius:12px;padding:14px 16px;margin-top:10px}
+.conflito-item h4{margin:0 0 6px;color:#a43b45;font-size:14px}
+.conflito-item .valores{display:flex;gap:16px;flex-wrap:wrap;margin:8px 0;font-size:13px}
+.conflito-item .valores b{display:block;font-size:11px;color:var(--muted);text-transform:uppercase}
+.conflito-item .acao{font-size:12.5px;color:var(--ink);margin-top:6px;font-style:italic}
+.badge-status{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:4px 10px;border-radius:999px}
+.badge-status.rascunho{background:#eee;color:#666}
+.badge-status.revisado{background:#fff5e5;color:#8a5a11}
+.badge-status.liberado{background:#e7f1ea;color:#245744}
+.aviso-campo{font-size:12px;color:#a43b45;margin-top:2px}
+.prioridade-form{border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:12px;background:#fff}
+.prioridade-form .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.prioridade-form label{display:block;font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin:8px 0 4px}
+.prioridade-form input,.prioridade-form textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit;font-size:13.5px}
+.prioridade-form textarea{min-height:50px}
+.remover-prioridade{background:none;border:none;color:var(--muted);text-decoration:underline;font-size:12.5px;cursor:pointer;margin-top:8px}
+.encontro-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--line);padding:10px 0}
+.nota-privada{background:#fdf4e3;border:1px solid #ecd8a8;border-radius:10px;padding:12px;margin-top:10px;font-size:13.5px;white-space:pre-wrap}
+.aviso-revisao{background:#eef3f0;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--green2,#245744);margin-bottom:16px}
+</style>
+</head>
+<body>
+<main class="wrap" style="max-width:1000px">
+  <section class="section">
+    <div class="eyebrow">Painel Administrativo</div>
+    <h1 class="serif" style="font-size:34px;color:var(--green);margin:8px 0">Mentoria Individual</h1>
+    <p style="margin:0 0 6px"><a href="../index.html" class="small">← Voltar para clientes</a></p>
+    <div class="aviso-revisao" id="avisoAmbiente" style="display:none">
+      Ambiente de revisão — nenhum dado real de acesso foi ativado e nada foi publicado.
+    </div>
+    <div id="conteudo"><p>Carregando…</p></div>
+  </section>
+</main>
+<footer>INDIA · CAFÉ, PESSOAS E NEGÓCIOS DE VALOR · Clínica de Valor</footer>
+
+<script type="module">
+import { supabase, avisarSupabaseNaoConfigurado } from '../../assets/js/supabase-client.js';
+import { requireAdmin } from '../../assets/js/auth.js';
+import { mountAppShell } from '../../assets/js/app-shell.js';
+
+avisarSupabaseNaoConfigurado();
+
+const CAMPOS_LABEL = {}; // preenchido a partir de mentoria_diagnostic_fields
+const TIPO_LABEL = {
+  confirmado: 'Confirmado', confirmado_e_declarado: 'Confirmado + declarado',
+  declarado: 'Declarado pela mentorada', inferencia: 'Inferência', ausente: 'Dado ausente', conflito: 'Conflito', ambiguo: 'Ambíguo',
+};
+const fmtData = (iso) => iso ? new Date(iso + (iso.length === 10 ? 'T00:00:00' : '')).toLocaleDateString('pt-BR') : '—';
+
+function renderLente(nome, l) {
+  if (!l) return '';
+  const tipoClasse = (l.tipo || '').replace(/[^a-z_]/g, '');
+  return `
+    <div class="lente">
+      <h4>${nome}</h4>
+      <div class="conclusao">${l.conclusao || '—'}</div>
+      <div class="dado"><b>Dado:</b> ${l.dado || '—'}</div>
+      <div class="conta"><b>Conta:</b> ${l.conta || '—'}</div>
+      <div class="meta">
+        <span class="tag-tipo ${tipoClasse}">${TIPO_LABEL[l.tipo] || l.tipo || '—'}</span>
+        <span class="data-ref">${fmtData(l.data_referencia)}</span>
+      </div>
+      ${l.a_confirmar ? `<div class="a-confirmar"><b>A confirmar:</b> ${l.a_confirmar}</div>` : ''}
+    </div>`;
+}
+
+function renderConflito(c) {
+  const valoresHtml = Object.entries(c.valores || {}).map(([fonte, v]) =>
+    `<div><b>${fonte}</b>${typeof v === 'object' ? JSON.stringify(v) : v}</div>`).join('');
+  return `
+    <div class="conflito-item">
+      <h4>⚠ Conflito não resolvido — ${c.campo}</h4>
+      <div>${c.descricao}</div>
+      <div class="valores">${valoresHtml}</div>
+      <div class="acao">Ação sugerida: ${c.acao_sugerida}</div>
+    </div>`;
+}
+
+let prioridadesAtuais = [];
+
+function renderPrioridade(p, i) {
+  return `
+    <div class="prioridade-form" data-idx="${i}">
+      <label>Ação concreta</label><textarea class="p-acao">${p.acao || ''}</textarea>
+      <div class="grid2">
+        <div><label>Responsável</label><input type="text" class="p-responsavel" value="${p.responsavel || 'Aline'}"></div>
+        <div><label>Prazo</label><input type="date" class="p-prazo" value="${p.prazo || ''}"></div>
+      </div>
+      <div class="grid2">
+        <div><label>Indicador</label><input type="text" class="p-indicador" value="${p.indicador || ''}"></div>
+        <div><label>Linha de base</label><input type="text" class="p-linha_base" value="${p.linha_base || ''}"></div>
+      </div>
+      <label>Critério de conclusão</label><textarea class="p-criterio">${p.criterio_conclusao || ''}</textarea>
+      <button type="button" class="remover-prioridade" data-remove="${i}">Remover esta prioridade</button>
+    </div>`;
+}
+
+function religarEventosPrioridades(mentoriaId, diagnosticoId, cicloAtual) {
+  document.querySelectorAll('[data-remove]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      prioridadesAtuais.splice(Number(btn.dataset.remove), 1);
+      redesenharPrioridades();
+    });
+  });
+  const addBtn = document.getElementById('btnAddPrioridade');
+  if (addBtn) addBtn.onclick = () => {
+    if (prioridadesAtuais.length >= 3) { alert('Máximo de 3 prioridades por mês.'); return; }
+    prioridadesAtuais.push({ acao: '', responsavel: 'Aline', prazo: '', indicador: '', linha_base: '', criterio_conclusao: '' });
+    redesenharPrioridades();
+  };
+  const salvarBtn = document.getElementById('btnSalvarRascunho');
+  if (salvarBtn) salvarBtn.onclick = async () => {
+    coletarPrioridadesDoDOM();
+    const { error } = await supabase.from('mentoria_planos_mensais')
+      .upsert({ mentoria_id: mentoriaId, diagnostico_id: diagnosticoId, ciclo: cicloAtual, prioridades: prioridadesAtuais, status: 'rascunho' }, { onConflict: 'mentoria_id,ciclo' });
+    document.getElementById('planoMsg').textContent = error ? `Erro: ${error.message}` : 'Rascunho salvo.';
+  };
+  const liberarBtn = document.getElementById('btnRevisarLiberar');
+  if (liberarBtn) liberarBtn.onclick = async () => {
+    if (!confirm('Isso libera o diagnóstico e o plano de 30 dias para a mentorada assim que ela tiver acesso ativo. Confirmar?')) return;
+    coletarPrioridadesDoDOM();
+    const { data: { user } } = await supabase.auth.getUser();
+    const agora = new Date().toISOString();
+    const { error: e1 } = await supabase.from('mentoria_diagnosticos').update({ status: 'liberado', revisado_em: agora, revisado_por: user.id, liberado_em: agora, liberado_por: user.id }).eq('id', diagnosticoId);
+    const { error: e2 } = await supabase.from('mentoria_planos_mensais').upsert({ mentoria_id: mentoriaId, diagnostico_id: diagnosticoId, ciclo: cicloAtual, prioridades: prioridadesAtuais, status: 'liberado', liberado_em: agora, liberado_por: user.id }, { onConflict: 'mentoria_id,ciclo' });
+    document.getElementById('planoMsg').textContent = (e1 || e2) ? `Erro: ${(e1 || e2).message}` : 'Liberado — a mentorada verá assim que tiver acesso ativo.';
+    if (!e1 && !e2) carregarFicha();
+  };
+}
+
+function coletarPrioridadesDoDOM() {
+  prioridadesAtuais = [...document.querySelectorAll('.prioridade-form')].map((el) => ({
+    acao: el.querySelector('.p-acao').value.trim(),
+    responsavel: el.querySelector('.p-responsavel').value.trim(),
+    prazo: el.querySelector('.p-prazo').value,
+    indicador: el.querySelector('.p-indicador').value.trim(),
+    linha_base: el.querySelector('.p-linha_base').value.trim(),
+    criterio_conclusao: el.querySelector('.p-criterio').value.trim(),
+  }));
+}
+
+function redesenharPrioridades() {
+  document.getElementById('prioridadesWrap').innerHTML = prioridadesAtuais.map(renderPrioridade).join('') || '<p class="small">Nenhuma prioridade ainda — clique em "+ Adicionar prioridade".</p>';
+  document.querySelectorAll('[data-remove]').forEach((btn) => {
+    btn.addEventListener('click', () => { prioridadesAtuais.splice(Number(btn.dataset.remove), 1); redesenharPrioridades(); });
+  });
+}
+
+async function carregarFicha() {
+  const conteudo = document.getElementById('conteudo');
+  const params = new URLSearchParams(location.search);
+  const nomeBusca = params.get('nome') || 'Aline';
+
+  const { data: mentorias, error: mErr } = await supabase.from('mentoria_individual').select('*').ilike('nome_completo', `%${nomeBusca}%`);
+  if (mErr) { conteudo.innerHTML = `<div class="alert alert-error">${mErr.message}</div>`; return; }
+  if (!mentorias || mentorias.length === 0) { conteudo.innerHTML = `<p>Nenhuma mentoria individual encontrada para "${nomeBusca}".</p>`; return; }
+  const mentoria = mentorias[0];
+
+  const { data: diagnosticos } = await supabase.from('mentoria_diagnosticos').select('*').eq('mentoria_id', mentoria.id).order('ciclo', { ascending: false });
+  const diag = diagnosticos && diagnosticos[0];
+  const { data: planos } = await supabase.from('mentoria_planos_mensais').select('*').eq('mentoria_id', mentoria.id).eq('ciclo', diag ? diag.ciclo : 1).limit(1);
+  const plano = planos && planos[0];
+  const { data: encontros } = await supabase.from('mentoria_encontros').select('*').eq('mentoria_id', mentoria.id).order('numero', { ascending: true });
+  const { data: notas } = await supabase.from('mentoria_notas_privadas').select('*').eq('mentoria_id', mentoria.id).order('criado_em', { ascending: false });
+
+  prioridadesAtuais = (plano && plano.prioridades) || [];
+
+  const lentes = (diag && diag.analise) || {};
+  const conflitos = (diag && diag.conflitos) || [];
+
+  conteudo.innerHTML = `
+    <div class="mi-card">
+      <h2 style="margin:0;color:var(--green)">${mentoria.nome_completo}</h2>
+      <div class="small" style="margin-top:4px">
+        Status da mentoria: <b>${mentoria.status}</b> · Cadência: <b>${mentoria.cadencia_encontros}</b> ·
+        Conta na plataforma: <b>${mentoria.user_id ? 'ativada' : 'ainda não ativada — aguardando confirmação do e-mail'}</b>
+      </div>
+    </div>
+
+    <div class="mi-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <h3 style="margin:0;color:var(--green)">Diagnóstico — ciclo ${diag ? diag.ciclo : '—'}</h3>
+        <span class="badge-status ${diag ? diag.status : ''}">${diag ? diag.status : 'sem diagnóstico'}</span>
+      </div>
+      <div class="mi-lentes">
+        ${renderLente('Demanda / Captação', lentes.demanda_captacao)}
+        ${renderLente('Conversão', lentes.conversao)}
+        ${renderLente('Financeiro / Caixa', lentes.financeiro_caixa)}
+        ${renderLente('Capacidade / Agenda', lentes.capacidade_agenda)}
+        ${renderLente('Concentração de receita', lentes.concentracao_receita)}
+        ${renderLente('Previsibilidade', lentes.previsibilidade)}
+      </div>
+      <div class="conflitos-box">
+        <h3 style="color:#a43b45;font-size:16px;margin:0 0 4px">Conflitos a confirmar (${conflitos.length})</h3>
+        ${conflitos.map(renderConflito).join('') || '<p class="small">Nenhum conflito detectado.</p>'}
+      </div>
+    </div>
+
+    <div class="mi-card">
+      <h3 style="margin:0 0 4px;color:var(--green)">Plano de Ação — 30 dias (até 3 prioridades)</h3>
+      <p class="small" style="margin:0 0 10px">Rascunho editável. Nada é enviado à mentorada até você clicar em "Revisar e liberar".</p>
+      <div id="prioridadesWrap"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+        <button type="button" class="btn alt" id="btnAddPrioridade" style="padding:9px 16px;font-size:13.5px">+ Adicionar prioridade</button>
+        <button type="button" class="btn alt" id="btnSalvarRascunho" style="padding:9px 16px;font-size:13.5px">Salvar rascunho</button>
+        <button type="button" class="btn" id="btnRevisarLiberar" style="padding:9px 16px;font-size:13.5px">Revisar e liberar →</button>
+      </div>
+      <p class="small" id="planoMsg" style="margin-top:8px"></p>
+    </div>
+
+    <div class="mi-card">
+      <h3 style="margin:0 0 10px;color:var(--green)">Encontros</h3>
+      ${(encontros && encontros.length) ? encontros.map((e) => `
+        <div class="encontro-row">
+          <b>Encontro ${e.numero}</b>
+          <span class="small">${fmtData(e.data_agendada)}</span>
+          <span class="small">${e.realizado ? 'Realizado' : 'Agendado'}</span>
+          ${e.nota_pos_encontro != null ? `<span class="small">Nota pós-encontro: ${e.nota_pos_encontro}/10</span>` : ''}
+        </div>`).join('') : '<p class="small">Nenhum encontro registrado ainda. Primeiro encontro (Raio-X Inicial): 01/10.</p>'}
+    </div>
+
+    <div class="mi-card">
+      <h3 style="margin:0 0 10px;color:var(--green)">Notas privadas (só você vê)</h3>
+      ${(notas || []).map((n) => `<div class="nota-privada">${n.texto}<div class="small" style="margin-top:6px;opacity:.7">${new Date(n.criado_em).toLocaleString('pt-BR')}</div></div>`).join('') || '<p class="small">Nenhuma nota ainda.</p>'}
+    </div>
+  `;
+
+  redesenharPrioridades();
+  religarEventosPrioridades(mentoria.id, diag ? diag.id : null, diag ? diag.ciclo : 1);
+}
+
+(async () => {
+  const session = await requireAdmin('../../index.html', '../../login/index.html');
+  if (!session) return;
+  await mountAppShell('admin', session, '../..');
+  try { if (new URLSearchParams(location.search).get('revisao') === '1') document.getElementById('avisoAmbiente').style.display = 'block'; } catch (e) {}
+  await carregarFicha();
+})();
+</script>
+</body>
+</html>
