@@ -60,6 +60,14 @@ section{padding:92px 0}section[id]{scroll-margin-top:84px}
 .feature{padding:27px 22px 30px;border-right:1px solid var(--line)}.feature:first-child{padding-left:0}.feature:last-child{border-right:0}
 .feature .number{font:23px Georgia,serif;color:var(--gold)}.feature p{font-size:14px;color:var(--muted);margin:0}
 
+/* relatos reais, publicados com autorização */
+.voices{background:var(--white);border-top:1px solid var(--line)}
+.voices .intro{max-width:670px}
+.voices-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:40px;margin:40px 0 36px}
+.voice{margin:0;border-top:2px solid var(--gold);padding:24px 0 0}
+.voice blockquote{margin:0 0 16px;font:21px/1.4 Georgia,'Times New Roman',serif;color:var(--green)}
+.voice figcaption{color:var(--muted);font-size:13px;letter-spacing:.04em}
+
 /* oferta */
 .offer{background:var(--beige);border-top:5px solid var(--gold)}
 .offer-grid{display:grid;grid-template-columns:1fr .75fr;gap:75px;align-items:center}
@@ -74,6 +82,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:2
 footer b{font:23px Georgia,serif;color:#fff}footer a{text-decoration:none}
 
 @media(max-width:850px){
+  .voices-grid{gap:24px}
   .hero-grid,.story-grid,.offer-grid{grid-template-columns:1fr;gap:36px}
   .video-card{justify-self:start}
   .four-grid{grid-template-columns:repeat(2,1fr)}
@@ -89,6 +98,7 @@ footer b{font:23px Georgia,serif;color:#fff}footer a{text-decoration:none}
   .story .button,.features .button{width:100%}
   .four-grid{grid-template-columns:1fr}
   .feature,.feature:first-child,.feature:nth-child(3){border-right:0;border-bottom:1px solid var(--line);padding:18px 0}.feature:last-child{border-bottom:0}
+  .voices-grid{grid-template-columns:1fr;gap:28px}.voice blockquote{font-size:19px}.voices .button{width:100%}
   .offer-card{padding:22px}.offer-card .amount{font-size:42px}
   footer .wrap{display:block}footer span{display:block;margin-top:10px}
 }
@@ -135,6 +145,21 @@ a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
     <div class="feature"><span class="number">02</span><h3>Diagnóstico</h3><p>Perguntas sobre agenda, serviços, finanças e captação na clínica ACP.</p></div>
     <div class="feature"><span class="number">03</span><h3>Mapa</h3><p>Uma leitura da sua realidade e da prioridade indicada pelas respostas.</p></div>
     <div class="feature"><span class="number">04</span><h3>30 dias</h3><p>Um plano de ação e conteúdos relacionados ao seu momento.</p></div>
+  </div>
+  <a class="button" href="#comprar">Quero meu Mapa</a>
+</div></section>
+
+<section id="relatos" class="voices"><div class="wrap">
+  <div class="intro"><span class="kicker">Vozes de quem usou</span><h2>O que as psicólogas estão dizendo.</h2></div>
+  <div class="voices-grid">
+    <figure class="voice">
+      <blockquote>“Eu adorei.. preciso aprender muito ainda sobre cobrar o valor justo. Eu tenho pouco tempo de clínica sozinha, antes era contratada por uma clínica, agora que estou trabalhando pra mim, vejo o quanto preciso mudar alguns processos.”</blockquote>
+      <figcaption>Psicóloga · relato por mensagem</figcaption>
+    </figure>
+    <figure class="voice">
+      <blockquote>“Eu agradeço, inclusive já estou fazendo algumas ações, já mexendo um pouquinho algumas coisas, criando um portfoliozinho mais legalzinho pra colocar no WhatsApp. Enfim, obrigado mesmo pela plataforma e que dê vários frutos aí pra sua colega aí e pra vocês. Aí já estou torcendo aqui.”</blockquote>
+      <figcaption>Psicóloga · relato em áudio</figcaption>
+    </figure>
   </div>
   <a class="button" href="#comprar">Quero meu Mapa</a>
 </div></section>
