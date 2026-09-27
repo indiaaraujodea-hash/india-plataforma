@@ -81,7 +81,8 @@ section{padding:92px 0}section[id]{scroll-margin-top:84px}
 .gancho{padding-top:0}
 /* posicionamento & valor + oferta complementar (Mapa + Aula) */
 .valor{border-top:1px solid var(--line)}.valor [hidden]{display:none}
-.valor .video-card{justify-self:auto;margin:0 0 36px}
+.valor .video-card{justify-self:auto;max-width:720px;margin:0 0 36px}
+.valor .video-card video{aspect-ratio:1272/628;max-height:none}
 .valor .quote{margin:0 0 16px}
 .valor .texto{max-width:620px;font-size:17px}
 .combo{max-width:460px;margin-top:40px}
@@ -192,7 +193,7 @@ a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
   <!-- Corte da aula Posicionamento & Valor: aparece quando VIDEO_POSICIONAMENTO (no script do fim da página) receber o arquivo/URL. -->
   <div class="video-card" id="videoValor" hidden>
     <div class="topline"><span>INDIA / Aula</span><span>Vídeo</span></div>
-    <video controls playsinline preload="metadata" aria-label="Corte da aula Posicionamento & Valor"></video>
+    <video controls playsinline preload="metadata" poster="../assets/img/posicionamento-valor-poster.jpg" aria-label="Corte da aula Posicionamento & Valor"></video>
     <div><strong>Posicionamento &amp; Valor</strong><small>Corte da aula.</small></div>
   </div>
   <p class="quote">Preço é uma variável. Não um diagnóstico.</p>
@@ -230,7 +231,7 @@ montarCabecalhoPublico({ container: document.getElementById('cabecalhoPublico'),
 
 // Posicionamento & Valor: preencha para ativar o vídeo e a oferta Mapa + Aula.
 // Enquanto estiverem vazios, os blocos ficam ocultos (nada de link ou vídeo inventado).
-const VIDEO_POSICIONAMENTO = ''; // ex.: '../assets/video/<arquivo-do-corte>.mp4'
+const VIDEO_POSICIONAMENTO = '../assets/video/posicionamento-valor.mp4';
 const CHECKOUT_COMBO = '';       // link do checkout do Mapa + Aula (R$ 97)
 if (VIDEO_POSICIONAMENTO) {
   document.querySelector('#videoValor video').src = VIDEO_POSICIONAMENTO;
