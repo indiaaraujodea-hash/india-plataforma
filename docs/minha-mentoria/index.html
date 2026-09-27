@@ -60,6 +60,7 @@
     <button type="button" data-tab="aulas">Aulas</button>
     <button type="button" data-tab="exercicios">Exercícios</button>
     <button type="button" data-tab="encontros">Encontros</button>
+    <button type="button" data-tab="materiais">Materiais</button>
   </div>
   <button type="button" class="btn alt no-print" id="btnImprimir" style="margin-top:14px;padding:8px 16px;font-size:13px">Imprimir / Salvar PDF</button>
 
@@ -94,7 +95,15 @@
   <div class="tab-panel" data-tab="encontros">
     <div class="plan-card" style="margin-top:16px">
       <div class="kicker">Encontros</div>
+      <div id="encontrosTurmaWrap"></div>
       <div id="encontrosWrap"></div>
+    </div>
+  </div>
+
+  <div class="tab-panel" data-tab="materiais">
+    <div class="plan-card" style="margin-top:16px">
+      <div class="kicker">Materiais</div>
+      <div id="materiaisWrap"></div>
     </div>
   </div>
 </div>
@@ -259,6 +268,30 @@ async function carregar() {
     });
   });
 
+  let temEncontroTurma = false;
+  if (mentoria.turma_id) {
+    const { data: turmaEncontros } = await supabase.from('turma_encontros').select('*').eq('turma_id', mentoria.turma_id).order('numero', { ascending: true });
+    temEncontroTurma = !!(turmaEncontros && turmaEncontros.length);
+    document.getElementById('encontrosTurmaWrap').innerHTML = (turmaEncontros && turmaEncontros.length)
+      ? turmaEncontros.map((e) => `
+          <div class="encontro-card">
+            <b style="color:var(--ink-green)">Encontro ${e.numero} da turma${e.data_agendada ? ` — ${fmtData(e.data_agendada)}` : ''}${e.modalidade ? ` (${e.modalidade})` : ''}</b>
+            ${e.observacoes ? `<p class="small" style="margin-top:6px">${e.observacoes}</p>` : ''}
+          </div>`).join('')
+      : '';
+    const { data: turmaMateriais } = await supabase.from('turma_materiais').select('*').eq('turma_id', mentoria.turma_id).order('criado_em', { ascending: false });
+    document.getElementById('materiaisWrap').innerHTML = (turmaMateriais && turmaMateriais.length)
+      ? turmaMateriais.map((m) => `
+          <div class="prioridade-card">
+            <b>${m.titulo}</b>${m.tipo ? ` <span class="small">(${m.tipo})</span>` : ''}
+            ${m.descricao ? `<p class="small" style="margin-top:6px">${m.descricao}</p>` : ''}
+            ${m.url ? `<a class="btn alt" href="${m.url}" target="_blank" rel="noopener" style="margin-top:8px;padding:7px 14px;font-size:12.5px">Abrir ↗</a>` : ''}
+          </div>`).join('')
+      : '<p class="small">Nenhum material liberado ainda.</p>';
+  } else {
+    document.getElementById('materiaisWrap').innerHTML = '<p class="small">Nenhum material ainda.</p>';
+  }
+
   const { data: encontros } = await supabase.from('mentoria_encontros').select('*').eq('mentoria_id', mentoria.id).order('numero', { ascending: true });
   document.getElementById('encontrosWrap').innerHTML = (encontros && encontros.length)
     ? encontros.map((e) => `
@@ -279,7 +312,7 @@ async function carregar() {
           ` : ''}
           <p class="small" id="msgEncontro-${e.id}" style="margin-top:6px"></p>
         </div>`).join('')
-    : '<p class="small">Nenhum encontro agendado ainda.</p>';
+    : (temEncontroTurma ? '' : '<p class="small">Nenhum encontro agendado ainda.</p>');
 
   document.querySelectorAll('[data-enviar-checkin]').forEach((btn) => {
     btn.addEventListener('click', async () => {
