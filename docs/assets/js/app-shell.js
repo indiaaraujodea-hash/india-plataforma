@@ -43,9 +43,15 @@ export async function mountAppShell(activeKey, session, rootPath = '..') {
   const profile = await getProfile(session.user.id);
   const nome = profile?.nome_completo || session.user.email || 'Minha conta';
 
-  const navItems = profile?.role === 'admin'
-    ? [...NAV_ITEMS, { key: 'admin', label: 'Admin', icon: 'admin', href: (r) => `${r}/admin/index.html` }]
-    : NAV_ITEMS;
+  let navItems = NAV_ITEMS;
+  if (profile?.role === 'admin') {
+    navItems = [...NAV_ITEMS, { key: 'admin', label: 'Admin', icon: 'admin', href: (r) => `${r}/admin/index.html` }];
+  } else {
+    const { data: mentoria } = await supabase.from('mentoria_individual').select('id').eq('user_id', session.user.id).eq('status', 'ativa').maybeSingle();
+    if (mentoria) {
+      navItems = [{ key: 'mentoria', label: 'Minha Mentoria', icon: 'evolucao', href: (r) => `${r}/minha-mentoria/index.html` }, ...NAV_ITEMS];
+    }
+  }
 
   const navHtml = navItems.map((item) => {
     if (item.disabled) {
