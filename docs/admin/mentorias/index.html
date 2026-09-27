@@ -67,7 +67,7 @@ function abrirFormulario() {
 
 async function carregarLista() {
   const wrap = document.getElementById('lista');
-  const { data, error } = await supabase.from('mentoria_individual').select('*').order('criado_em', { ascending: false });
+  const { data, error } = await supabase.from('mentoria_individual').select('*').is('turma_id', null).order('criado_em', { ascending: false });
   if (error) { wrap.innerHTML = `<div class="alert alert-error">${error.message}</div>`; return; }
   if (!data || data.length === 0) { wrap.innerHTML = '<p class="small">Nenhuma mentoria individual ainda.</p>'; return; }
   wrap.innerHTML = data.map((m) => `
