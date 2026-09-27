@@ -77,8 +77,8 @@ section{padding:92px 0}section[id]{scroll-margin-top:84px}
 .offer-card .button{width:100%}
 .offer-card small{display:block;text-align:center;margin-top:12px;color:var(--muted)}
 
-/* gancho logo após o topo: segue o fundo do topo, sem espaço extra */
-.gancho{padding-top:0}
+/* gancho no alto da página, antes do topo: o topo vem logo abaixo */
+.gancho{padding-bottom:0}
 /* posicionamento & valor + oferta complementar (Mapa + Aula) */
 .valor{border-top:1px solid var(--line)}.valor [hidden]{display:none}
 .valor .video-card{justify-self:auto;max-width:720px;margin:0 0 36px}
@@ -124,6 +124,12 @@ a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 <body>
 <div id="cabecalhoPublico"></div>
 <main>
+<section class="features gancho"><div class="wrap"><div class="intro">
+  <h2>Quanto mais sua agenda cresce, mais vulnerável sua clínica pode estar.</h2>
+  <p>Você pode atender mais, faturar mais e, ainda assim, continuar dependendo exclusivamente das suas horas disponíveis para sustentar sua clínica.</p>
+  <p>Antes de pensar no próximo passo, é preciso entender o que a sua Clínica ACP precisa agora para se tornar mais sustentável.</p>
+</div></div></section>
+
 <section class="hero"><div class="wrap hero-grid">
   <div>
     <span class="kicker">Clínica de Valor / Seu Mapa de 30 Dias</span>
@@ -142,23 +148,27 @@ a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
   </div>
 </div></section>
 
-<section class="features gancho"><div class="wrap"><div class="intro">
-  <h2>Quanto mais sua agenda cresce, mais vulnerável sua clínica pode estar.</h2>
-  <p>Você pode atender mais, faturar mais e, ainda assim, continuar dependendo exclusivamente das suas horas disponíveis para sustentar sua clínica.</p>
-  <p>Antes de pensar no próximo passo, é preciso entender o que a sua Clínica ACP precisa agora para se tornar mais sustentável.</p>
-</div></div></section>
+<section id="valor" class="valor"><div class="wrap">
+  <div class="intro"><span class="kicker">Posicionamento &amp; Valor</span><h2>Não fale em preço antes de saber isso.</h2></div>
+  <!-- Corte da aula Posicionamento & Valor: aparece quando VIDEO_POSICIONAMENTO (no script do fim da página) receber o arquivo/URL. -->
+  <div class="video-card" id="videoValor" hidden>
+    <div class="topline"><span>INDIA / Aula</span><span>Vídeo</span></div>
+    <video controls playsinline preload="metadata" poster="../assets/img/posicionamento-valor-poster.jpg" aria-label="Corte da aula Posicionamento & Valor"></video>
+    <div><strong>Posicionamento &amp; Valor</strong><small>Corte da aula.</small></div>
+  </div>
+  <p class="quote">Preço é uma variável. Não um diagnóstico.</p>
+  <p class="texto">Antes de decidir aumentar preço, atender mais, divulgar mais ou criar outro serviço, é preciso entender o que está acontecendo no conjunto da sua clínica.</p>
 
-<section id="origem" class="story"><div class="wrap story-grid">
-  <img class="story-photo" src="../assets/img/india-mapa-esquerda.jpg" width="1200" height="800" alt="India Araújo de Almeida, criadora do Mapa de 30 Dias">
-  <div>
-    <span class="kicker">A ideia por trás do Mapa</span>
-    <h2>Clareza não é cobrança.</h2>
-    <p>Criei este espaço para que você consiga olhar para sua clínica sem se medir pelo lugar onde acha que deveria estar.</p>
-    <p>O Mapa mostra o que as suas respostas revelam hoje, ajuda a reconhecer uma prioridade e organiza o começo da ação. Pode ser o seu ponto de partida, mesmo antes de uma mentoria.</p>
-    <p><b>Eu não sou psicóloga. Sou gestora de negócios.</b></p>
-    <p>Minha trajetória profissional passou por estratégia, comercial, liderança e expansão, incluindo atuação como Head de Expansão em uma multinacional. Há cerca de um ano, atuo diretamente com psicólogas da Abordagem Centrada na Pessoa, trazendo a lente da gestão para a sustentabilidade da clínica.</p>
-    <p class="quote">Você conhece a clínica. Eu ajudo você a enxergar o negócio que a sustenta.</p>
-    <a class="button" href="#comprar">Quero meu Mapa</a>
+  <!-- Oferta complementar: aparece quando CHECKOUT_COMBO (no script do fim da página) receber o link do checkout. -->
+  <div class="offer-card combo" id="ofertaCombo" hidden>
+    <span class="kicker">Mapa + Aula</span>
+    <h3>Quer aprofundar esse tema?</h3>
+    <p>Tenha acesso à aula completa Posicionamento &amp; Valor + seu Mapa de 30 Dias para a Clínica ACP em uma condição especial.</p>
+    <ul><li>Mapa de 30 Dias — R$ 47,90</li><li>Aula Posicionamento &amp; Valor — R$ 87,00</li></ul>
+    <p class="de">Separadamente: <s>R$ 134,90</s></p>
+    <div class="amount">R$ 97,00</div>
+    <a class="button" id="ctaCombo">QUERO O MAPA + AULA POR R$ 97</a>
+    <a class="so-mapa" href="#comprar">Quero somente meu Mapa por R$ 47,90</a>
   </div>
 </div></section>
 
@@ -188,27 +198,17 @@ a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
   <a class="button" href="#comprar">Quero meu Mapa</a>
 </div></section>
 
-<section id="valor" class="valor"><div class="wrap">
-  <div class="intro"><span class="kicker">Posicionamento &amp; Valor</span><h2>Não fale em preço antes de saber isso.</h2></div>
-  <!-- Corte da aula Posicionamento & Valor: aparece quando VIDEO_POSICIONAMENTO (no script do fim da página) receber o arquivo/URL. -->
-  <div class="video-card" id="videoValor" hidden>
-    <div class="topline"><span>INDIA / Aula</span><span>Vídeo</span></div>
-    <video controls playsinline preload="metadata" poster="../assets/img/posicionamento-valor-poster.jpg" aria-label="Corte da aula Posicionamento & Valor"></video>
-    <div><strong>Posicionamento &amp; Valor</strong><small>Corte da aula.</small></div>
-  </div>
-  <p class="quote">Preço é uma variável. Não um diagnóstico.</p>
-  <p class="texto">Antes de decidir aumentar preço, atender mais, divulgar mais ou criar outro serviço, é preciso entender o que está acontecendo no conjunto da sua clínica.</p>
-
-  <!-- Oferta complementar: aparece quando CHECKOUT_COMBO (no script do fim da página) receber o link do checkout. -->
-  <div class="offer-card combo" id="ofertaCombo" hidden>
-    <span class="kicker">Mapa + Aula</span>
-    <h3>Quer aprofundar esse tema?</h3>
-    <p>Tenha acesso à aula completa Posicionamento &amp; Valor + seu Mapa de 30 Dias para a Clínica ACP em uma condição especial.</p>
-    <ul><li>Mapa de 30 Dias — R$ 47,90</li><li>Aula Posicionamento &amp; Valor — R$ 87,00</li></ul>
-    <p class="de">Separadamente: <s>R$ 134,90</s></p>
-    <div class="amount">R$ 97,00</div>
-    <a class="button" id="ctaCombo">QUERO O MAPA + AULA POR R$ 97</a>
-    <a class="so-mapa" href="#comprar">Quero somente meu Mapa por R$ 47,90</a>
+<section id="origem" class="story"><div class="wrap story-grid">
+  <img class="story-photo" src="../assets/img/india-mapa-esquerda.jpg" width="1200" height="800" alt="India Araújo de Almeida, criadora do Mapa de 30 Dias">
+  <div>
+    <span class="kicker">A ideia por trás do Mapa</span>
+    <h2>Clareza não é cobrança.</h2>
+    <p>Criei este espaço para que você consiga olhar para sua clínica sem se medir pelo lugar onde acha que deveria estar.</p>
+    <p>O Mapa mostra o que as suas respostas revelam hoje, ajuda a reconhecer uma prioridade e organiza o começo da ação. Pode ser o seu ponto de partida, mesmo antes de uma mentoria.</p>
+    <p><b>Eu não sou psicóloga. Sou gestora de negócios.</b></p>
+    <p>Minha trajetória profissional passou por estratégia, comercial, liderança e expansão, incluindo atuação como Head de Expansão em uma multinacional. Há cerca de um ano, atuo diretamente com psicólogas da Abordagem Centrada na Pessoa, trazendo a lente da gestão para a sustentabilidade da clínica.</p>
+    <p class="quote">Você conhece a clínica. Eu ajudo você a enxergar o negócio que a sustenta.</p>
+    <a class="button" href="#comprar">Quero meu Mapa</a>
   </div>
 </div></section>
 
