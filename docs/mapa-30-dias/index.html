@@ -77,6 +77,19 @@ section{padding:92px 0}section[id]{scroll-margin-top:84px}
 .offer-card .button{width:100%}
 .offer-card small{display:block;text-align:center;margin-top:12px;color:var(--muted)}
 
+/* gancho logo após o topo: segue o fundo do topo, sem espaço extra */
+.gancho{padding-top:0}
+/* posicionamento & valor + oferta complementar (Mapa + Aula) */
+.valor{border-top:1px solid var(--line)}.valor [hidden]{display:none}
+.valor .video-card{justify-self:auto;margin:0 0 36px}
+.valor .quote{margin:0 0 16px}
+.valor .texto{max-width:620px;font-size:17px}
+.combo{max-width:460px;margin-top:40px}
+.combo h3{margin:6px 0 10px}
+.combo .de{font-size:14px;color:var(--muted);margin:0}
+.combo .amount{margin:4px 0 20px}
+.combo .so-mapa{display:block;text-align:center;margin-top:14px;font-size:14px;color:var(--green)}
+
 footer{padding:31px 0;background:var(--deep);color:#d7dfd6;font-size:12px}
 footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:20px}
 footer b{font:23px Georgia,serif;color:#fff}footer a{text-decoration:none}
@@ -99,6 +112,7 @@ footer b{font:23px Georgia,serif;color:#fff}footer a{text-decoration:none}
   .four-grid{grid-template-columns:1fr}
   .feature,.feature:first-child,.feature:nth-child(3){border-right:0;border-bottom:1px solid var(--line);padding:18px 0}.feature:last-child{border-bottom:0}
   .voices-grid{grid-template-columns:1fr;gap:28px}.voice blockquote{font-size:19px}.voices .button{width:100%}
+  .valor .video-card,.combo{max-width:none}
   .offer-card{padding:22px}.offer-card .amount{font-size:42px}
   footer .wrap{display:block}footer span{display:block;margin-top:10px}
 }
@@ -127,6 +141,12 @@ a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
   </div>
 </div></section>
 
+<section class="features gancho"><div class="wrap"><div class="intro">
+  <h2>Quanto mais sua agenda cresce, mais vulnerável sua clínica pode estar.</h2>
+  <p>Você pode atender mais, faturar mais e, ainda assim, continuar dependendo exclusivamente das suas horas disponíveis para sustentar sua clínica.</p>
+  <p>Antes de pensar no próximo passo, é preciso entender o que a sua Clínica ACP precisa agora para se tornar mais sustentável.</p>
+</div></div></section>
+
 <section id="origem" class="story"><div class="wrap story-grid">
   <img class="story-photo" src="../assets/img/india-mapa-esquerda.jpg" width="1200" height="800" alt="India Araújo de Almeida, criadora do Mapa de 30 Dias">
   <div>
@@ -134,6 +154,9 @@ a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
     <h2>Clareza não é cobrança.</h2>
     <p>Criei este espaço para que você consiga olhar para sua clínica sem se medir pelo lugar onde acha que deveria estar.</p>
     <p>O Mapa mostra o que as suas respostas revelam hoje, ajuda a reconhecer uma prioridade e organiza o começo da ação. Pode ser o seu ponto de partida, mesmo antes de uma mentoria.</p>
+    <p><b>Eu não sou psicóloga. Sou gestora de negócios.</b></p>
+    <p>Minha trajetória profissional passou por estratégia, comercial, liderança e expansão, incluindo atuação como Head de Expansão em uma multinacional. Há cerca de um ano, atuo diretamente com psicólogas da Abordagem Centrada na Pessoa, trazendo a lente da gestão para a sustentabilidade da clínica.</p>
+    <p class="quote">Você conhece a clínica. Eu ajudo você a enxergar o negócio que a sustenta.</p>
     <a class="button" href="#comprar">Quero meu Mapa</a>
   </div>
 </div></section>
@@ -164,6 +187,30 @@ a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
   <a class="button" href="#comprar">Quero meu Mapa</a>
 </div></section>
 
+<section id="valor" class="valor"><div class="wrap">
+  <div class="intro"><span class="kicker">Posicionamento &amp; Valor</span><h2>Não fale em preço antes de saber isso.</h2></div>
+  <!-- Corte da aula Posicionamento & Valor: aparece quando VIDEO_POSICIONAMENTO (no script do fim da página) receber o arquivo/URL. -->
+  <div class="video-card" id="videoValor" hidden>
+    <div class="topline"><span>INDIA / Aula</span><span>Vídeo</span></div>
+    <video controls playsinline preload="metadata" aria-label="Corte da aula Posicionamento & Valor"></video>
+    <div><strong>Posicionamento &amp; Valor</strong><small>Corte da aula.</small></div>
+  </div>
+  <p class="quote">Preço é uma variável. Não um diagnóstico.</p>
+  <p class="texto">Antes de decidir aumentar preço, atender mais, divulgar mais ou criar outro serviço, é preciso entender o que está acontecendo no conjunto da sua clínica.</p>
+
+  <!-- Oferta complementar: aparece quando CHECKOUT_COMBO (no script do fim da página) receber o link do checkout. -->
+  <div class="offer-card combo" id="ofertaCombo" hidden>
+    <span class="kicker">Mapa + Aula</span>
+    <h3>Quer aprofundar esse tema?</h3>
+    <p>Tenha acesso à aula completa Posicionamento &amp; Valor + seu Mapa de 30 Dias para a Clínica ACP em uma condição especial.</p>
+    <ul><li>Mapa de 30 Dias — R$ 47,90</li><li>Aula Posicionamento &amp; Valor — R$ 87,00</li></ul>
+    <p class="de">Separadamente: <s>R$ 134,90</s></p>
+    <div class="amount">R$ 97,00</div>
+    <a class="button" id="ctaCombo">QUERO O MAPA + AULA POR R$ 97</a>
+    <a class="so-mapa" href="#comprar">Quero somente meu Mapa por R$ 47,90</a>
+  </div>
+</div></section>
+
 <section id="comprar" class="offer"><div class="wrap offer-grid">
   <div><span class="kicker">Seu Mapa de 30 Dias</span><h2>Um ponto de partida para a sua clínica.</h2><p>Diagnóstico, Mapa e plano de ação. Sem precisar entrar agora em um acompanhamento.</p></div>
   <div class="offer-card">
@@ -180,6 +227,19 @@ a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 <script type="module">
 import { montarCabecalhoPublico } from '../assets/js/site-header.js';
 montarCabecalhoPublico({ container: document.getElementById('cabecalhoPublico'), rootPath: '..', paginaAtual: 'mapa-30-dias' });
+
+// Posicionamento & Valor: preencha para ativar o vídeo e a oferta Mapa + Aula.
+// Enquanto estiverem vazios, os blocos ficam ocultos (nada de link ou vídeo inventado).
+const VIDEO_POSICIONAMENTO = ''; // ex.: '../assets/video/<arquivo-do-corte>.mp4'
+const CHECKOUT_COMBO = '';       // link do checkout do Mapa + Aula (R$ 97)
+if (VIDEO_POSICIONAMENTO) {
+  document.querySelector('#videoValor video').src = VIDEO_POSICIONAMENTO;
+  document.getElementById('videoValor').hidden = false;
+}
+if (CHECKOUT_COMBO) {
+  document.getElementById('ctaCombo').href = CHECKOUT_COMBO;
+  document.getElementById('ofertaCombo').hidden = false;
+}
 
 // Quem pede menos movimento vê o vídeo parado (pode dar play pelos controles).
 const video = document.querySelector('.video-card video');
