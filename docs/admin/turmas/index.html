@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="robots" content="noindex">
+<title>Turmas | Painel Administrativo</title>
+<link rel="stylesheet" href="../../style.css">
+<link rel="stylesheet" href="../../assets/css/shell.css">
+<style>
+.turma-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-top:12px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.turma-card h3{margin:0;color:var(--green);font-size:18px}
+.turma-card .meta{font-size:12.5px;color:var(--muted);margin-top:4px}
+.form-nova{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:16px}
+.form-nova label{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);margin:10px 0 4px}
+.form-nova label:first-child{margin-top:0}
+.form-nova input,.form-nova textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:9px 11px;font:inherit;font-size:14px}
+.form-nova textarea{min-height:60px}
+</style>
+</head>
+<body>
+<main class="wrap" style="max-width:900px">
+  <section class="section">
+    <div class="eyebrow">Painel Administrativo</div>
+    <h1 class="serif" style="font-size:34px;color:var(--green);margin:8px 0">Turmas (Mentoria em Grupo)</h1>
+    <p style="margin:0 0 6px"><a href="../index.html" class="small">← Voltar para clientes</a></p>
+    <button type="button" class="btn" id="btnNova" style="padding:10px 18px;font-size:14px;margin-top:6px">+ Nova turma</button>
+    <div id="formNova"></div>
+    <div id="lista" style="margin-top:6px"><p>Carregando…</p></div>
+  </section>
+</main>
+<footer>INDIA · CAFÉ, PESSOAS E NEGÓCIOS DE VALOR · Clínica de Valor</footer>
+
+<script type="module">
+import { supabase, avisarSupabaseNaoConfigurado } from '../../assets/js/supabase-client.js';
+import { requireAdmin } from '../../assets/js/auth.js';
+import { mountAppShell } from '../../assets/js/app-shell.js';
+
+avisarSupabaseNaoConfigurado();
+
+function abrirFormulario() {
+  document.getElementById('formNova').innerHTML = `
+    <div class="form-nova">
+      <h3 style="margin:0;color:var(--green)">Nova turma</h3>
+      <label>Nome</label><input type="text" id="fNome" placeholder="Ex.: Turma 5 — Fortaleza">
+      <label>Ciclo</label><input type="number" id="fCiclo" value="1" min="1">
+      <label>Observações</label><textarea id="fObs" placeholder="Ex.: nome ainda a confirmar, cadência, etc."></textarea>
+      <div style="display:flex;gap:10px;margin-top:14px">
+        <button type="button" class="btn" id="btnSalvarNova" style="padding:9px 16px;font-size:13.5px">Criar</button>
+        <button type="button" class="btn alt" id="btnCancelarNova" style="padding:9px 16px;font-size:13.5px">Cancelar</button>
+      </div>
+      <p class="small" id="novaMsg" style="margin-top:8px"></p>
+    </div>`;
+  document.getElementById('btnCancelarNova').addEventListener('click', () => { document.getElementById('formNova').innerHTML = ''; });
+  document.getElementById('btnSalvarNova').addEventListener('click', async () => {
+    const nome = document.getElementById('fNome').value.trim();
+    if (!nome) { document.getElementById('novaMsg').textContent = 'Nome é obrigatório.'; return; }
+    const { data: { user } } = await supabase.auth.getUser();
+    const { error } = await supabase.from('turmas').insert({
+      nome, ciclo: Number(document.getElementById('fCiclo').value) || 1,
+      observacoes: document.getElementById('fObs').value.trim() || null,
+      status: 'ativa', criado_por: user.id,
+    });
+    if (error) { document.getElementById('novaMsg').textContent = `Erro: ${error.message}`; return; }
+    document.getElementById('formNova').innerHTML = '';
+    await carregarLista();
+  });
+}
+
+async function carregarLista() {
+  const wrap = document.getElementById('lista');
+  const { data: turmas, error } = await supabase.from('turmas').select('*').order('criado_em', { ascending: false });
+  if (error) { wrap.innerHTML = `<div class="alert alert-error">${error.message}</div>`; return; }
+  if (!turmas || turmas.length === 0) { wrap.innerHTML = '<p class="small">Nenhuma turma ainda.</p>'; return; }
+
+  const { data: participantes } = await supabase.from('mentoria_individual').select('id, turma_id').not('turma_id', 'is', null);
+  const contagem = {};
+  (participantes || []).forEach((p) => { contagem[p.turma_id] = (contagem[p.turma_id] || 0) + 1; });
+
+  wrap.innerHTML = turmas.map((t) => `
+    <div class="turma-card">
+      <div>
+        <h3>${t.nome}</h3>
+        <div class="meta">Ciclo ${t.ciclo} · Status: ${t.status} · ${contagem[t.id] || 0} participante(s)${t.observacoes ? ` · <i>${t.observacoes}</i>` : ''}</div>
+      </div>
+      <a class="btn alt" href="ficha/index.html?id=${t.id}" style="padding:8px 16px;font-size:13px">Abrir ficha →</a>
+    </div>`).join('');
+}
+
+(async () => {
+  const ctx = await requireAdmin('../../index.html', '../../login/index.html');
+  if (!ctx) return;
+  await mountAppShell('admin', ctx.session, '../..');
+  document.getElementById('btnNova').addEventListener('click', abrirFormulario);
+  await carregarLista();
+})();
+</script>
+</body>
+</html>
