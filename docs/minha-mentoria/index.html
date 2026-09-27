@@ -36,6 +36,7 @@
 .encontro-card textarea{width:100%;border:1px solid var(--line-soft);border-radius:8px;padding:8px 10px;font:inherit;font-size:13.5px;min-height:60px;margin-top:6px}
 .encontro-card label{display:block;font-size:12px;color:var(--muted2);text-transform:uppercase;letter-spacing:.03em;margin:10px 0 4px}
 .decisoes-box{background:var(--sidebar-active-bg);border-radius:8px;padding:10px 12px;margin-top:8px;font-size:13.5px}
+.aviso-preview{background:#fdf4e3;border:1px solid #ecd8a8;border-radius:10px;padding:12px 16px;font-size:13.5px;color:#8a5a11;margin-bottom:14px}
 @media print{
   .app-sidebar,.app-topbar,.tabs-bar,.no-print{display:none !important}
   .tab-panel{display:block !important}
@@ -110,13 +111,14 @@
 
 <script type="module">
 import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
-import { requireAuth } from '../assets/js/auth.js';
+import { requireAuth, getProfile } from '../assets/js/auth.js';
 import { mountAppShell } from '../assets/js/app-shell.js';
 
 avisarSupabaseNaoConfigurado();
 
 const fmtData = (iso) => iso ? new Date(iso + (iso.length === 10 ? 'T00:00:00' : '')).toLocaleDateString('pt-BR') : '—';
 let mentoriaId = null;
+let modoPreview = false;
 
 function renderLente(nome, l) {
   if (!l) return '';
@@ -174,11 +176,26 @@ async function carregar() {
   await mountAppShell('mentoria', session, '..');
 
   const aviso = document.getElementById('aviso');
-  const { data: mentoria, error } = await supabase.from('mentoria_individual').select('*').eq('user_id', session.user.id).eq('status', 'ativa').maybeSingle();
+
+  const previewId = new URLSearchParams(location.search).get('ver');
+  let mentoria = null, error = null;
+  if (previewId) {
+    const profile = await getProfile(session.user.id);
+    if (profile && profile.role === 'admin') {
+      modoPreview = true;
+      ({ data: mentoria, error } = await supabase.from('mentoria_individual').select('*').eq('id', previewId).maybeSingle());
+    }
+  }
+  if (!modoPreview) {
+    ({ data: mentoria, error } = await supabase.from('mentoria_individual').select('*').eq('user_id', session.user.id).eq('status', 'ativa').maybeSingle());
+  }
   if (error) { aviso.innerHTML = `<div class="alert alert-error">${error.message}</div>`; return; }
   if (!mentoria) { aviso.innerHTML = `<div class="alert alert-info">Sua Mentoria Individual ainda não está disponível aqui. Fale com a equipe INDIA se você já iniciou o processo.</div>`; return; }
   mentoriaId = mentoria.id;
   document.getElementById('conteudo').style.display = '';
+  if (modoPreview) {
+    aviso.innerHTML = `<div class="aviso-preview no-print">Visualizando como <b>${mentoria.nome_completo}</b> veria — modo admin, somente leitura. Nada digitado aqui é salvo.</div>`;
+  }
 
   document.querySelectorAll('.tabs-bar button').forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -336,6 +353,13 @@ async function carregar() {
       document.getElementById(`msgEncontro-${btn.dataset.enviarPos}`).textContent = error ? `Erro: ${error.message}` : 'Enviado, obrigada!';
     });
   });
+
+  if (modoPreview) {
+    document.querySelectorAll('[data-salvar-exercicio], [data-enviar-checkin], [data-enviar-pos]').forEach((btn) => {
+      btn.disabled = true;
+      btn.title = 'Modo de visualização — não salva de verdade';
+    });
+  }
 }
 
 carregar();

@@ -477,7 +477,10 @@ async function carregarFicha() {
 
   conteudo.innerHTML = `
     <div class="mi-card">
-      <h2 style="margin:0;color:var(--green)">${mentoria.nome_completo}</h2>
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <h2 style="margin:0;color:var(--green)">${mentoria.nome_completo}</h2>
+        <a class="btn alt" href="../../../minha-mentoria/index.html?ver=${mentoria.id}" target="_blank" rel="noopener" style="padding:8px 16px;font-size:13px">Visualizar como ela veria →</a>
+      </div>
       <div class="small" style="margin-top:4px">
         Status da mentoria: <b>${mentoria.status}</b> · Cadência: <b>${mentoria.cadencia_encontros}</b> ·
         Conta na plataforma: <b>${mentoria.user_id ? 'ativada' : 'ainda não ativada'}</b>
