@@ -280,13 +280,13 @@ document.getElementById('btnJaPaguei').addEventListener('click', async () => {
   btn.disabled = true;
   btn.textContent = 'Registrando…';
 
-  const { error } = await supabase.from('solicitacoes_compra').insert({
+  const { data: solicitacao, error } = await supabase.from('solicitacoes_compra').insert({
     nome: dadosCliente.nome,
     email: dadosCliente.email,
     whatsapp: dadosCliente.whatsapp,
     produto: 'Seu Mapa de 30 Dias',
     valor: 47.90,
-  });
+  }).select('id').single();
 
   if (error) {
     console.error('Falha ao registrar solicitação de compra:', error);
@@ -299,6 +299,12 @@ document.getElementById('btnJaPaguei').addEventListener('click', async () => {
     btn.textContent = 'Já realizei o pagamento';
     return;
   }
+
+  // Aviso por e-mail para a India. A solicitação já está salva: se o e-mail
+  // falhar, ela continua no banco e aparece em /admin/.
+  supabase.functions.invoke('notificar-compra', { body: { id: solicitacao.id } })
+    .then(({ error: erroFn }) => { if (erroFn) console.warn('Aviso por e-mail não enviado:', erroFn); })
+    .catch((err) => console.warn('Aviso por e-mail não enviado:', err));
 
   document.getElementById('pagamento').style.display = 'none';
   document.getElementById('confirmacao').style.display = '';
