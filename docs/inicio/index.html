@@ -29,6 +29,16 @@
 .hero-pillars span{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--terracota,#9a5b34)}
 .hero-pillars .dot{width:4px;height:4px;border-radius:50%;background:var(--line,#e5ded1)}
 
+/* ---- Acesso rápido: atalho compacto para os 4 produtos, sem mexer nos
+   cards abaixo. 2×2 no celular, 1 linha de 4 a partir de 640px (mesmo
+   breakpoint já usado pelos cards). ---- */
+.quick-access{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:1400px;margin:0 auto;padding:0 24px 28px;list-style:none}
+@media(min-width:640px){.quick-access{grid-template-columns:repeat(4,1fr);padding:0 24px 32px}}
+.quick-access-item{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line,#e5ded1);border-radius:14px;padding:12px 14px;text-decoration:none;color:var(--green,#173f31);transition:border-color .15s,box-shadow .15s}
+.quick-access-item:hover,.quick-access-item:focus-visible{border-color:var(--terracota,#9a5b34);box-shadow:0 2px 10px rgba(23,63,49,.08)}
+.quick-access-item .qa-icon{flex-shrink:0;width:38px;height:38px;border-radius:50%;background:var(--cream,#f7f3eb);color:var(--terracota,#9a5b34);display:flex;align-items:center;justify-content:center}
+.quick-access-item .qa-label{font-size:13.5px;font-weight:700;line-height:1.2}
+
 /* ---- cards: os 3 existentes, largura ajustada para caber lado a lado ---- */
 .landing-cards{gap:18px;padding-left:24px;padding-right:24px;padding-bottom:64px;align-items:stretch}
 /* 4 cards: lado a lado no computador, 2×2 em telas médias, 1 por linha no celular */
@@ -43,18 +53,18 @@
 /* selo "Comece por aqui" no canto do card do Mapa */
 .product-card{position:relative}
 .selo-comece{position:absolute;top:14px;left:14px;z-index:2;background:var(--terracota,#9a5b34);color:#fdfaf4;font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:6px 11px;border-radius:999px;box-shadow:0 2px 8px rgba(23,63,49,.18)}
-.product-card .photo.p4{background:linear-gradient(to bottom,rgba(233,224,214,0) 78%,#e9e0d6),url('../assets/img/india-mapa.jpg') 72% 30%/cover no-repeat,#e9e0d6}
-/* foto sem esticar nem ampliar, deslocada para a direita: as costas/braço
-   (a ~87% da largura da foto) encostam na borda direita do card; o espaço
-   que sobra à esquerda é o próprio bege do fundo, com transição suave. */
+.product-card .photo.p4{background:linear-gradient(to bottom,rgba(233,224,214,0) 78%,#e9e0d6),url('../assets/img/india-mapa-esquerda.jpg') 8% 30%/cover no-repeat,#e9e0d6}
+/* foto sem esticar nem ampliar, deslocada para a esquerda (mesma foto da
+   página do Mapa): a India fica do lado esquerdo do card; à direita fica o
+   próprio bege do fundo, com transição suave. */
 @supports (width:1cqw){
   .product-card.mentoria{container-type:inline-size}
   .product-card .photo.p4{
     --foto-l:max(100cqw,285px);
     background:
       linear-gradient(to bottom,rgba(233,224,214,0) 78%,#e9e0d6),
-      linear-gradient(to right,#e9e0d6 calc(var(--foto-l) * .13),rgba(233,224,214,0) calc(var(--foto-l) * .24)),
-      url('../assets/img/india-mapa.jpg') right calc(var(--foto-l) * -.13) top/var(--foto-l) auto no-repeat,
+      linear-gradient(to left,#e9e0d6 8%,rgba(233,224,214,0) 45%),
+      url('../assets/img/india-mapa-esquerda.jpg') left top/var(--foto-l) auto no-repeat,
       #e9e0d6;
   }
 }
@@ -101,8 +111,28 @@
     </div>
   </div>
 
+  <nav class="quick-access" aria-label="Acesso rápido aos produtos">
+    <a class="quick-access-item" href="../calculadora/index.html">
+      <span class="qa-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="14" x2="16" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg></span>
+      <span class="qa-label">Calculadora</span>
+    </a>
+    <a class="quick-access-item" href="../mapa-30-dias/index.html">
+      <span class="qa-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M6 21V10M12 21V4M18 21v-7"/></svg></span>
+      <span class="qa-label">Mapa ACP</span>
+    </a>
+    <a class="quick-access-item" href="../mentoria/index.html">
+      <span class="qa-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+      <span class="qa-label">Mentoria</span>
+    </a>
+    <a class="quick-access-item" href="../aulas/index.html">
+      <span class="qa-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></span>
+      <span class="qa-label">Aulas</span>
+    </a>
+  </nav>
+
   <div class="landing-cards" id="produtos">
     <div class="product-card calculadora">
+      <span class="selo-comece">Calcule o valor da sua sessão</span>
       <div class="photo p6"></div>
       <div class="body">
         <div class="kicker">Gratuito</div>
@@ -118,11 +148,11 @@
     </div>
 
     <div class="product-card mapa">
-      <span class="selo-comece">Comece por aqui</span>
+      <span class="selo-comece">Saiba seu próximo passo</span>
       <a class="photo-link" href="../mapa-30-dias/index.html" aria-label="Conhecer o Mapa de 30 Dias" tabindex="-1"><div class="photo p1"></div></a>
       <div class="body">
         <div class="kicker">Plano prático</div>
-        <h3>Seu Mapa de 30 Dias</h3>
+        <h3>Mapa da Sua Clínica ACP</h3>
         <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Sua clínica tem um próximo passo. Descubra qual é.</p>
         <ul>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M6 21V10M12 21V4M18 21v-7"/></svg>Diagnóstico personalizado</li>
