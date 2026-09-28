@@ -413,7 +413,7 @@ function religarEventosAtivacao(mentoria) {
   });
   const btnVincular = document.getElementById('btnVincularExistente');
   if (btnVincular) btnVincular.addEventListener('click', async () => {
-    const { data: perfil, error: eSel } = await supabase.from('profiles').select('id').eq('email', mentoria.email_previsto).maybeSingle();
+    const { data: perfil, error: eSel } = await supabase.from('profiles').select('id').ilike('email', mentoria.email_previsto).maybeSingle();
     if (eSel) { document.getElementById('ativacaoMsg').textContent = `Erro: ${eSel.message}`; return; }
     if (!perfil) { document.getElementById('ativacaoMsg').textContent = 'Nenhuma conta encontrada com esse e-mail ainda.'; return; }
     const { error } = await supabase.from('mentoria_individual').update({ user_id: perfil.id }).eq('id', mentoria.id);
