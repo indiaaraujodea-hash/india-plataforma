@@ -164,19 +164,30 @@ if (!GOOGLE_AUTH_ENABLED) {
   document.getElementById('googleBlock').style.display = 'none';
 }
 
-// Sem um ?redirect= explícito (ex.: vindo de uma página protegida), o destino
-// padrão após login/cadastro é o ecossistema privado (mapa/index.html decide
-// sozinho se mostra o diagnóstico, o relatório mais recente, ou o aviso de
-// acesso ainda não liberado) — a cliente autenticada nunca volta para a Home
-// pública, que é a vitrine de venda para quem ainda não comprou.
 // O login vive em /login/: o ?redirect= (caminho absoluto, ex.: /plano/index.html,
 // ou relativo à raiz do site) é resolvido a partir da raiz, e só vale se for
-// do próprio site.
+// do próprio site. A cliente autenticada nunca volta para a Home pública, que
+// é a vitrine de venda para quem ainda não comprou.
 const params = new URLSearchParams(location.search);
 const raizSite = new URL('../', location.href);
-let destino = new URL(params.get('redirect') || 'mapa/index.html', raizSite);
-if (destino.origin !== location.origin) destino = new URL('mapa/index.html', raizSite);
-const redirect = destino.href;
+let redirectExplicito = null;
+if (params.get('redirect')) {
+  const destino = new URL(params.get('redirect'), raizSite);
+  if (destino.origin === location.origin) redirectExplicito = destino.href;
+}
+
+// Sem ?redirect= explícito, quem já tem Mentoria (individual ou de turma)
+// ativa vai direto para Minha Mentoria — só quem não tem cai no Mapa de 30
+// Dias (que decide sozinho se mostra o diagnóstico ou o aviso de acesso
+// ainda não liberado).
+async function resolverDestino(userId) {
+  if (redirectExplicito) return redirectExplicito;
+  if (userId) {
+    const { data: mentoria } = await supabase.from('mentoria_individual').select('id').eq('user_id', userId).eq('status', 'ativa').maybeSingle();
+    if (mentoria) return new URL('minha-mentoria/index.html', raizSite).href;
+  }
+  return new URL('mapa/index.html', raizSite).href;
+}
 
 const msgBox = document.getElementById('msgBox');
 function showMsg(text, type = 'error') {
@@ -230,17 +241,17 @@ document.getElementById('toEntrar').addEventListener('click', (e) => { e.prevent
 document.getElementById('toEsqueci').addEventListener('click', (e) => { e.preventDefault(); showEsqueci(); });
 document.getElementById('toEntrarDeEsqueci').addEventListener('click', (e) => { e.preventDefault(); showEntrar(); });
 
-supabase.auth.getSession().then(({ data }) => {
-  if (data.session) location.href = redirect;
+supabase.auth.getSession().then(async ({ data }) => {
+  if (data.session) location.href = await resolverDestino(data.session.user.id);
 });
 
 formEntrar.addEventListener('submit', async (e) => {
   e.preventDefault();
   const email = document.getElementById('loginEmail').value.trim();
   const senha = document.getElementById('loginSenha').value;
-  const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password: senha });
   if (error) { showMsg('Não foi possível entrar: ' + error.message); return; }
-  location.href = redirect;
+  location.href = await resolverDestino(data.session.user.id);
 });
 
 formCriar.addEventListener('submit', async (e) => {
@@ -270,7 +281,7 @@ formCriar.addEventListener('submit', async (e) => {
     showMsg('Conta criada. Verifique seu e-mail para confirmar o cadastro antes de entrar.', 'info');
     return;
   }
-  location.href = redirect;
+  location.href = await resolverDestino(data.user.id);
 });
 
 document.getElementById('btnEnviarReset').addEventListener('click', async () => {
