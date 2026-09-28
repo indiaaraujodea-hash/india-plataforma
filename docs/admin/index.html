@@ -378,7 +378,7 @@ async function carregarSolicitacoesCompra() {
         confirmado_por: user.id,
       }).eq('id', sol.id);
 
-      const { data: perfil } = await supabase.from('profiles').select('id').eq('email', sol.email).maybeSingle();
+      const { data: perfil } = await supabase.from('profiles').select('id').ilike('email', sol.email).maybeSingle();
       if (perfil) {
         await supabase.from('profiles').update({
           diagnostico_liberado: true,
