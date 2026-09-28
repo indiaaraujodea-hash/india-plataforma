@@ -199,7 +199,7 @@
     <div class="confirmacao-icone">✓</div>
     <h1>Solicitação recebida</h1>
     <p class="sub">Seu pagamento será conferido e, após a confirmação, seu acesso será liberado.</p>
-    <a class="btn-secundario" id="btnWhatsapp" href="#" target="_blank" rel="noopener">Falar pelo WhatsApp</a>
+    <a class="btn-secundario" id="btnWhatsapp" href="#" target="_blank" rel="noopener">Falar por e-mail</a>
   </div>
 </div>
 
@@ -218,9 +218,10 @@ if (EDUZZ_CHECKOUT_URL) {
   document.getElementById('ofertaAlt').style.display = 'none';
 }
 
-const mensagemWhatsapp = 'Olá! Fiz o Pix do Mapa de 30 Dias e vou enviar o comprovante';
-const whatsappBase = WHATSAPP_URL || 'https://wa.me/5543984257669';
-document.getElementById('btnWhatsapp').href = `${whatsappBase}?text=${encodeURIComponent(mensagemWhatsapp)}`;
+const emailContato = 'indiaaraujodea@gmail.com';
+const assuntoEmail = 'Comprovante — Mapa de 30 Dias';
+const mensagemEmail = 'Olá! Fiz o Pix do Mapa de 30 Dias e vou enviar o comprovante.';
+document.getElementById('btnWhatsapp').href = `mailto:${emailContato}?subject=${encodeURIComponent(assuntoEmail)}&body=${encodeURIComponent(mensagemEmail)}`;
 
 const btnCopiarPix = document.getElementById('btnCopiarPix');
 btnCopiarPix.addEventListener('click', async () => {
