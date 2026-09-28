@@ -454,6 +454,9 @@ async function carregarFicha() {
   const plano = planos && planos[0];
   const { data: todosPlanos } = await supabase.from('mentoria_planos_mensais').select('*').eq('mentoria_id', mentoria.id);
   const { data: encontros } = await supabase.from('mentoria_encontros').select('*').eq('mentoria_id', mentoria.id).order('numero', { ascending: true });
+  const { data: encontrosTurma } = mentoria.turma_id
+    ? await supabase.from('turma_encontros').select('*').eq('turma_id', mentoria.turma_id).order('numero', { ascending: true })
+    : { data: [] };
   const { data: notas } = await supabase.from('mentoria_notas_privadas').select('*').eq('mentoria_id', mentoria.id).order('criado_em', { ascending: false });
   const { data: biblioteca } = await supabase.from('exercicios_biblioteca').select('*').eq('ativo', true).order('titulo', { ascending: true });
   const { data: exerciciosAtribuidos } = plano
@@ -571,8 +574,21 @@ async function carregarFicha() {
     </div>
 
     <div class="tab-panel" data-tab="encontros">
+      ${mentoria.turma_id ? `
       <div class="mi-card">
-        <h3 style="margin:0 0 10px;color:var(--green)">Encontros</h3>
+        <h3 style="margin:0 0 10px;color:var(--green)">Encontros da turma</h3>
+        <p class="small" style="margin:0 0 10px">Compartilhados com todas as participantes da turma. Para adicionar ou editar, use a ficha da turma.</p>
+        ${(encontrosTurma && encontrosTurma.length) ? encontrosTurma.map((e) => `
+          <div class="encontro-card">
+            <div class="topo">
+              <b>Encontro ${e.numero}${e.data_agendada ? ` — ${fmtData(e.data_agendada)}` : ''}${e.modalidade ? ` (${e.modalidade})` : ''}</b>
+            </div>
+            ${e.observacoes ? `<p class="small" style="margin-top:6px">${e.observacoes}</p>` : ''}
+          </div>`).join('') : '<p class="small">Nenhum encontro de turma registrado ainda.</p>'}
+      </div>
+      ` : ''}
+      <div class="mi-card">
+        <h3 style="margin:0 0 10px;color:var(--green)">Encontros individuais</h3>
         <button type="button" class="btn alt no-print" id="btnAddEncontro" style="padding:8px 14px;font-size:13px;margin-bottom:10px">+ Agendar encontro</button>
         ${(encontros && encontros.length) ? encontros.map((e) => `
           <div class="encontro-card" data-encontro="${e.id}">
