@@ -13,7 +13,7 @@ const CSS = `
 .ph-brand{display:flex;flex-direction:column;text-decoration:none;line-height:1.15;font-family:'Cormorant Garamond','Georgia',serif}
 .ph-brand b{display:block;font-weight:300;font-size:24px;letter-spacing:.16em;color:var(--ph-ink,#173f31);text-transform:uppercase}
 .ph-brand span{display:block;font-family:Arial,Helvetica,sans-serif;font-size:10px;letter-spacing:.14em;color:var(--ph-ink,#173f31);opacity:.65;margin-top:5px;text-transform:uppercase}
-.ph-brand em{display:block;font-style:normal;font-weight:400;font-size:14px;color:var(--ph-accent,#9a5b34);margin-top:3px}
+.ph-brand em{display:block;font-family:Arial,Helvetica,sans-serif;font-style:normal;font-weight:400;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ph-accent,#9a5b34);margin-top:5px}
 .ph-hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;color:var(--ph-ink,#173f31)}
 .ph-links{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
 .ph-links a{color:var(--ph-ink,#173f31);text-decoration:none;font-size:14px;font-weight:600;white-space:nowrap;cursor:pointer;font-family:Arial,Helvetica,sans-serif}
