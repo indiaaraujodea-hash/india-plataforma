@@ -30,6 +30,7 @@
 import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
 import { requireAuth, getProfile } from '../assets/js/auth.js';
 import { mountAppShell } from '../assets/js/app-shell.js';
+import { montarSubNavMapaClinica } from '../assets/js/mapa-clinica-nav.js';
 
 avisarSupabaseNaoConfigurado();
 
@@ -63,6 +64,7 @@ async function buscarFerramentaRecomendada(pontoLatente) {
   const session = await requireAuth('../login/index.html');
   if (!session) return;
   await mountAppShell('ferramentas', session, '..');
+  montarSubNavMapaClinica('ferramentas', '..');
 
   const [profile, { data: diagnosticos }] = await Promise.all([
     getProfile(session.user.id),

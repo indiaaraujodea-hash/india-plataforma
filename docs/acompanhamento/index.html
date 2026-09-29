@@ -68,6 +68,7 @@
 import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
 import { requireAuth } from '../assets/js/auth.js';
 import { mountAppShell } from '../assets/js/app-shell.js';
+import { montarSubNavMapaClinica } from '../assets/js/mapa-clinica-nav.js';
 import { MENTORIA_GRUPO_URL, MENTORIA_INDIVIDUAL_URL } from '../assets/js/site-config.js';
 
 avisarSupabaseNaoConfigurado();
@@ -91,6 +92,7 @@ function montarCardContinue(titulo, desc, url) {
   const session = await requireAuth('../login/index.html');
   if (!session) return;
   await mountAppShell('acompanhamento', session, '..');
+  montarSubNavMapaClinica('acompanhamento', '..');
 
   const aviso = document.getElementById('aviso');
 

@@ -129,6 +129,7 @@
 import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
 import { requireAuth } from '../assets/js/auth.js';
 import { mountAppShell } from '../assets/js/app-shell.js';
+import { montarSubNavMapaClinica } from '../assets/js/mapa-clinica-nav.js';
 import { calcularScoresCompostos, classificarManterFortalecerCriar } from '../assets/js/diagnostico-engine.js';
 
 avisarSupabaseNaoConfigurado();
@@ -185,6 +186,7 @@ function prazoData(dias) {
   const session = await requireAuth('../login/index.html');
   if (!session) return;
   await mountAppShell('plano', session, '..');
+  montarSubNavMapaClinica('meu-plano', '..');
 
   // "diagnóstico atual" = o mais recente do usuário (histórico por ciclo).
   const { data: diagnosticos, error: diagErr } = await supabase.from('diagnosticos').select('*').eq('user_id', session.user.id).order('criado_em', { ascending: false }).limit(1);

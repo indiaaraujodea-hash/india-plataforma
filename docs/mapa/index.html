@@ -229,6 +229,7 @@ main{margin-top:-32px;padding-bottom:80px}
 import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
 import { requireAuth, getProfile } from '../assets/js/auth.js';
 import { mountAppShell } from '../assets/js/app-shell.js';
+import { montarSubNavMapaClinica } from '../assets/js/mapa-clinica-nav.js';
 import { calcularPontosLatentes, calcularScoresCompostos, classificarManterFortalecerCriar } from '../assets/js/diagnostico-engine.js';
 
 avisarSupabaseNaoConfigurado();
@@ -253,6 +254,7 @@ let profile;
   session = await requireAuth('../login/index.html');
   if (!session) return;
   await mountAppShell('mapa', session, '..');
+  montarSubNavMapaClinica('meu-mapa', '..');
 
   profile = await getProfile(session.user.id);
   if (!profile?.diagnostico_liberado) {

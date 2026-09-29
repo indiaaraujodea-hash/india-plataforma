@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Mapa da Clínica | INDIA</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../assets/css/shell.css">
+</head>
+<body>
+
+<div class="plan-header">
+  <div class="eyebrow">Mapa da Clínica</div>
+  <h1>Meu Mapa da Clínica</h1>
+  <p class="lead" style="color:var(--muted2)">Entenda seu cenário, defina suas prioridades e acompanhe a evolução da sua clínica.</p>
+</div>
+
+<script type="module">
+import { avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
+import { requireAuth } from '../assets/js/auth.js';
+import { mountAppShell } from '../assets/js/app-shell.js';
+import { montarSubNavMapaClinica } from '../assets/js/mapa-clinica-nav.js';
+
+avisarSupabaseNaoConfigurado();
+
+(async () => {
+  const session = await requireAuth('../login/index.html');
+  if (!session) return;
+  await mountAppShell('mapa', session, '..');
+  montarSubNavMapaClinica('visao-geral', '..');
+})();
+</script>
+</body>
+</html>

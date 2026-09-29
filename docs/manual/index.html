@@ -45,6 +45,7 @@
 import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
 import { requireAuth, getProfile } from '../assets/js/auth.js';
 import { mountAppShell } from '../assets/js/app-shell.js';
+import { montarSubNavMapaClinica } from '../assets/js/mapa-clinica-nav.js';
 
 avisarSupabaseNaoConfigurado();
 
@@ -111,6 +112,7 @@ function chapterHtml(cap) {
   const session = await requireAuth('../login/index.html');
   if (!session) return;
   await mountAppShell('manual', session, '..');
+  montarSubNavMapaClinica('manual', '..');
 
   const conteudoEl = document.getElementById('conteudoManual');
   const [profile, { data: diagnosticos }] = await Promise.all([
