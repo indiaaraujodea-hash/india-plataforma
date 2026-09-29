@@ -61,7 +61,6 @@ export async function montarCabecalhoPublico({ container, rootPath = '.', pagina
     { label: 'Início', href: paginaAtual === 'inicio' ? '#' : homeHref },
     { label: 'Sobre', href: `${rootPath}/sobre/index.html` },
     { label: 'Produtos', href: paginaAtual === 'inicio' ? '#produtos' : `${homeHref}#produtos` },
-    { label: 'Mentoria', href: `${rootPath}/mentoria/index.html` },
     { label: 'Ajuda', acao: 'ajuda' },
     { label: 'Contato', acao: 'contato' },
   ];
