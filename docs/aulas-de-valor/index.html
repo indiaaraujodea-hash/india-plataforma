@@ -12,11 +12,12 @@
 .av-card b{display:block;color:var(--ink-green);font-size:16px;margin-bottom:6px}
 .av-card p{font-size:13.5px;color:#4b5148;margin:0}
 .av-lista{display:grid;gap:10px;margin-top:16px}
-.av-item{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line-soft);border-radius:12px;padding:16px 18px}
+.av-item{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line-soft);border-radius:12px;padding:16px 18px;text-decoration:none;transition:border-color .15s}
+.av-item:hover{border-color:var(--terracota-dark,#9a5b34)}
 .av-item .play{flex-shrink:0;width:36px;height:36px;border-radius:50%;background:var(--cream-bg,#f7f3eb);color:var(--terracota-dark,#9a5b34);display:flex;align-items:center;justify-content:center}
 .av-item .txt{flex:1;min-width:0}
 .av-item .txt b{display:block;color:var(--ink-green);font-size:14.5px;font-weight:700}
-.av-item .btn.alt{font-size:12.5px;padding:8px 14px;flex-shrink:0}
+.av-item .txt span{color:var(--muted2)}
 </style>
 </head>
 <body>
@@ -55,14 +56,13 @@ const ICONE_PLAY = '<svg width="16" height="16" viewBox="0 0 24 24" fill="curren
 
   lista.innerHTML = (aulas && aulas.length)
     ? aulas.map((a) => `
-        <div class="av-item">
+        <a class="av-item" href="${a.video_url || '#'}" target="_blank" rel="noopener">
           <span class="play">${ICONE_PLAY}</span>
           <div class="txt">
             <b>${a.titulo}</b>
             ${a.descricao ? `<span class="small">${a.descricao}</span>` : ''}
           </div>
-          ${a.video_url ? `<a class="btn alt" href="${a.video_url}" target="_blank" rel="noopener">Assistir →</a>` : ''}
-        </div>`).join('')
+        </a>`).join('')
     : `<div class="av-card">
         <b>Ainda organizando este conteúdo</b>
         <p>As Aulas de Valor estão sendo preparadas. Assim que uma aula for liberada para você — seja porque faz parte de um produto que você tem, seja porque a India liberou especificamente para você — ela aparece aqui.</p>
