@@ -278,10 +278,12 @@ calc();
 <script type="module">
 import { requireAuth } from '../assets/js/auth.js';
 import { mountAppShell } from '../assets/js/app-shell.js';
+import { montarSubNavMapaClinica } from '../assets/js/mapa-clinica-nav.js';
 (async () => {
   const session = await requireAuth('../login/index.html');
   if (!session) return;
   await mountAppShell('ferramentas', session, '..');
+  montarSubNavMapaClinica('ferramentas', '..');
 })();
 </script>
 </body>

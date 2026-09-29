@@ -27,7 +27,7 @@ const NAV_ITEMS = [
   { key: 'inicio', label: 'Início', icon: 'home', href: (r) => `${r}/inicio/index.html` },
   { key: 'mentoria', label: 'Mentoria', icon: 'evolucao', href: (r) => `${r}/minha-mentoria/index.html` },
   { key: 'aulas-de-valor', label: 'Aulas de Valor', icon: 'book', href: (r) => `${r}/aulas-de-valor/index.html` },
-  { key: 'mapa', label: 'Mapa da Clínica', icon: 'diag', href: (r) => `${r}/mapa/index.html` },
+  { key: 'mapa', label: 'Mapa da Clínica', icon: 'diag', href: (r) => `${r}/mapa-da-clinica/index.html` },
   { key: 'comunidade', label: 'Comunidade', icon: 'comunidade', disabled: true },
   // Só leva de volta à Home pública/vitrine (produtos já existente) — não abre
   // loja dentro do ecossistema nem altera permissões/acesso da cliente.

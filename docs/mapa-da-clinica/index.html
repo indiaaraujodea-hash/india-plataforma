@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Mapa da Clínica | INDIA</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../assets/css/shell.css">
+<style>
+.vg-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:6px}
+.vg-card{background:#fff;border:1px solid var(--line-soft);border-radius:14px;padding:22px}
+.vg-card .kicker{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--terracota-dark,#9a5b34);margin-bottom:8px}
+.vg-card h3{margin:0 0 8px;color:var(--ink-green)}
+.vg-card p{font-size:13.5px;color:#4b5148;margin:0 0 14px}
+.vg-card .btn,.vg-card .btn.alt{font-size:13px;padding:9px 16px}
+.vg-full{grid-column:1/-1}
+@media(max-width:720px){.vg-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="plan-header">
+  <div class="eyebrow">Mapa da Clínica</div>
+  <h1>Visão Geral</h1>
+  <p class="lead" style="color:var(--muted2)">Seu ponto de partida — diagnóstico, plano, acompanhamento, ferramentas e Manual, tudo num só lugar.</p>
+</div>
+
+<div id="aviso"></div>
+
+<div id="conteudoVG" style="display:none" class="vg-grid">
+  <div class="vg-card" id="cardMapa">
+    <div class="kicker">Meu Mapa</div>
+    <h3 id="mapaTitulo">—</h3>
+    <p id="mapaTexto">—</p>
+    <a class="btn alt" id="mapaLink" href="../relatorio/index.html">Ver meu Mapa →</a>
+  </div>
+
+  <div class="vg-card" id="cardPlano">
+    <div class="kicker">Meu Plano</div>
+    <h3 id="planoTitulo">—</h3>
+    <p id="planoTexto">—</p>
+    <a class="btn alt" id="planoLink" href="../plano/index.html">Ver meu Plano →</a>
+  </div>
+
+  <div class="vg-card">
+    <div class="kicker">Acompanhamento</div>
+    <h3>Como está indo</h3>
+    <p>Acompanhe a execução das ações do seu plano de 30 dias.</p>
+    <a class="btn alt" href="../acompanhamento/index.html">Ir para Acompanhamento →</a>
+  </div>
+
+  <div class="vg-card">
+    <div class="kicker">Ferramentas</div>
+    <h3>Calculadoras da clínica</h3>
+    <p>Quanto cobrar por sessão, por grupo, e outras ferramentas práticas.</p>
+    <a class="btn alt" href="../ferramentas/index.html">Abrir Ferramentas →</a>
+  </div>
+
+  <div class="vg-card vg-full">
+    <div class="kicker">Manual</div>
+    <h3>Conteúdo pra aprofundar</h3>
+    <p>Capítulos do Manual indicados a partir do seu diagnóstico.</p>
+    <a class="btn alt" href="../manual/index.html">Abrir o Manual →</a>
+  </div>
+</div>
+
+<script type="module">
+import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
+import { requireAuth } from '../assets/js/auth.js';
+import { mountAppShell } from '../assets/js/app-shell.js';
+import { montarSubNavMapaClinica } from '../assets/js/mapa-clinica-nav.js';
+
+avisarSupabaseNaoConfigurado();
+
+(async () => {
+  const session = await requireAuth('../login/index.html');
+  if (!session) return;
+  await mountAppShell('mapa', session, '..');
+  montarSubNavMapaClinica('visao-geral', '..');
+
+  const aviso = document.getElementById('aviso');
+  const conteudo = document.getElementById('conteudoVG');
+
+  const { data: diagnosticos, error } = await supabase.from('diagnosticos').select('*').eq('user_id', session.user.id).order('criado_em', { ascending: false }).limit(1);
+  if (error) { aviso.innerHTML = `<div class="alert alert-error">Erro ao carregar: ${error.message}</div>`; return; }
+
+  const diag = diagnosticos && diagnosticos[0];
+  const resultado = diag?.resultado_calculado;
+  const temMapa = diag && resultado && resultado.status !== 'dados_insuficientes' && resultado.ponto_latente_principal;
+
+  if (!diag) {
+    document.getElementById('mapaTitulo').textContent = 'Você ainda não começou';
+    document.getElementById('mapaTexto').textContent = 'Faça seu diagnóstico pra descobrir sua prioridade agora.';
+    document.getElementById('mapaLink').textContent = 'Fazer meu diagnóstico →';
+    document.getElementById('mapaLink').href = '../mapa/index.html';
+    document.getElementById('planoTitulo').textContent = 'Ainda sem plano';
+    document.getElementById('planoTexto').textContent = 'O plano de 30 dias é criado a partir do seu diagnóstico.';
+  } else if (!temMapa) {
+    document.getElementById('mapaTitulo').textContent = 'Diagnóstico em andamento';
+    document.getElementById('mapaTexto').textContent = 'Recebemos suas respostas — algumas ainda são necessárias para calcular seu Mapa.';
+    document.getElementById('mapaLink').textContent = 'Continuar diagnóstico →';
+    document.getElementById('mapaLink').href = '../mapa/index.html';
+    document.getElementById('planoTitulo').textContent = 'Ainda sem plano';
+    document.getElementById('planoTexto').textContent = 'Termine o diagnóstico para gerar seu plano de 30 dias.';
+  } else {
+    const { data: texto } = await supabase.from('pontos_latentes_textos').select('titulo, sintese').eq('ponto_latente', resultado.ponto_latente_principal).maybeSingle();
+    document.getElementById('mapaTitulo').textContent = texto?.titulo || 'Seu Mapa está pronto';
+    document.getElementById('mapaTexto').textContent = texto?.sintese || 'Veja o relatório completo do seu diagnóstico mais recente.';
+
+    const { data: plano } = await supabase.from('planos_acao').select('id').eq('diagnostico_id', diag.id).maybeSingle();
+    if (plano) {
+      const { data: itens } = await supabase.from('planos_acao_itens').select('status').eq('plano_id', plano.id);
+      const total = itens?.length || 0;
+      const feitas = (itens || []).filter((i) => i.status === 'concluido').length;
+      document.getElementById('planoTitulo').textContent = 'Seu plano de 30 dias';
+      document.getElementById('planoTexto').textContent = total ? `${feitas} de ${total} ações concluídas.` : 'Seu plano está pronto.';
+    } else {
+      document.getElementById('planoTitulo').textContent = 'Monte seu plano';
+      document.getElementById('planoTexto').textContent = 'Transforme seu Mapa em ações concretas para os próximos 30 dias.';
+      document.getElementById('planoLink').textContent = 'Montar meu Plano →';
+    }
+  }
+
+  conteudo.style.display = '';
+})();
+</script>
+</body>
+</html>

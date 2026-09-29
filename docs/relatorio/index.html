@@ -54,6 +54,7 @@
 import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
 import { requireAuth } from '../assets/js/auth.js';
 import { mountAppShell } from '../assets/js/app-shell.js';
+import { montarSubNavMapaClinica } from '../assets/js/mapa-clinica-nav.js';
 import { calcularScoresCompostos, classificarManterFortalecerCriar } from '../assets/js/diagnostico-engine.js';
 
 avisarSupabaseNaoConfigurado();
@@ -331,6 +332,7 @@ async function renderRelatorioDetalhe(conteudo, diag) {
   const session = await requireAuth('../login/index.html');
   if (!session) return;
   await mountAppShell('relatorio', session, '..');
+  montarSubNavMapaClinica('meu-mapa', '..');
   const conteudo = document.getElementById('conteudo');
 
   const params = new URLSearchParams(location.search);
