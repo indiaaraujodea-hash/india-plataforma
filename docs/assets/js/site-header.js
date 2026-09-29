@@ -10,9 +10,10 @@ const CSS = `
 .ph-fixo{position:sticky;top:0;z-index:50}
 .ph-fixo .ph-header{box-shadow:0 1px 0 rgba(23,63,49,.04)}
 .ph-header{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;background:var(--ph-bg,#f7f3eb);position:relative;flex-wrap:wrap;gap:14px}
-.ph-brand{display:flex;flex-direction:column;text-decoration:none;line-height:1.15}
-.ph-brand b{font-family:Georgia,'Cambria',serif;font-size:20px;letter-spacing:.06em;color:var(--ph-ink,#173f31)}
-.ph-brand span{font-size:9.5px;letter-spacing:.18em;color:var(--ph-ink,#173f31);opacity:.6}
+.ph-brand{display:flex;flex-direction:column;text-decoration:none;line-height:1.15;font-family:'Cormorant Garamond','Georgia',serif}
+.ph-brand b{display:block;font-weight:300;font-size:24px;letter-spacing:.16em;color:var(--ph-ink,#173f31);text-transform:uppercase}
+.ph-brand span{display:block;font-family:Arial,Helvetica,sans-serif;font-size:10px;letter-spacing:.14em;color:var(--ph-ink,#173f31);opacity:.65;margin-top:5px;text-transform:uppercase}
+.ph-brand em{display:block;font-style:normal;font-weight:400;font-size:14px;color:var(--ph-accent,#9a5b34);margin-top:3px}
 .ph-hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;color:var(--ph-ink,#173f31)}
 .ph-links{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
 .ph-links a{color:var(--ph-ink,#173f31);text-decoration:none;font-size:14px;font-weight:600;white-space:nowrap;cursor:pointer;font-family:Arial,Helvetica,sans-serif}
@@ -33,7 +34,16 @@ const CSS = `
 }
 `;
 
+const FONTE_ID = 'site-header-fonte';
+
 function instalarEstilo() {
+  if (!document.getElementById(FONTE_ID)) {
+    const link = document.createElement('link');
+    link.id = FONTE_ID;
+    link.rel = 'stylesheet';
+    link.href = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&display=swap';
+    document.head.appendChild(link);
+  }
   if (document.getElementById(ESTILO_ID)) return;
   const style = document.createElement('style');
   style.id = ESTILO_ID;
@@ -67,7 +77,7 @@ export async function montarCabecalhoPublico({ container, rootPath = '.', pagina
 
   container.innerHTML = `
     <div class="ph-header">
-      <a class="ph-brand" href="${homeHref}"><b>INDIA</b><span>PESSOAS · ENCONTROS · NEGÓCIOS</span></a>
+      <a class="ph-brand" href="${homeHref}"><b>INDIA</b><span>PESSOAS E NEGÓCIOS</span><em>Encontros que geram valor.</em></a>
       <button class="ph-hamburger" id="phHamburger" aria-label="Abrir menu" aria-expanded="false">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
       </button>

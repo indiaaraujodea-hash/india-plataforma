@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Aulas de Valor | INDIA</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../assets/css/shell.css">
+<style>
+.av-card{background:#fff;border:1px solid var(--line-soft);border-radius:14px;padding:24px;margin-top:16px}
+.av-card b{display:block;color:var(--ink-green);font-size:16px;margin-bottom:6px}
+.av-card p{font-size:13.5px;color:#4b5148;margin:0}
+.av-lista{display:grid;gap:10px;margin-top:14px}
+.av-item{display:flex;align-items:center;gap:12px;border:1px dashed var(--line-soft);border-radius:12px;padding:14px 16px;color:var(--muted2)}
+.av-item .cadeado{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--cream-bg,#f7f3eb);display:grid;place-items:center;color:var(--muted2)}
+.av-item .txt b{display:block;color:#7a7368;font-size:14px;font-weight:700}
+.av-item .txt span{font-size:12px}
+</style>
+</head>
+<body>
+
+<div class="plan-header">
+  <div class="eyebrow">Aulas de Valor</div>
+  <h1>Aulas de Valor</h1>
+  <p class="lead" style="color:var(--muted2)">Uma biblioteca crescente de aulas para fortalecer sua clínica — organizadas por tema, algumas liberadas por produto, outras liberadas especialmente para você.</p>
+</div>
+
+<div id="aviso"></div>
+
+<div id="conteudoAulas" style="display:none">
+  <div class="av-card">
+    <b>Ainda organizando este conteúdo</b>
+    <p>As Aulas de Valor estão sendo preparadas. Assim que uma aula for liberada para você — seja porque faz parte de um produto que você tem, seja porque a India liberou especificamente para você — ela aparece aqui.</p>
+  </div>
+
+  <div class="av-lista" id="listaAulas"></div>
+</div>
+
+<script type="module">
+import { avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
+import { requireAuth } from '../assets/js/auth.js';
+import { mountAppShell } from '../assets/js/app-shell.js';
+
+avisarSupabaseNaoConfigurado();
+
+(async () => {
+  const session = await requireAuth('../login/index.html');
+  if (!session) return;
+  await mountAppShell('aulas-de-valor', session, '..');
+
+  document.getElementById('conteudoAulas').style.display = '';
+})();
+</script>
+</body>
+</html>
