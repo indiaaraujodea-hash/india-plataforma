@@ -15,21 +15,24 @@ const ICONS = {
   produtos: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41 12 22 2 12V2h10z"/><circle cx="6.5" cy="6.5" r="1.5"/></svg>',
   sair: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>',
   bell: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>',
+  cadeado: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
 };
 
+// Menu principal da área logada. Diagnóstico/Relatórios/Plano/Acompanhamento/
+// Ferramentas/Manual continuam existindo exatamente como antes (rotas, dados,
+// RLS intactos) — só deixaram de aparecer aqui como itens soltos, porque
+// passam a ser alcançados a partir da jornada do "Mapa da Clínica"
+// (mapa → relatório, que agora linka pra eles). Nada foi apagado.
 const NAV_ITEMS = [
   { key: 'inicio', label: 'Início', icon: 'home', href: (r) => `${r}/inicio/index.html` },
-  { key: 'plano', label: 'Meu Plano', icon: 'plan', href: (r) => `${r}/plano/index.html` },
-  { key: 'mapa', label: 'Meu Diagnóstico', icon: 'diag', href: (r) => `${r}/mapa/index.html` },
-  { key: 'relatorio', label: 'Meus Relatórios', icon: 'report', href: (r) => `${r}/relatorio/index.html` },
-  { key: 'acompanhamento', label: 'Acompanhamento', icon: 'evolucao', href: (r) => `${r}/acompanhamento/index.html` },
-  { key: 'ferramentas', label: 'Ferramentas', icon: 'tools', href: (r) => `${r}/ferramentas/index.html` },
-  { key: 'manual', label: 'Manual', icon: 'book', href: (r) => `${r}/manual/index.html` },
+  { key: 'mentoria', label: 'Mentoria', icon: 'evolucao', href: (r) => `${r}/minha-mentoria/index.html` },
+  { key: 'aulas-de-valor', label: 'Aulas de Valor', icon: 'book', href: (r) => `${r}/aulas-de-valor/index.html` },
+  { key: 'mapa', label: 'Mapa da Clínica', icon: 'diag', href: (r) => `${r}/mapa/index.html` },
   { key: 'comunidade', label: 'Comunidade', icon: 'comunidade', disabled: true },
-  { key: 'suporte', label: 'Ajuda', icon: 'suporte', action: 'ajuda' },
   // Só leva de volta à Home pública/vitrine (produtos já existente) — não abre
   // loja dentro do ecossistema nem altera permissões/acesso da cliente.
   { key: 'produtos', label: 'Produtos', icon: 'produtos', href: (r) => `${r}/inicio/index.html` },
+  { key: 'suporte', label: 'Ajuda', icon: 'suporte', action: 'ajuda' },
 ];
 
 function initials(name) {
@@ -43,30 +46,32 @@ export async function mountAppShell(activeKey, session, rootPath = '..') {
   const profile = await getProfile(session.user.id);
   const nome = profile?.nome_completo || session.user.email || 'Minha conta';
 
+  // "Mentoria" agora aparece sempre no menu — quem não tem mentoria ativa vê
+  // o item, mas a própria página (minha-mentoria/) já mostra um aviso no
+  // lugar do conteúdo, sem liberar nada. Isso não muda RLS nem permissões:
+  // só decide se o item aparece "trancado" (cadeado) no menu.
+  const { data: mentoriaAtiva } = await supabase.from('mentoria_individual').select('id').eq('user_id', session.user.id).eq('status', 'ativa').maybeSingle();
+
   let navItems = NAV_ITEMS;
   if (profile?.role === 'admin') {
     navItems = [...NAV_ITEMS, { key: 'admin', label: 'Admin', icon: 'admin', href: (r) => `${r}/admin/index.html` }];
-  } else {
-    const { data: mentoria } = await supabase.from('mentoria_individual').select('id').eq('user_id', session.user.id).eq('status', 'ativa').maybeSingle();
-    if (mentoria) {
-      navItems = [{ key: 'mentoria', label: 'Minha Mentoria', icon: 'evolucao', href: (r) => `${r}/minha-mentoria/index.html` }, ...NAV_ITEMS];
-    }
   }
 
   const navHtml = navItems.map((item) => {
     if (item.disabled) {
-      return `<a class="disabled" title="Em breve">${ICONS[item.icon]}<span>${item.label}</span></a>`;
+      return `<a class="disabled" title="Em breve">${ICONS[item.icon]}<span>${item.label}</span><span class="nav-lock">${ICONS.cadeado}</span></a>`;
     }
     if (item.action) {
       return `<a href="#" data-action="${item.action}">${ICONS[item.icon]}<span>${item.label}</span></a>`;
     }
+    const travado = item.key === 'mentoria' && !mentoriaAtiva;
     const activeClass = item.key === activeKey ? ' active' : '';
-    return `<a class="${activeClass.trim()}" href="${item.href(rootPath)}">${ICONS[item.icon]}<span>${item.label}</span></a>`;
+    return `<a class="${activeClass.trim()}" href="${item.href(rootPath)}">${ICONS[item.icon]}<span>${item.label}</span>${travado ? `<span class="nav-lock">${ICONS.cadeado}</span>` : ''}</a>`;
   }).join('');
 
   const sidebarHtml = `
     <aside class="app-sidebar">
-      <div class="brand-mark"><b>INDIA</b><span>PESSOAS · ENCONTROS · NEGÓCIOS</span></div>
+      <div class="brand-mark"><b>INDIA</b><span>PESSOAS E NEGÓCIOS</span><em>Encontros que geram valor.</em></div>
       <nav class="app-nav">${navHtml}</nav>
       <a href="#" id="appShellSignOut" class="app-signout">${ICONS.sair}<span>Sair</span></a>
     </aside>`;
