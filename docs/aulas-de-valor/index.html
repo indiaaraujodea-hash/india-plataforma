@@ -11,11 +11,12 @@
 .av-card{background:#fff;border:1px solid var(--line-soft);border-radius:14px;padding:24px;margin-top:16px}
 .av-card b{display:block;color:var(--ink-green);font-size:16px;margin-bottom:6px}
 .av-card p{font-size:13.5px;color:#4b5148;margin:0}
-.av-lista{display:grid;gap:10px;margin-top:14px}
-.av-item{display:flex;align-items:center;gap:12px;border:1px dashed var(--line-soft);border-radius:12px;padding:14px 16px;color:var(--muted2)}
-.av-item .cadeado{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--cream-bg,#f7f3eb);display:grid;place-items:center;color:var(--muted2)}
-.av-item .txt b{display:block;color:#7a7368;font-size:14px;font-weight:700}
-.av-item .txt span{font-size:12px}
+.av-lista{display:grid;gap:10px;margin-top:16px}
+.av-item{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line-soft);border-radius:12px;padding:16px 18px}
+.av-item .play{flex-shrink:0;width:36px;height:36px;border-radius:50%;background:var(--cream-bg,#f7f3eb);color:var(--terracota-dark,#9a5b34);display:flex;align-items:center;justify-content:center}
+.av-item .txt{flex:1;min-width:0}
+.av-item .txt b{display:block;color:var(--ink-green);font-size:14.5px;font-weight:700}
+.av-item .btn.alt{font-size:12.5px;padding:8px 14px;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -29,25 +30,43 @@
 <div id="aviso"></div>
 
 <div id="conteudoAulas" style="display:none">
-  <div class="av-card">
-    <b>Ainda organizando este conteúdo</b>
-    <p>As Aulas de Valor estão sendo preparadas. Assim que uma aula for liberada para você — seja porque faz parte de um produto que você tem, seja porque a India liberou especificamente para você — ela aparece aqui.</p>
-  </div>
-
   <div class="av-lista" id="listaAulas"></div>
 </div>
 
 <script type="module">
-import { avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
+import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
 import { requireAuth } from '../assets/js/auth.js';
 import { mountAppShell } from '../assets/js/app-shell.js';
 
 avisarSupabaseNaoConfigurado();
 
+const ICONE_PLAY = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>';
+
 (async () => {
   const session = await requireAuth('../login/index.html');
   if (!session) return;
   await mountAppShell('aulas-de-valor', session, '..');
+
+  const aviso = document.getElementById('aviso');
+  const lista = document.getElementById('listaAulas');
+
+  const { data: aulas, error } = await supabase.from('aulas_biblioteca').select('*').eq('ativo', true).order('ordem', { ascending: true });
+  if (error) { aviso.innerHTML = `<div class="alert alert-error">Erro ao carregar as aulas: ${error.message}</div>`; return; }
+
+  lista.innerHTML = (aulas && aulas.length)
+    ? aulas.map((a) => `
+        <div class="av-item">
+          <span class="play">${ICONE_PLAY}</span>
+          <div class="txt">
+            <b>${a.titulo}</b>
+            ${a.descricao ? `<span class="small">${a.descricao}</span>` : ''}
+          </div>
+          ${a.video_url ? `<a class="btn alt" href="${a.video_url}" target="_blank" rel="noopener">Assistir →</a>` : ''}
+        </div>`).join('')
+    : `<div class="av-card">
+        <b>Ainda organizando este conteúdo</b>
+        <p>As Aulas de Valor estão sendo preparadas. Assim que uma aula for liberada para você — seja porque faz parte de um produto que você tem, seja porque a India liberou especificamente para você — ela aparece aqui.</p>
+      </div>`;
 
   document.getElementById('conteudoAulas').style.display = '';
 })();
