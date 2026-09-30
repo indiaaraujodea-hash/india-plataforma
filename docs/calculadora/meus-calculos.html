@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Meus cálculos | INDIA</title>
+<style>
+  :root{ --verde:#1D6B4E; --verde-escuro:#12432F; --terracota:#B5613C; --creme:#FAFAF7; --creme-linha:#EDE8DE; --tinta:#22281F; --tinta-suave:#5B6357; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--creme);color:var(--tinta);font-family:'Calibri','Trebuchet MS',sans-serif;line-height:1.5}
+  h1{font-family:'Cambria','Georgia',serif}
+  .wrap{max-width:640px;margin:0 auto;padding:20px 16px 80px}
+  .eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:11px;color:var(--terracota);font-weight:700;margin-bottom:8px}
+  h1{font-size:24px;margin:0 0 6px;color:var(--verde-escuro);font-weight:700}
+  .sub{color:var(--tinta-suave);font-size:14px;margin:0 0 20px}
+  .calc-item{background:#fff;border:1px solid var(--creme-linha);border-radius:10px;padding:16px 18px;margin-bottom:10px;cursor:pointer}
+  .calc-item:hover{border-color:var(--terracota)}
+  .calc-item .data{font-size:12px;color:var(--tinta-suave);text-transform:uppercase;letter-spacing:.04em;font-weight:700}
+  .calc-item .resumo{display:flex;gap:18px;flex-wrap:wrap;margin-top:8px}
+  .calc-item .resumo b{display:block;color:var(--verde-escuro);font-size:16px}
+  .calc-item .resumo span{font-size:11px;color:var(--tinta-suave);text-transform:uppercase;letter-spacing:.03em}
+  .detalhe{background:#fff;border:1px solid var(--creme-linha);border-radius:10px;padding:20px;margin-top:14px}
+  .detalhe table{width:100%;border-collapse:collapse;font-size:13.5px}
+  .detalhe td{padding:7px 4px;border-bottom:1px solid var(--creme-linha)}
+  .detalhe td:last-child{text-align:right;font-weight:700}
+  .voltar-lista{background:none;border:none;color:var(--terracota);font:inherit;font-size:13px;font-weight:700;cursor:pointer;padding:0;margin-bottom:14px}
+  a{color:var(--terracota)}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Calculadora da Psicóloga</div>
+  <h1>Meus cálculos</h1>
+  <p class="sub">Todas as suas simulações de "Quanto preciso cobrar?", com data e resultado de cada uma.</p>
+
+  <div id="aviso"></div>
+  <div id="lista"></div>
+  <div id="detalheWrap"></div>
+</div>
+
+<script type="module">
+import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
+import { requireAuth } from '../assets/js/auth.js';
+
+avisarSupabaseNaoConfigurado();
+
+const fmt = (n) => isFinite(n) ? 'R$ ' + Math.round(n).toLocaleString('pt-BR') : '—';
+const fmtData = (iso) => new Date(iso).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', dateStyle: 'short', timeStyle: 'short' });
+
+function renderDetalhe(reg) {
+  const r = reg.resultado || {};
+  const linhas = [
+    ['Pró-labore', fmt(r.prolabore)],
+    ['Provisão 13º', fmt(r.decimo)],
+    ['Provisão férias', fmt(r.ferias)],
+    ['Custos fixos', fmt(r.custos)],
+  ];
+  if (r.inss) linhas.push(['INSS do pró-labore', fmt(r.inss)]);
+  linhas.push(['Reserva técnica', fmt(r.fat * r.reserva)]);
+  linhas.push(['Caixa da empresa', fmt(r.fat * r.margem)]);
+  linhas.push(['Faturamento mínimo/mês', fmt(r.fat)]);
+  if (r.sess != null) linhas.push(['Valor da sessão individual', fmt(r.sess) + ' / sessão']);
+  if (r.grpPessoa != null) linhas.push(['Valor por pessoa no grupo', fmt(r.grpPessoa) + ' / mês']);
+
+  document.getElementById('detalheWrap').innerHTML = `
+    <div class="detalhe">
+      <button type="button" class="voltar-lista" id="btnVoltarLista">← Voltar para a lista</button>
+      <h3 style="margin:0 0 10px;color:var(--verde-escuro)">Cálculo de ${fmtData(reg.criado_em)}</h3>
+      <table>${linhas.map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join('')}</table>
+    </div>`;
+  document.getElementById('lista').hidden = true;
+  document.getElementById('btnVoltarLista').addEventListener('click', () => {
+    document.getElementById('detalheWrap').innerHTML = '';
+    document.getElementById('lista').hidden = false;
+  });
+}
+
+(async () => {
+  const session = await requireAuth('../login/index.html');
+  if (!session) return;
+
+  const aviso = document.getElementById('aviso');
+  const lista = document.getElementById('lista');
+
+  const { data: registros, error } = await supabase
+    .from('calculadora_publica_resultados')
+    .select('id, criado_em, respostas, resultado')
+    .eq('user_id', session.user.id)
+    .order('criado_em', { ascending: false });
+
+  if (error) { aviso.innerHTML = `<p style="color:#B5413C">Erro ao carregar seus cálculos: ${error.message}</p>`; return; }
+
+  if (!registros || registros.length === 0) {
+    lista.innerHTML = `<div class="calc-item" style="cursor:default"><p style="margin:0;color:var(--tinta-suave)">Você ainda não fez nenhuma simulação. <a href="index.html">Calcular agora →</a></p></div>`;
+    return;
+  }
+
+  lista.innerHTML = registros.map((reg, i) => {
+    const r = reg.resultado || {};
+    return `
+      <div class="calc-item" data-idx="${i}">
+        <div class="data">${fmtData(reg.criado_em)}</div>
+        <div class="resumo">
+          <div><b>${fmt(r.prolabore)}</b><span>Pró-labore</span></div>
+          <div><b>${fmt(r.fat)}</b><span>Faturamento mínimo</span></div>
+          ${r.sess != null ? `<div><b>${fmt(r.sess)}</b><span>Sessão individual</span></div>` : ''}
+          ${r.grpPessoa != null ? `<div><b>${fmt(r.grpPessoa)}</b><span>Por pessoa no grupo</span></div>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+
+  lista.querySelectorAll('.calc-item[data-idx]').forEach((el) => {
+    el.addEventListener('click', () => renderDetalhe(registros[Number(el.dataset.idx)]));
+  });
+})();
+</script>
+</body>
+</html>

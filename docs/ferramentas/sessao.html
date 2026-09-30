@@ -19,49 +19,66 @@
   *{box-sizing:border-box;}
   body{margin:0;background:var(--creme);color:var(--tinta);font-family:'Calibri','Trebuchet MS',sans-serif;line-height:1.5;}
   h1,h2,h3,.serif{font-family:'Cambria','Georgia',serif;}
-  .wrap{max-width:920px;margin:0 auto;padding:28px 16px 80px;}
-  header{border-bottom:1px solid var(--creme-linha);padding-bottom:22px;margin-bottom:30px;}
+  .wrap{max-width:640px;margin:0 auto;padding:20px 16px 80px;}
+  header{margin-bottom:18px;}
   .eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:11px;color:var(--terracota);font-weight:700;margin-bottom:8px;}
-  h1{font-size:30px;margin:0 0 8px;color:var(--verde-escuro);font-weight:700;}
-  .sub{color:var(--tinta-suave);font-size:15px;max-width:60ch;margin:0;}
-  .grid{display:grid;grid-template-columns:1fr;gap:22px;}
-  @media(min-width:760px){.grid{grid-template-columns:1.15fr .85fr;align-items:start;}}
-  .col{display:grid;gap:22px;min-width:0;}
-  .card{background:#fff;border:1px solid var(--creme-linha);border-radius:4px;padding:22px 22px 8px;}
-  .card h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--verde-escuro);margin:0 0 4px;}
-  .card .hint{font-size:13px;color:var(--tinta-suave);margin:0 0 18px;}
-  .svc-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:4px;}
-  .tag{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;padding:3px 9px;border-radius:999px;background:#E3EFE9;color:var(--verde-escuro);}
-  .tag.grupo{background:#F5E6DE;color:var(--terracota);}
-  .remove{background:none;border:none;color:var(--tinta-suave);font:inherit;font-size:13px;text-decoration:underline;cursor:pointer;padding:4px;}
-  .field{margin-bottom:18px;}
-  .field label{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px 10px;font-size:14px;font-weight:600;margin-bottom:6px;color:var(--tinta);}
-  .field .note{font-weight:400;color:var(--tinta-suave);font-size:12.5px;}
-  input[type=range]{width:100%;accent-color:var(--verde);height:4px;}
-  .sliderow{display:flex;align-items:center;gap:14px;}
-  .sliderow input[type=range]{flex:1;min-width:0;}
-  .sliderow .numrow{flex-shrink:0;}
-  .sliderow input[type=number]{width:72px;}
-  .numrow{display:flex;align-items:center;gap:10px;}
-  input[type=number],select{width:110px;padding:7px 9px;border:1px solid var(--creme-linha);border-radius:3px;font-size:14px;font-family:inherit;color:var(--tinta);background:var(--creme);}
-  select{width:100%;}
+  h1{font-size:24px;margin:0 0 6px;color:var(--verde-escuro);font-weight:700;}
+  .sub{color:var(--tinta-suave);font-size:14px;max-width:60ch;margin:0;}
+
+  /* progresso */
+  .progress-wrap{margin:22px 0 18px;}
+  .progress-label{font-size:12.5px;color:var(--tinta-suave);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+  .progress-bar{height:6px;border-radius:99px;background:var(--creme-linha);overflow:hidden;}
+  .progress-fill{height:100%;background:var(--verde);border-radius:99px;transition:width .25s ease;}
+
+  /* card de pergunta */
+  .quest-card{background:#fff;border:1px solid var(--creme-linha);border-radius:10px;padding:26px 22px;}
+  .quest-titulo{font-size:19px;font-weight:700;color:var(--verde-escuro);margin:0 0 8px;font-family:'Cambria','Georgia',serif;}
+  .quest-ajuda{font-size:13.5px;color:var(--tinta-suave);margin:0 0 22px;}
+  .quest-ajuda.dinamica{background:var(--creme);border-left:3px solid var(--terracota);padding:8px 10px;margin-top:-10px;}
+
+  .campo{margin-bottom:6px;}
+  .moeda-row{display:flex;align-items:center;gap:8px;}
+  .moeda-row .unit{font-size:22px;font-weight:700;color:var(--verde-escuro);}
+  input[type=number]{font-size:22px;padding:12px 12px;border:1px solid var(--creme-linha);border-radius:6px;font-family:inherit;color:var(--tinta);background:var(--creme);width:100%;}
+  select{font-size:16px;padding:12px 12px;border:1px solid var(--creme-linha);border-radius:6px;font-family:inherit;color:var(--tinta);background:var(--creme);width:100%;}
   input:focus,select:focus,button:focus-visible{outline:2px solid var(--verde);outline-offset:1px;}
-  .unit{font-size:13px;color:var(--tinta-suave);}
-  .toggle-row{display:flex;gap:8px;margin-bottom:10px;}
-  .toggle-row button{flex:1;padding:9px 6px;border:1px solid var(--creme-linha);background:var(--creme);border-radius:3px;font-family:inherit;font-size:13px;cursor:pointer;color:var(--tinta-suave);}
-  .toggle-row button.active{background:var(--verde);border-color:var(--verde);color:#fff;font-weight:600;}
-  .add{width:100%;padding:14px;border:1.5px dashed var(--terracota);background:transparent;color:var(--terracota);font:inherit;font-weight:700;font-size:15px;border-radius:4px;cursor:pointer;}
-  .add:hover{background:#FBF1EC;}
-  .taxinfo{font-size:12.5px;color:var(--tinta-suave);background:var(--creme);border-left:3px solid var(--terracota);padding:8px 10px;margin:-6px 0 18px;}
-  .result-card{background:var(--verde-escuro);color:var(--creme);border-radius:4px;padding:26px 24px;position:sticky;top:16px;}
+  .moeda-preview{font-size:13px;color:var(--tinta-suave);margin-top:8px;}
+  .moeda-preview b{color:var(--verde-escuro);}
+  .sufixo{font-size:13px;color:var(--tinta-suave);margin-top:6px;}
+
+  .preset-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+  .preset-row button{padding:9px 14px;border:1px solid var(--creme-linha);background:var(--creme);border-radius:999px;font:inherit;font-size:13.5px;cursor:pointer;color:var(--tinta);}
+  .preset-row button.active{background:var(--verde);border-color:var(--verde);color:#fff;font-weight:700;}
+
+  .slider-row{display:flex;align-items:center;gap:14px;margin-top:4px;}
+  input[type=range]{flex:1;min-width:0;accent-color:var(--verde);height:4px;}
+  .slider-row input[type=number]{width:96px;flex-shrink:0;font-size:16px;padding:9px;}
+
+  .simnao-row{display:flex;gap:12px;}
+  .simnao-row button{flex:1;padding:18px 10px;border:1.5px solid var(--creme-linha);background:var(--creme);border-radius:8px;font:inherit;font-weight:700;font-size:15px;cursor:pointer;color:var(--tinta-suave);}
+  .simnao-row button.active{background:var(--verde);border-color:var(--verde);color:#fff;}
+
+  .erro-campo{color:var(--abaixo);font-size:12.5px;margin-top:10px;display:none;}
+  .erro-campo.show{display:block;}
+
+  .stepnav{display:flex;gap:12px;margin-top:22px;}
+  .stepnav button{flex:1;padding:14px;border:none;border-radius:6px;font:inherit;font-weight:700;font-size:15px;cursor:pointer;}
+  .btn-voltar{background:var(--creme);color:var(--tinta);border:1px solid var(--creme-linha) !important;}
+  .btn-continuar{background:var(--terracota);color:#fff;}
+  .btn-continuar:hover{filter:brightness(1.08);}
+  .btn-continuar:disabled{opacity:.6;cursor:default;}
+
+  /* resultado */
+  .result-card{background:var(--verde-escuro);color:var(--creme);border-radius:10px;padding:26px 24px;}
   .result-card h2{color:var(--creme);opacity:.75;font-size:13px;text-transform:uppercase;letter-spacing:.08em;margin:0 0 14px;}
   .hero-number{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
-  .hero-number .val{font-family:'Cambria',serif;font-size:40px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;}
+  .hero-number .val{font-family:'Cambria',serif;font-size:34px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;}
   .hero-number .lab{font-size:14px;opacity:.8;}
   .svc-results{display:grid;gap:10px;margin:18px 0 20px;}
   .sr{background:rgba(250,250,247,.08);border-radius:4px;padding:12px 14px;border-left:4px solid var(--terracota);}
   .sr .t{font-size:12px;text-transform:uppercase;letter-spacing:.08em;opacity:.75;}
-  .sr .v{font-family:'Cambria',serif;font-size:26px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;}
+  .sr .v{font-family:'Cambria',serif;font-size:24px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;}
   .sr .v small{font-family:'Calibri',sans-serif;font-size:13px;font-weight:400;opacity:.8;}
   .sr .d{font-size:12.5px;opacity:.8;}
   .breakdown{display:grid;grid-template-columns:1fr auto;row-gap:9px;column-gap:12px;font-size:13.5px;border-top:1px solid rgba(250,250,247,.18);padding-top:16px;}
@@ -69,14 +86,17 @@
   .breakdown .total{font-weight:700;color:var(--terracota);border-top:1px solid rgba(250,250,247,.25);padding-top:9px;margin-top:4px;}
   .breakdown .total.k{opacity:1;color:#fff;}
   .alert{margin-top:18px;font-size:12.5px;padding:10px 12px;border-radius:3px;background:rgba(181,97,60,.18);border:1px solid rgba(181,97,60,.4);color:#FCEFE9;}
-  .metas{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;}
-  .metas button{padding:8px 12px;border:1px solid var(--creme-linha);background:var(--creme);border-radius:999px;font:inherit;font-size:13px;cursor:pointer;color:var(--tinta);}
-  .metas button.active{background:var(--verde);border-color:var(--verde);color:#fff;font-weight:600;}
   .hora{font-size:13px;opacity:.8;margin:-8px 0 18px;}
-  .footnote{margin-top:40px;padding-top:18px;border-top:1px solid var(--creme-linha);font-size:12.5px;color:var(--tinta-suave);}
+  .footnote{margin-top:28px;padding-top:18px;border-top:1px solid var(--creme-linha);font-size:12.5px;color:var(--tinta-suave);}
   .footnote strong{color:var(--verde-escuro);}
   .cta{display:block;width:100%;margin-top:22px;padding:14px;border:none;border-radius:4px;background:var(--terracota);color:#fff;font:inherit;font-weight:700;font-size:15px;cursor:pointer;text-align:center;text-decoration:none;}
   .cta:hover{filter:brightness(1.08);}
+  .result-actions{display:flex;flex-direction:column;gap:10px;margin-top:16px;}
+  .btn-secundario{display:block;width:100%;padding:13px;border:1px solid var(--creme-linha);border-radius:6px;background:#fff;color:var(--verde-escuro);font:inherit;font-weight:700;font-size:14px;cursor:pointer;text-align:center;text-decoration:none;}
+  .salvando-msg{font-size:13px;color:var(--tinta-suave);margin-top:14px;text-align:center;}
+  .salvar-erro{margin-top:14px;font-size:13px;padding:12px 14px;border-radius:6px;background:#FBEAE6;border:1px solid #E7B8AB;color:#7A2E1E;}
+  .salvar-erro button{margin-top:10px;padding:9px 16px;border:none;border-radius:5px;background:var(--terracota);color:#fff;font:inherit;font-weight:700;cursor:pointer;}
+  [hidden]{display:none !important;}
 </style>
 <link rel="stylesheet" href="../assets/css/shell.css">
 </head>
@@ -86,204 +106,383 @@
   <header>
     <div class="eyebrow">Psicóloga de Valor · Ferramenta</div>
     <h1>Quanto preciso cobrar para ganhar o que quero?</h1>
-    <p class="sub">Escolha quanto quer ganhar por mês e descubra quanto cobrar na sessão individual e, se tiver, no grupo terapêutico ou na supervisão. Faltas, férias, impostos e custos da clínica já entram na conta.</p>
+    <p class="sub">Responda uma pergunta de cada vez. Faltas, férias, impostos e custos da clínica já entram na conta.</p>
   </header>
 
-  <div class="grid">
-    <div class="col">
-
-      <div class="card">
-        <h2>1. Quanto você quer ganhar</h2>
-        <p class="hint">O pró-labore é o que sustenta sua vida — não é "o que sobra".</p>
-        <div class="field">
-          <label for="prolabore">Quanto você quer ganhar por mês <span class="note">limpo, depois de pagar a clínica e os impostos</span></label>
-          <div class="metas" id="metas"><button type="button" data-v="5000">R$ 5 mil</button><button type="button" data-v="10000" class="active">R$ 10 mil</button><button type="button" data-v="15000">R$ 15 mil</button><button type="button" data-v="20000">R$ 20 mil</button></div>
-          <div class="numrow"><span class="unit">R$</span><input type="number" id="prolabore" value="10000" step="500" min="0"></div>
-        </div>
-        <div class="field">
-          <label for="decimoTerceiro">Provisão de 13º <span class="note">1/12 do pró-labore, reservado todo mês</span></label>
-          <div class="sliderow"><input type="range" id="decimoTerceiro" min="0" max="15" value="8.33" step="0.01"><div class="numrow"><input type="number" id="decimoTerceiroNum" value="8.33" min="0" max="15" step="0.01" aria-label="Provisão de 13º em %"><span class="unit">%</span></div></div>
-        </div>
-        <div class="field">
-          <label for="ferias">Provisão de férias <span class="note">1/12 + 1/3, padrão CLT</span></label>
-          <div class="sliderow"><input type="range" id="ferias" min="0" max="20" value="11.11" step="0.01"><div class="numrow"><input type="number" id="feriasNum" value="11.11" min="0" max="20" step="0.01" aria-label="Provisão de férias em %"><span class="unit">%</span></div></div>
-        </div>
-        <div class="field">
-          <label for="custosFixos">Custos fixos do negócio / mês <span class="note">consultório, plataforma, contador, materiais, supervisão</span></label>
-          <div class="numrow"><span class="unit">R$</span><input type="number" id="custosFixos" value="1800" step="50" min="0"></div>
-        </div>
-        <div class="field">
-          <label for="regime">Como você recebe hoje? <span class="note">define os impostos</span></label>
-          <select id="regime">
-            <option value="nao-sei" selected>Não sei / ainda não decidi</option>
-            <option value="pf">Autônoma, pessoa física (carnê-leão)</option>
-            <option value="fatorr">Tenho CNPJ no Simples, com Fator R</option>
-            <option value="anexov">Tenho CNPJ no Simples, sem Fator R</option>
-          </select>
-        </div>
-        <div class="taxinfo" id="taxInfo"></div>
-        <div class="field">
-          <label for="reserva">Reserva técnica (impostos) <span class="note">ajuste com a sua contadora</span></label>
-          <div class="sliderow"><input type="range" id="reserva" min="0" max="35" value="18" step="0.5"><div class="numrow"><input type="number" id="reservaNum" value="18" min="0" max="35" step="0.5" aria-label="Reserva técnica em %"><span class="unit">%</span></div></div>
-        </div>
-        <div class="field">
-          <label for="margem">Caixa da empresa <span class="note">reserva de segurança / reinvestimento</span></label>
-          <div class="sliderow"><input type="range" id="margem" min="0" max="30" value="10"><div class="numrow"><input type="number" id="margemNum" value="10" min="0" max="30" step="1" aria-label="Caixa da empresa em %"><span class="unit">%</span></div></div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="svc-head"><h2>2. Atendimento individual</h2><span class="tag">Individual</span></div>
-        <p class="hint">Faltas e semanas de pausa já entram na conta.</p>
-        <div class="field">
-          <label for="sessoesSemana">Sessões clínicas por semana</label>
-          <div class="sliderow"><input type="range" id="sessoesSemana" min="0" max="40" value="18"><div class="numrow"><input type="number" id="sessoesSemanaNum" value="18" min="0" max="40" step="1" aria-label="Sessões por semana"><span class="unit">sessões</span></div></div>
-        </div>
-        <div class="field">
-          <label for="faltas">Faltas / desmarques não pagos</label>
-          <div class="sliderow"><input type="range" id="faltas" min="0" max="30" value="8"><div class="numrow"><input type="number" id="faltasNum" value="8" min="0" max="30" step="1" aria-label="Faltas em %"><span class="unit">%</span></div></div>
-        </div>
-        <div class="field">
-          <label for="semanas">Semanas trabalhadas por ano</label>
-          <div class="sliderow"><input type="range" id="semanas" min="35" max="50" value="46"><div class="numrow"><input type="number" id="semanasNum" value="46" min="35" max="50" step="1" aria-label="Semanas por ano"><span class="unit">semanas</span></div></div>
-        </div>
-      </div>
-
-      <div class="card" id="grupoCard" hidden>
-        <div class="svc-head"><h2>3. Serviço em grupo</h2><span class="tag grupo">Grupo</span></div>
-        <p class="hint">O mesmo encontro dividido entre mais pessoas reduz o valor de cada uma sem reduzir o que você precisa faturar.</p>
-        <div class="field">
-          <label for="tipoGrupo">Tipo de grupo</label>
-          <select id="tipoGrupo"><option>Grupo terapêutico</option><option>Supervisão em grupo</option><option>Grupo de estudos</option><option>Outro</option></select>
-        </div>
-        <div class="field">
-          <label for="numPessoas">Pessoas por encontro</label>
-          <div class="sliderow"><input type="range" id="numPessoas" min="2" max="30" value="6"><div class="numrow"><input type="number" id="numPessoasNum" value="6" min="2" max="30" step="1" aria-label="Pessoas por encontro"><span class="unit">pessoas</span></div></div>
-        </div>
-        <div class="field">
-          <label for="numGrupos">Quantos grupos você conduz <span class="note">turmas no mesmo formato</span></label>
-          <div class="sliderow"><input type="range" id="numGrupos" min="1" max="10" value="1"><div class="numrow"><input type="number" id="numGruposNum" value="1" min="1" max="10" step="1" aria-label="Número de grupos"><span class="unit">grupos</span></div></div>
-        </div>
-        <div class="field">
-          <label for="partGrupo">Quanto do seu faturamento vem do grupo <span class="note">o resto vem das sessões individuais</span></label>
-          <div class="sliderow"><input type="range" id="partGrupo" min="5" max="95" value="30" step="5"><div class="numrow"><input type="number" id="partGrupoNum" value="30" min="5" max="95" step="5" aria-label="Parte do faturamento que vem do grupo em %"><span class="unit">%</span></div></div>
-        </div>
-        <button type="button" class="remove" id="removeGrupo">Remover serviço em grupo</button>
-      </div>
-
-      <button type="button" class="add" id="addGrupo">+ Adicionar serviço em grupo</button>
+  <div id="areaPerguntas">
+    <div class="progress-wrap">
+      <div class="progress-label" id="progressoLabel">Pergunta 1 de 11</div>
+      <div class="progress-bar"><div class="progress-fill" id="progressoFill" style="width:9%"></div></div>
     </div>
-
-    <div>
-      <div class="result-card" aria-live="polite">
-        <h2 id="resTitulo">Para ganhar R$ 10.000 por mês, cobre</h2>
-        <div class="svc-results" id="svcResults"></div>
-        <div class="hora" id="valorHora"></div>
-        <div class="breakdown">
-          <div class="k">Pró-labore</div><div class="v" id="bd-prolabore">R$ 0</div>
-          <div class="k">Provisão 13º</div><div class="v" id="bd-decimo">R$ 0</div>
-          <div class="k">Provisão férias</div><div class="v" id="bd-ferias">R$ 0</div>
-          <div class="k">Custos fixos</div><div class="v" id="bd-custos">R$ 0</div>
-          <div class="k" id="bd-inss-k" hidden>INSS do pró-labore (11%)</div><div class="v" id="bd-inss" hidden>R$ 0</div>
-          <div class="k">Reserva técnica (impostos)</div><div class="v" id="bd-reserva">R$ 0</div>
-          <div class="k">Caixa da empresa</div><div class="v" id="bd-margem">R$ 0</div>
-          <div class="k total">Faturamento mínimo/mês</div><div class="v total" id="bd-total">R$ 0</div>
-        </div>
-
-        <div class="alert" id="alertBox" hidden></div>
-        <a class="cta" href="../compra/index.html">Quero fazer meu Mapa de 30 Dias agora →</a>
-      </div>
-    </div>
+    <div class="quest-card" id="questCard"></div>
   </div>
 
-  <div class="footnote">
-    <strong>Como a conta é feita:</strong> pró-labore + provisões de 13º e férias + custos fixos (+ INSS do pró-labore, para quem tem CNPJ com Fator R), tudo dividido por (1 − reserva técnica − caixa da empresa) = faturamento mínimo mensal. Você escolhe quanto desse faturamento vem do grupo. Essa parte é dividida pelo total de pessoas nos grupos (mensalidade por pessoa); o restante é dividido pelas sessões individuais realmente pagas no mês, já descontando as faltas. Os percentuais de imposto são estimativas para 2026. Confirme com a sua contadora.
+  <div id="areaResultado" hidden>
+    <div class="result-card" aria-live="polite">
+      <h2 id="resTitulo">Para ganhar R$ 10.000 por mês, cobre</h2>
+      <div class="svc-results" id="svcResults"></div>
+      <div class="hora" id="valorHora"></div>
+      <div class="breakdown">
+        <div class="k">Pró-labore</div><div class="v" id="bd-prolabore">R$ 0</div>
+        <div class="k">Provisão 13º</div><div class="v" id="bd-decimo">R$ 0</div>
+        <div class="k">Provisão férias</div><div class="v" id="bd-ferias">R$ 0</div>
+        <div class="k">Custos fixos</div><div class="v" id="bd-custos">R$ 0</div>
+        <div class="k" id="bd-inss-k" hidden>INSS do pró-labore (11%)</div><div class="v" id="bd-inss" hidden>R$ 0</div>
+        <div class="k">Reserva técnica (impostos)</div><div class="v" id="bd-reserva">R$ 0</div>
+        <div class="k">Caixa da empresa</div><div class="v" id="bd-margem">R$ 0</div>
+        <div class="k total">Faturamento mínimo/mês</div><div class="v total" id="bd-total">R$ 0</div>
+      </div>
+
+      <div class="alert" id="alertBox" hidden></div>
+      <a class="cta" href="../compra/index.html">Quero fazer meu Mapa de 30 Dias agora →</a>
+    </div>
+
+    <div class="result-actions">
+      <div id="statusSalvamento" class="salvando-msg">Salvando seu resultado…</div>
+      <button type="button" class="btn-secundario" id="btnNovaSimulacao">Iniciar nova simulação</button>
+      <a class="btn-secundario" href="meus-calculos.html">Ver meus cálculos anteriores</a>
+    </div>
+
+    <div class="footnote">
+      <strong>Como a conta é feita:</strong> pró-labore + provisões de 13º e férias + custos fixos (+ INSS do pró-labore, para quem tem CNPJ com Fator R), tudo dividido por (1 − reserva técnica − caixa da empresa) = faturamento mínimo mensal. Você escolhe quanto desse faturamento vem do grupo. Essa parte é dividida pelo total de pessoas nos grupos (mensalidade por pessoa); o restante é dividido pelas sessões individuais realmente pagas no mês, já descontando as faltas. Os percentuais de imposto são estimativas para 2026. Confirme com a sua contadora.
+    </div>
   </div>
 </div>
 
-<script>
-(function(){
-const $ = id => document.getElementById(id);
-const paired = ['reserva','margem','decimoTerceiro','ferias','sessoesSemana','faltas','semanas','numPessoas','numGrupos','partGrupo'];
-paired.forEach(id=>{
-  const s=$(id), n=$(id+'Num');
-  s.addEventListener('input',()=>{n.value=s.value;calc();});
-  n.addEventListener('input',()=>{let v=parseFloat(n.value); if(isNaN(v))return; v=Math.min(Math.max(v,parseFloat(s.min)),parseFloat(s.max)); s.value=v; calc();});
-});
-['prolabore','custosFixos'].forEach(id=>$(id).addEventListener('input',calc));
-const metaBtns=document.querySelectorAll('#metas button');
-metaBtns.forEach(b=>b.addEventListener('click',()=>{$('prolabore').value=b.dataset.v;calc();}));
-$('tipoGrupo').addEventListener('change',calc);
-
-
-let temGrupo=false;
-$('addGrupo').addEventListener('click',()=>{temGrupo=true;$('grupoCard').hidden=false;$('addGrupo').hidden=true;calc();$('numPessoasNum').focus();});
-$('removeGrupo').addEventListener('click',()=>{temGrupo=false;$('grupoCard').hidden=true;$('addGrupo').hidden=false;calc();});
-
-const REGIMES={
-  'nao-sei':{pct:18,txt:'Usamos 18%, um valor cauteloso que cobre a maioria dos casos. Vale descobrir o seu regime: pode ser bem menos.'},
-  'pf':{pct:18,txt:'Autônoma paga INSS de 20% e imposto de renda progressivo (em 2026, isenção até R$ 5 mil/mês). A carga real varia com a renda: 18% é uma estimativa média.'},
-  'fatorr':{pct:6,txt:'Simples Nacional, Anexo III: 6% na primeira faixa (até R$ 180 mil/ano). Exige pró-labore de pelo menos 28% do faturamento, com 11% de INSS, que já entra na conta.'},
-  'anexov':{pct:15.5,txt:'Simples Nacional, Anexo V: a partir de 15,5%. Se o seu pró-labore chegar a 28% do faturamento, dá para ir para o Anexo III (6%).'}
-};
-$('regime').addEventListener('change',()=>{const r=REGIMES[$('regime').value];$('reserva').value=r.pct;$('reservaNum').value=r.pct;calc();});
-
-const fmt=n=>isFinite(n)?'R$ '+Math.round(n).toLocaleString('pt-BR'):'—';
-const val=id=>parseFloat($(id).value)||0;
-
-function conta(prolabore){
-  const regime=$('regime').value;
-  const custos=val('custosFixos'), reserva=val('reserva')/100, margem=val('margem')/100;
-  const decimo=prolabore*val('decimoTerceiro')/100, ferias=prolabore*val('ferias')/100;
-  const inss = regime==='fatorr' ? prolabore*0.11 : 0;
-  const denom=1-reserva-margem;
-  const fat = denom>0 ? (prolabore+decimo+ferias+custos+inss)/denom : Infinity;
-  const sessSem=val('sessoesSemana'), faltas=val('faltas')/100, semanas=val('semanas')||46;
-  const agendadas=sessSem*semanas/12, pagas=agendadas*(1-faltas);
-  const pessoas=val('numPessoas')||1, grupos=val('numGrupos')||1;
-  let partG = temGrupo ? val('partGrupo')/100 : 0;
-  if(temGrupo && !(sessSem>0)) partG = 1;
-  const horas = (sessSem>0?1:0) + (temGrupo?1:0);
-  const sess = sessSem>0 && pagas>0 ? fat*(1-partG)/pagas : null;
-  const recGrp = temGrupo ? fat*partG : 0;
-  return {regime,prolabore,custos,reserva,margem,decimo,ferias,inss,denom,fat,horas,sess,agendadas,pagas,
-    grpPessoa: temGrupo? recGrp/(pessoas*grupos) : null, recGrp, partG, pessoasTot:pessoas*grupos};
-}
-
-function calc(){
-  $('taxInfo').textContent=REGIMES[$('regime').value].txt;
-  const r=conta(val('prolabore'));
-  metaBtns.forEach(b=>b.classList.toggle('active',+b.dataset.v===r.prolabore));
-  $('resTitulo').textContent='Para ganhar '+fmt(r.prolabore)+' por mês, cobre';
-  let html='';
-  if(r.sess!==null) html+=`<div class="sr"><div class="t">Sessão individual</div><div class="v">${fmt(r.sess)} <small>/ sessão</small></div><div class="d">${Math.round(r.pagas)} sessões pagas por mês, de ${Math.round(r.agendadas)} agendadas</div></div>`;
-  if(r.grpPessoa!==null) html+=`<div class="sr"><div class="t">${$('tipoGrupo').value}</div><div class="v">${fmt(r.grpPessoa)} <small>/ pessoa / mês</small></div><div class="d">${r.pessoasTot} pessoas no total · ${Math.round(r.partG*100)}% do faturamento (${fmt(r.recGrp)})</div></div>`;
-  $('svcResults').innerHTML=html;
-  $('valorHora').textContent= isFinite(r.fat) ? 'Sua clínica precisa faturar '+fmt(r.fat)+' por mês' : '';
-
-  $('bd-prolabore').textContent=fmt(r.prolabore); $('bd-decimo').textContent=fmt(r.decimo); $('bd-ferias').textContent=fmt(r.ferias);
-  $('bd-custos').textContent=fmt(r.custos); $('bd-reserva').textContent=fmt(r.fat*r.reserva); $('bd-margem').textContent=fmt(r.fat*r.margem); $('bd-total').textContent=fmt(r.fat);
-  $('bd-inss-k').hidden=$('bd-inss').hidden=!r.inss; $('bd-inss').textContent=fmt(r.inss);
-
-  const a=$('alertBox'); let msg='';
-  if(r.denom<=0) msg='Reserva técnica + caixa da empresa somam 100% ou mais. Reduza um dos dois.';
-  else if(r.horas<=0) msg='Informe quantas sessões você atende por semana ou adicione um serviço em grupo.';
-  else if(r.regime==='fatorr' && r.prolabore<r.fat*0.28) msg='Para manter o Fator R, o pró-labore precisa ser de pelo menos 28% do faturamento ('+fmt(r.fat*0.28)+'). Abaixo disso, o imposto sobe para o Anexo V (15,5%).';
-  else if(r.sess!==null && r.sess>600) msg='O valor da sessão ficou bem acima da média de mercado. Vale rever a agenda ou somar um serviço em grupo para distribuir o faturamento.';
-  a.textContent=msg; a.hidden=!msg;
-}
-calc();
-})();
-</script>
 <script type="module">
-import { requireAuth } from '../assets/js/auth.js';
+import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
+import { requireAuth, getProfile } from '../assets/js/auth.js';
 import { mountAppShell } from '../assets/js/app-shell.js';
 import { montarSubNavMapaClinica } from '../assets/js/mapa-clinica-nav.js';
+
+avisarSupabaseNaoConfigurado();
+
+const VERSAO_REGRA = 'sessao-v1';
+const DRAFT_KEY = 'calc_sessao_rascunho_v1';
+
+const REGIMES = {
+  'nao-sei': { pct: 18, txt: 'Usamos 18%, um valor cauteloso que cobre a maioria dos casos. Vale descobrir o seu regime: pode ser bem menos.' },
+  'pf': { pct: 18, txt: 'Autônoma paga INSS de 20% e imposto de renda progressivo (em 2026, isenção até R$ 5 mil/mês). A carga real varia com a renda: 18% é uma estimativa média.' },
+  'fatorr': { pct: 6, txt: 'Simples Nacional, Anexo III: 6% na primeira faixa (até R$ 180 mil/ano). Exige pró-labore de pelo menos 28% do faturamento, com 11% de INSS, que já entra na conta.' },
+  'anexov': { pct: 15.5, txt: 'Simples Nacional, Anexo V: a partir de 15,5%. Se o seu pró-labore chegar a 28% do faturamento, dá para ir para o Anexo III (6%).' },
+};
+
+const QUESTOES_BASE = [
+  { id: 'prolabore', tipo: 'moeda', titulo: 'Quanto você quer ganhar por mês', ajuda: 'O pró-labore é o que sustenta sua vida — não é "o que sobra". Informe o valor limpo, depois de pagar a clínica e os impostos.', presets: [5000, 10000, 15000, 20000], min: 0, default: 10000 },
+  { id: 'decimoTerceiro', tipo: 'percentual', titulo: 'Provisão de 13º', ajuda: '1/12 do pró-labore, reservado todo mês.', min: 0, max: 15, step: 0.01, default: 8.33 },
+  { id: 'ferias', tipo: 'percentual', titulo: 'Provisão de férias', ajuda: '1/12 + 1/3, padrão CLT.', min: 0, max: 20, step: 0.01, default: 11.11 },
+  { id: 'custosFixos', tipo: 'moeda', titulo: 'Custos fixos do negócio por mês', ajuda: 'Consultório, plataforma, contador, materiais, supervisão.', min: 0, default: 1800 },
+  { id: 'regime', tipo: 'select', titulo: 'Como você recebe hoje?', ajuda: 'Isso define os impostos usados na conta.', opcoes: [
+    ['nao-sei', 'Não sei / ainda não decidi'], ['pf', 'Autônoma, pessoa física (carnê-leão)'],
+    ['fatorr', 'Tenho CNPJ no Simples, com Fator R'], ['anexov', 'Tenho CNPJ no Simples, sem Fator R'],
+  ], default: 'nao-sei' },
+  { id: 'reserva', tipo: 'percentual', titulo: 'Reserva técnica (impostos)', ajudaDinamica: true, min: 0, max: 35, step: 0.5, default: 18 },
+  { id: 'margem', tipo: 'percentual', titulo: 'Caixa da empresa', ajuda: 'Reserva de segurança / reinvestimento, separada do seu pró-labore.', min: 0, max: 30, step: 1, default: 10 },
+  { id: 'sessoesSemana', tipo: 'numero', titulo: 'Quantas sessões clínicas você atende por semana', ajuda: 'Conte as sessões individuais realizadas em uma semana comum.', min: 0, max: 40, step: 1, default: 18, sufixo: 'sessões' },
+  { id: 'faltas', tipo: 'percentual', titulo: 'Faltas / desmarques não pagos', ajuda: 'Percentual das sessões agendadas que não chegam a ser pagas.', min: 0, max: 30, step: 1, default: 8 },
+  { id: 'semanas', tipo: 'numero', titulo: 'Quantas semanas você trabalha por ano', ajuda: 'Já descontando férias e pausas.', min: 35, max: 50, step: 1, default: 46, sufixo: 'semanas' },
+  { id: 'temGrupo', tipo: 'simnao', titulo: 'Você quer simular também um serviço em grupo?', ajuda: 'Grupo terapêutico, supervisão em grupo, grupo de estudos ou outro formato em grupo.', default: false },
+];
+
+const QUESTOES_GRUPO = [
+  { id: 'tipoGrupo', tipo: 'select', titulo: 'Tipo de grupo', ajuda: '', opcoes: [
+    ['Grupo terapêutico', 'Grupo terapêutico'], ['Supervisão em grupo', 'Supervisão em grupo'],
+    ['Grupo de estudos', 'Grupo de estudos'], ['Outro', 'Outro'],
+  ], default: 'Grupo terapêutico' },
+  { id: 'numPessoas', tipo: 'numero', titulo: 'Pessoas por encontro', ajuda: '', min: 2, max: 30, step: 1, default: 6, sufixo: 'pessoas' },
+  { id: 'numGrupos', tipo: 'numero', titulo: 'Quantos grupos você conduz', ajuda: 'Turmas no mesmo formato.', min: 1, max: 10, step: 1, default: 1, sufixo: 'grupos' },
+  { id: 'partGrupo', tipo: 'percentual', titulo: 'Quanto do seu faturamento vem do grupo', ajuda: 'O restante vem das sessões individuais.', min: 5, max: 95, step: 5, default: 30 },
+];
+
+function getSteps(answers) {
+  return answers.temGrupo === true ? QUESTOES_BASE.concat(QUESTOES_GRUPO) : QUESTOES_BASE;
+}
+
+function defaultAnswers() {
+  const a = {};
+  QUESTOES_BASE.forEach((q) => { a[q.id] = q.default; });
+  QUESTOES_GRUPO.forEach((q) => { a[q.id] = q.default; });
+  return a;
+}
+
+function lerRascunho() {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== 'object' || !parsed.answers) return null;
+    return parsed;
+  } catch { return null; }
+}
+function salvarRascunho() {
+  try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ answers, stepIndex })); } catch { /* localStorage indisponível — segue sem persistir */ }
+}
+function limparRascunho() {
+  try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignorar */ }
+}
+
+const salvo = lerRascunho();
+let answers = salvo ? Object.assign(defaultAnswers(), salvo.answers) : defaultAnswers();
+let stepIndex = salvo && Number.isInteger(salvo.stepIndex) ? salvo.stepIndex : 0;
+
+const fmt = (n) => isFinite(n) ? 'R$ ' + Math.round(n).toLocaleString('pt-BR') : '—';
+
+function conta(a) {
+  const regime = a.regime;
+  const custos = a.custosFixos, reserva = a.reserva / 100, margem = a.margem / 100;
+  const decimo = a.prolabore * a.decimoTerceiro / 100, ferias = a.prolabore * a.ferias / 100;
+  const inss = regime === 'fatorr' ? a.prolabore * 0.11 : 0;
+  const denom = 1 - reserva - margem;
+  const fat = denom > 0 ? (a.prolabore + decimo + ferias + custos + inss) / denom : Infinity;
+  const sessSem = a.sessoesSemana, faltas = a.faltas / 100, semanas = a.semanas || 46;
+  const agendadas = sessSem * semanas / 12, pagas = agendadas * (1 - faltas);
+  const pessoas = a.numPessoas || 1, grupos = a.numGrupos || 1;
+  let partG = a.temGrupo ? a.partGrupo / 100 : 0;
+  if (a.temGrupo && !(sessSem > 0)) partG = 1;
+  const horas = (sessSem > 0 ? 1 : 0) + (a.temGrupo ? 1 : 0);
+  const sess = sessSem > 0 && pagas > 0 ? fat * (1 - partG) / pagas : null;
+  const recGrp = a.temGrupo ? fat * partG : 0;
+  return {
+    regime, prolabore: a.prolabore, custos, reserva, margem, decimo, ferias, inss, denom, fat, horas, sess, agendadas, pagas,
+    grpPessoa: a.temGrupo ? recGrp / (pessoas * grupos) : null, recGrp, partG, pessoasTot: pessoas * grupos,
+  };
+}
+
+function validar(q, valorBruto) {
+  if (q.tipo === 'moeda' || q.tipo === 'percentual' || q.tipo === 'numero') {
+    const v = parseFloat(valorBruto);
+    if (valorBruto === '' || valorBruto === null || isNaN(v)) return { ok: false, msg: 'Informe um valor.' };
+    if (q.min != null && v < q.min) return { ok: false, msg: `O valor mínimo é ${q.min}.` };
+    if (q.max != null && v > q.max) return { ok: false, msg: `O valor máximo é ${q.max}.` };
+    return { ok: true, valor: v };
+  }
+  if (q.tipo === 'select') {
+    const ok = q.opcoes.some(([val]) => val === valorBruto);
+    return ok ? { ok: true, valor: valorBruto } : { ok: false, msg: 'Escolha uma opção.' };
+  }
+  if (q.tipo === 'simnao') {
+    return (valorBruto === true || valorBruto === false) ? { ok: true, valor: valorBruto } : { ok: false, msg: 'Escolha uma opção.' };
+  }
+  return { ok: true, valor: valorBruto };
+}
+
+const questCard = document.getElementById('questCard');
+const progressoLabel = document.getElementById('progressoLabel');
+const progressoFill = document.getElementById('progressoFill');
+
+function renderPergunta() {
+  const steps = getSteps(answers);
+  if (stepIndex >= steps.length) stepIndex = steps.length - 1;
+  if (stepIndex < 0) stepIndex = 0;
+  const q = steps[stepIndex];
+  const total = steps.length;
+  const num = stepIndex + 1;
+  progressoLabel.textContent = `Pergunta ${num} de ${total}`;
+  progressoFill.style.width = Math.round((num / total) * 100) + '%';
+
+  const ajudaTexto = q.ajudaDinamica ? REGIMES[answers.regime].txt : (q.ajuda || '');
+  let campoHtml = '';
+
+  if (q.tipo === 'moeda') {
+    campoHtml = `
+      ${q.presets ? `<div class="preset-row" id="presetRow">${q.presets.map((p) => `<button type="button" data-v="${p}" class="${answers[q.id] === p ? 'active' : ''}">R$ ${p.toLocaleString('pt-BR')}</button>`).join('')}</div>` : ''}
+      <div class="campo moeda-row">
+        <span class="unit">R$</span>
+        <input type="number" id="campoInput" inputmode="decimal" min="${q.min ?? 0}" step="50" value="${answers[q.id]}">
+      </div>
+      <div class="moeda-preview">Valor informado: <b id="moedaPreview">${fmt(answers[q.id])}</b></div>`;
+  } else if (q.tipo === 'percentual' || q.tipo === 'numero') {
+    campoHtml = `
+      <div class="campo slider-row">
+        <input type="range" id="campoSlider" min="${q.min}" max="${q.max}" step="${q.step}" value="${answers[q.id]}">
+        <input type="number" id="campoInput" inputmode="decimal" min="${q.min}" max="${q.max}" step="${q.step}" value="${answers[q.id]}">
+      </div>
+      ${q.sufixo ? `<div class="sufixo">${q.sufixo}</div>` : (q.tipo === 'percentual' ? '<div class="sufixo">%</div>' : '')}`;
+  } else if (q.tipo === 'select') {
+    campoHtml = `
+      <div class="campo">
+        <select id="campoInput">${q.opcoes.map(([val, label]) => `<option value="${val}" ${answers[q.id] === val ? 'selected' : ''}>${label}</option>`).join('')}</select>
+      </div>`;
+  } else if (q.tipo === 'simnao') {
+    campoHtml = `
+      <div class="campo simnao-row" id="simnaoRow">
+        <button type="button" data-v="true" class="${answers[q.id] === true ? 'active' : ''}">Sim</button>
+        <button type="button" data-v="false" class="${answers[q.id] === false ? 'active' : ''}">Não</button>
+      </div>`;
+  }
+
+  questCard.innerHTML = `
+    <h2 class="quest-titulo">${q.titulo}</h2>
+    ${ajudaTexto ? `<p class="quest-ajuda${q.ajudaDinamica ? ' dinamica' : ''}">${ajudaTexto}</p>` : ''}
+    ${campoHtml}
+    <div class="erro-campo" id="erroCampo"></div>
+    <div class="stepnav">
+      ${stepIndex > 0 ? '<button type="button" class="btn-voltar" id="btnVoltar">Voltar</button>' : ''}
+      <button type="button" class="btn-continuar" id="btnContinuar">${stepIndex === total - 1 ? 'Ver meu resultado' : 'Continuar'}</button>
+    </div>`;
+
+  ligarEventosPergunta(q);
+  document.getElementById('btnVoltar')?.addEventListener('click', () => { stepIndex--; salvarRascunho(); renderPergunta(); });
+  document.getElementById('btnContinuar').addEventListener('click', () => avancar(q));
+}
+
+function ligarEventosPergunta(q) {
+  if (q.tipo === 'moeda') {
+    const input = document.getElementById('campoInput');
+    const preview = document.getElementById('moedaPreview');
+    input.addEventListener('input', () => { preview.textContent = fmt(parseFloat(input.value) || 0); });
+    if (q.presets) {
+      document.querySelectorAll('#presetRow button').forEach((b) => b.addEventListener('click', () => {
+        input.value = b.dataset.v;
+        preview.textContent = fmt(parseFloat(b.dataset.v));
+        document.querySelectorAll('#presetRow button').forEach((x) => x.classList.remove('active'));
+        b.classList.add('active');
+      }));
+    }
+  } else if (q.tipo === 'percentual' || q.tipo === 'numero') {
+    const slider = document.getElementById('campoSlider');
+    const input = document.getElementById('campoInput');
+    slider.addEventListener('input', () => { input.value = slider.value; });
+    input.addEventListener('input', () => {
+      let v = parseFloat(input.value);
+      if (isNaN(v)) return;
+      const clamped = Math.min(Math.max(v, parseFloat(slider.min)), parseFloat(slider.max));
+      slider.value = clamped;
+    });
+  } else if (q.tipo === 'simnao') {
+    document.querySelectorAll('#simnaoRow button').forEach((b) => b.addEventListener('click', () => {
+      document.querySelectorAll('#simnaoRow button').forEach((x) => x.classList.remove('active'));
+      b.classList.add('active');
+      b.dataset.selecionado = '1';
+    }));
+  }
+}
+
+function lerValorAtual(q) {
+  if (q.tipo === 'simnao') {
+    const ativo = document.querySelector('#simnaoRow button.active');
+    return ativo ? ativo.dataset.v === 'true' : null;
+  }
+  const input = document.getElementById('campoInput');
+  return input.value;
+}
+
+function avancar(q) {
+  const bruto = lerValorAtual(q);
+  const resultado = validar(q, bruto);
+  const erroEl = document.getElementById('erroCampo');
+  if (!resultado.ok) { erroEl.textContent = resultado.msg; erroEl.classList.add('show'); return; }
+  erroEl.classList.remove('show');
+
+  answers[q.id] = resultado.valor;
+  if (q.id === 'regime') { answers.reserva = REGIMES[resultado.valor].pct; }
+
+  const steps = getSteps(answers);
+  if (stepIndex === steps.length - 1) {
+    salvarRascunho();
+    finalizar();
+    return;
+  }
+  stepIndex++;
+  salvarRascunho();
+  renderPergunta();
+}
+
+// ---- resultado ----
+
+function renderResultado(r) {
+  document.getElementById('resTitulo').textContent = 'Para ganhar ' + fmt(r.prolabore) + ' por mês, cobre';
+  let html = '';
+  if (r.sess !== null) html += `<div class="sr"><div class="t">Sessão individual</div><div class="v">${fmt(r.sess)} <small>/ sessão</small></div><div class="d">${Math.round(r.pagas)} sessões pagas por mês, de ${Math.round(r.agendadas)} agendadas</div></div>`;
+  if (r.grpPessoa !== null) html += `<div class="sr"><div class="t">${answers.tipoGrupo || 'Grupo'}</div><div class="v">${fmt(r.grpPessoa)} <small>/ pessoa / mês</small></div><div class="d">${r.pessoasTot} pessoas no total · ${Math.round(r.partG * 100)}% do faturamento (${fmt(r.recGrp)})</div></div>`;
+  document.getElementById('svcResults').innerHTML = html;
+  document.getElementById('valorHora').textContent = isFinite(r.fat) ? 'Sua clínica precisa faturar ' + fmt(r.fat) + ' por mês' : '';
+
+  document.getElementById('bd-prolabore').textContent = fmt(r.prolabore);
+  document.getElementById('bd-decimo').textContent = fmt(r.decimo);
+  document.getElementById('bd-ferias').textContent = fmt(r.ferias);
+  document.getElementById('bd-custos').textContent = fmt(r.custos);
+  document.getElementById('bd-reserva').textContent = fmt(r.fat * r.reserva);
+  document.getElementById('bd-margem').textContent = fmt(r.fat * r.margem);
+  document.getElementById('bd-total').textContent = fmt(r.fat);
+  document.getElementById('bd-inss-k').hidden = document.getElementById('bd-inss').hidden = !r.inss;
+  document.getElementById('bd-inss').textContent = fmt(r.inss);
+
+  const a = document.getElementById('alertBox');
+  let msg = '';
+  if (r.denom <= 0) msg = 'Reserva técnica + caixa da empresa somam 100% ou mais. Reduza um dos dois.';
+  else if (r.horas <= 0) msg = 'Informe quantas sessões você atende por semana ou adicione um serviço em grupo.';
+  else if (r.regime === 'fatorr' && r.prolabore < r.fat * 0.28) msg = 'Para manter o Fator R, o pró-labore precisa ser de pelo menos 28% do faturamento (' + fmt(r.fat * 0.28) + '). Abaixo disso, o imposto sobe para o Anexo V (15,5%).';
+  else if (r.sess !== null && r.sess > 600) msg = 'O valor da sessão ficou bem acima da média de mercado. Vale rever a agenda ou somar um serviço em grupo para distribuir o faturamento.';
+  a.textContent = msg;
+  a.hidden = !msg;
+}
+
+let salvando = false;
+let session = null;
+
+async function finalizar() {
+  const r = conta(answers);
+  document.getElementById('areaPerguntas').hidden = true;
+  document.getElementById('areaResultado').hidden = false;
+  renderResultado(r);
+
+  const statusEl = document.getElementById('statusSalvamento');
+  await salvarNoBanco(r, statusEl);
+}
+
+async function salvarNoBanco(r, statusEl) {
+  if (salvando) return;
+  salvando = true;
+  statusEl.className = 'salvando-msg';
+  statusEl.textContent = 'Salvando seu resultado…';
+
+  const { data, error } = await supabase.from('calculadora_sessao_resultados').insert({
+    user_id: session.user.id,
+    respostas: answers,
+    resultado: r,
+    versao_regra: VERSAO_REGRA,
+  }).select('id').single();
+
+  if (error) {
+    salvando = false;
+    statusEl.className = 'salvar-erro';
+    statusEl.innerHTML = 'Não foi possível salvar o seu resultado agora. Suas respostas continuam aqui — tente novamente. <br><button type="button" id="btnTentarSalvar">Tentar salvar novamente</button>';
+    document.getElementById('btnTentarSalvar').addEventListener('click', () => salvarNoBanco(r, statusEl));
+    return;
+  }
+
+  limparRascunho();
+  statusEl.className = 'salvando-msg';
+  statusEl.textContent = 'Resultado salvo. Uma cópia foi enviada para o seu e-mail cadastrado, se o envio estiver disponível.';
+
+  supabase.functions.invoke('notificar-calculadora-sessao', { body: { id: data.id } }).catch(() => { /* e-mail é best-effort, não bloqueia a visualização */ });
+}
+
+document.getElementById('btnNovaSimulacao').addEventListener('click', () => {
+  answers = defaultAnswers();
+  stepIndex = 0;
+  limparRascunho();
+  document.getElementById('areaResultado').hidden = true;
+  document.getElementById('areaPerguntas').hidden = false;
+  renderPergunta();
+});
+
 (async () => {
-  const session = await requireAuth('../login/index.html');
+  session = await requireAuth('../login/index.html');
   if (!session) return;
   await mountAppShell('ferramentas', session, '..');
   montarSubNavMapaClinica('ferramentas', '..');
+
+  const profile = await getProfile(session.user.id);
+  if (!(profile?.role === 'admin' || profile?.diagnostico_liberado)) {
+    // Ferramenta exclusiva de quem tem acesso liberado ao Mapa/mentoria —
+    // uma conta criada só na calculadora pública não abre isso sozinha.
+    location.href = '../compra/index.html';
+    return;
+  }
+
+  renderPergunta();
 })();
 </script>
 </body>

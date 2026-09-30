@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Meus cálculos | INDIA</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../assets/css/shell.css">
+<style>
+.calc-item{background:#fff;border:1px solid var(--line-soft);border-radius:12px;padding:18px 20px;margin-bottom:12px;cursor:pointer}
+.calc-item:hover{border-color:var(--terracota-dark,#9a5b34)}
+.calc-item .data{font-size:12px;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+.calc-item .resumo{display:flex;gap:22px;flex-wrap:wrap;margin-top:8px}
+.calc-item .resumo b{display:block;color:var(--ink-green);font-size:17px}
+.calc-item .resumo span{font-size:11.5px;color:var(--muted2);text-transform:uppercase;letter-spacing:.04em}
+.detalhe{background:#fff;border:1px solid var(--line-soft);border-radius:12px;padding:20px;margin-top:16px}
+.detalhe h3{margin:0 0 12px;color:var(--ink-green)}
+.detalhe table{width:100%;border-collapse:collapse;font-size:13.5px}
+.detalhe td{padding:7px 4px;border-bottom:1px solid var(--line-soft)}
+.detalhe td:first-child{color:var(--muted2)}
+.detalhe td:last-child{text-align:right;font-weight:700}
+.voltar-lista{background:none;border:none;color:var(--terracota-dark,#9a5b34);font:inherit;font-size:13px;font-weight:700;cursor:pointer;padding:0;margin-bottom:14px}
+</style>
+</head>
+<body>
+
+<div class="plan-header">
+  <div class="eyebrow">Ferramentas</div>
+  <h1>Meus cálculos</h1>
+  <p class="lead" style="color:var(--muted2)">Todas as suas simulações de "Quanto preciso cobrar?", com data e resultado de cada uma.</p>
+</div>
+
+<div id="aviso"></div>
+<div id="lista"></div>
+<div id="detalheWrap"></div>
+
+<script type="module">
+import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
+import { requireAuth, getProfile } from '../assets/js/auth.js';
+import { mountAppShell } from '../assets/js/app-shell.js';
+import { montarSubNavMapaClinica } from '../assets/js/mapa-clinica-nav.js';
+
+avisarSupabaseNaoConfigurado();
+
+const fmt = (n) => isFinite(n) ? 'R$ ' + Math.round(n).toLocaleString('pt-BR') : '—';
+const fmtData = (iso) => new Date(iso).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', dateStyle: 'short', timeStyle: 'short' });
+
+function renderDetalhe(reg) {
+  const r = reg.resultado || {};
+  const linhas = [
+    ['Pró-labore', fmt(r.prolabore)],
+    ['Provisão 13º', fmt(r.decimo)],
+    ['Provisão férias', fmt(r.ferias)],
+    ['Custos fixos', fmt(r.custos)],
+  ];
+  if (r.inss) linhas.push(['INSS do pró-labore', fmt(r.inss)]);
+  linhas.push(['Reserva técnica', fmt(r.fat * r.reserva)]);
+  linhas.push(['Caixa da empresa', fmt(r.fat * r.margem)]);
+  linhas.push(['Faturamento mínimo/mês', fmt(r.fat)]);
+  if (r.sess != null) linhas.push(['Valor da sessão individual', fmt(r.sess) + ' / sessão']);
+  if (r.grpPessoa != null) linhas.push(['Valor por pessoa no grupo', fmt(r.grpPessoa) + ' / mês']);
+
+  document.getElementById('detalheWrap').innerHTML = `
+    <div class="detalhe">
+      <button type="button" class="voltar-lista" id="btnVoltarLista">← Voltar para a lista</button>
+      <h3>Cálculo de ${fmtData(reg.criado_em)}</h3>
+      <table>${linhas.map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join('')}</table>
+    </div>`;
+  document.getElementById('lista').hidden = true;
+  document.getElementById('btnVoltarLista').addEventListener('click', () => {
+    document.getElementById('detalheWrap').innerHTML = '';
+    document.getElementById('lista').hidden = false;
+  });
+}
+
+(async () => {
+  const session = await requireAuth('../login/index.html');
+  if (!session) return;
+  await mountAppShell('ferramentas', session, '..');
+  montarSubNavMapaClinica('ferramentas', '..');
+
+  const profile = await getProfile(session.user.id);
+  if (!(profile?.role === 'admin' || profile?.diagnostico_liberado)) {
+    // Ferramenta exclusiva de quem tem acesso liberado ao Mapa/mentoria —
+    // uma conta criada só na calculadora pública não abre isso sozinha.
+    location.href = '../compra/index.html';
+    return;
+  }
+
+  const aviso = document.getElementById('aviso');
+  const lista = document.getElementById('lista');
+
+  const { data: registros, error } = await supabase
+    .from('calculadora_sessao_resultados')
+    .select('id, criado_em, respostas, resultado')
+    .eq('user_id', session.user.id)
+    .order('criado_em', { ascending: false });
+
+  if (error) { aviso.innerHTML = `<div class="alert alert-error">Erro ao carregar seus cálculos: ${error.message}</div>`; return; }
+
+  if (!registros || registros.length === 0) {
+    lista.innerHTML = `<div class="calc-item" style="cursor:default"><p style="margin:0;color:var(--muted2)">Você ainda não fez nenhuma simulação. <a href="sessao.html">Calcular agora →</a></p></div>`;
+    return;
+  }
+
+  lista.innerHTML = registros.map((reg, i) => {
+    const r = reg.resultado || {};
+    return `
+      <div class="calc-item" data-idx="${i}">
+        <div class="data">${fmtData(reg.criado_em)}</div>
+        <div class="resumo">
+          <div><b>${fmt(r.prolabore)}</b><span>Pró-labore</span></div>
+          <div><b>${fmt(r.fat)}</b><span>Faturamento mínimo</span></div>
+          ${r.sess != null ? `<div><b>${fmt(r.sess)}</b><span>Sessão individual</span></div>` : ''}
+          ${r.grpPessoa != null ? `<div><b>${fmt(r.grpPessoa)}</b><span>Por pessoa no grupo</span></div>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+
+  lista.querySelectorAll('.calc-item[data-idx]').forEach((el) => {
+    el.addEventListener('click', () => renderDetalhe(registros[Number(el.dataset.idx)]));
+  });
+})();
+</script>
+</body>
+</html>
