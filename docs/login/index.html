@@ -34,6 +34,9 @@ body{background:#f4efe6}
 .journey-list .jicon{width:46px;height:46px;border-radius:50%;background:#f1e2c8;color:#173f31;display:grid;place-items:center;flex-shrink:0;position:relative;z-index:1;box-shadow:0 4px 14px rgba(20,20,10,.18)}
 .journey-list .jlabel{font-size:16px;color:#173f31;font-weight:600;background:rgba(250,246,238,.97);padding:6px 14px;border-radius:999px;box-shadow:0 3px 10px rgba(20,20,10,.14)}
 
+.auth-tabs{display:flex;gap:8px;margin:18px 0 22px;border:1px solid #e3d8c4;border-radius:11px;padding:4px}
+.auth-tabs button{flex:1;padding:12px 10px;border:none;border-radius:8px;background:transparent;color:#4b5148;font:inherit;font-weight:700;font-size:14.5px;cursor:pointer}
+.auth-tabs button.active{background:#173f31;color:#fff}
 .login-right .form-field{margin-bottom:20px}
 .login-right .form-field label{font-size:14px;color:#173f31}
 .login-right .form-field input{height:56px;border-radius:11px;font-size:16px;padding:0 16px;border:1px solid #e3d8c4}
@@ -87,6 +90,11 @@ body{background:#f4efe6}
       <h2 id="cardTitle">Acesse sua conta</h2>
       <p class="sub" id="cardSub">Entre para acessar seu diagnóstico, relatórios, ferramentas e plano de ação.</p>
 
+      <div class="auth-tabs" id="authTabs">
+        <button type="button" class="active" id="tabEntrar">Entrar — já tenho conta</button>
+        <button type="button" id="tabCriar">Criar conta</button>
+      </div>
+
       <div id="msgBox"></div>
 
       <form id="formEntrar">
@@ -131,8 +139,6 @@ body{background:#f4efe6}
         </button>
       </div>
 
-      <div class="switch" id="switchEntrar">Ainda não tem uma conta? <a href="#" id="toCriar">Criar conta</a></div>
-      <div class="switch hidden" id="switchCriar">Já tem uma conta? <a href="#" id="toEntrar">Entrar</a></div>
       <div class="switch hidden" id="switchEsqueci"><a href="#" id="toEntrarDeEsqueci">← Voltar para entrar</a></div>
       <div class="switch" id="switchVerProdutos"><a href="../inicio/index.html">← Ver produtos</a></div>
     </div>
@@ -209,19 +215,18 @@ function showMsg(text, type = 'error') {
 const formEntrar = document.getElementById('formEntrar');
 const formCriar = document.getElementById('formCriar');
 const formEsqueci = document.getElementById('formEsqueci');
-const switchEntrar = document.getElementById('switchEntrar');
-const switchCriar = document.getElementById('switchCriar');
 const switchEsqueci = document.getElementById('switchEsqueci');
 const googleBlock = document.getElementById('googleBlock');
 const cardTitle = document.getElementById('cardTitle');
 const cardSub = document.getElementById('cardSub');
+const authTabs = document.getElementById('authTabs');
+const tabEntrar = document.getElementById('tabEntrar');
+const tabCriar = document.getElementById('tabCriar');
 
 function hideAllForms() {
   formEntrar.classList.add('hidden');
   formCriar.classList.add('hidden');
   formEsqueci.classList.add('hidden');
-  switchEntrar.classList.add('hidden');
-  switchCriar.classList.add('hidden');
   switchEsqueci.classList.add('hidden');
   googleBlock.classList.remove('hidden');
   msgBox.innerHTML = '';
@@ -229,7 +234,9 @@ function hideAllForms() {
 function showEntrar() {
   hideAllForms();
   formEntrar.classList.remove('hidden');
-  switchEntrar.classList.remove('hidden');
+  authTabs.classList.remove('hidden');
+  tabEntrar.classList.add('active');
+  tabCriar.classList.remove('active');
   if (modoSimplificado) {
     cardTitle.textContent = 'Falta só isso!';
     cardSub.textContent = 'Entre na sua conta para ver e salvar o resultado da calculadora.';
@@ -241,7 +248,9 @@ function showEntrar() {
 function showCriar() {
   hideAllForms();
   formCriar.classList.remove('hidden');
-  switchCriar.classList.remove('hidden');
+  authTabs.classList.remove('hidden');
+  tabCriar.classList.add('active');
+  tabEntrar.classList.remove('active');
   if (modoSimplificado) {
     cardTitle.textContent = 'Falta só isso!';
     cardSub.textContent = 'Crie sua conta gratuita para ver e salvar o resultado da calculadora.';
@@ -254,12 +263,13 @@ function showEsqueci() {
   hideAllForms();
   formEsqueci.classList.remove('hidden');
   switchEsqueci.classList.remove('hidden');
+  authTabs.classList.add('hidden');
   googleBlock.classList.add('hidden');
   cardTitle.textContent = 'Redefinir senha';
   cardSub.textContent = 'Informe seu e-mail — vamos enviar um link para você criar uma nova senha.';
 }
-document.getElementById('toCriar').addEventListener('click', (e) => { e.preventDefault(); showCriar(); });
-document.getElementById('toEntrar').addEventListener('click', (e) => { e.preventDefault(); showEntrar(); });
+tabEntrar.addEventListener('click', showEntrar);
+tabCriar.addEventListener('click', showCriar);
 document.getElementById('toEsqueci').addEventListener('click', (e) => { e.preventDefault(); showEsqueci(); });
 document.getElementById('toEntrarDeEsqueci').addEventListener('click', (e) => { e.preventDefault(); showEntrar(); });
 
