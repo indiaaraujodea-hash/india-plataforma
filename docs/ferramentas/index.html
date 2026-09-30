@@ -72,6 +72,12 @@ async function buscarFerramentaRecomendada(pontoLatente) {
     supabase.from('diagnosticos').select('resultado_calculado').eq('user_id', session.user.id).order('criado_em', { ascending: false }).limit(1),
   ]);
   const isAdmin = profile?.role === 'admin';
+  if (!isAdmin && !profile?.diagnostico_liberado) {
+    // Ferramenta exclusiva de quem tem acesso liberado ao Mapa/mentoria —
+    // uma conta criada só na calculadora pública não abre isso sozinha.
+    location.href = '../compra/index.html';
+    return;
+  }
   const resultado = diagnosticos?.[0]?.resultado_calculado;
 
   if (isAdmin) {

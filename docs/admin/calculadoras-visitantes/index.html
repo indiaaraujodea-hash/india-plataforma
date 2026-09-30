@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light">
 <meta name="robots" content="noindex">
-<title>Cálculos — Quanto preciso cobrar? | Painel Administrativo</title>
+<title>Cálculos de visitantes | Painel Administrativo</title>
 <link rel="stylesheet" href="../../style.css">
 <link rel="stylesheet" href="../../assets/css/shell.css">
 <style>
@@ -29,12 +29,12 @@
 <main class="wrap" style="max-width:900px">
   <section class="section">
     <div class="eyebrow">Painel Administrativo</div>
-    <h1 class="serif" style="font-size:34px;color:var(--green);margin:8px 0">Cálculos — Quanto preciso cobrar?</h1>
+    <h1 class="serif" style="font-size:34px;color:var(--green);margin:8px 0">Cálculos de visitantes</h1>
     <p style="margin:0 0 6px"><a href="../index.html" class="small">← Voltar para clientes</a></p>
-    <p class="small" style="margin:0 0 6px">Todas as simulações feitas pelas mentoradas na calculadora interna, mais recentes primeiro. Para quem calculou pelo site público (visitantes), veja <a href="../calculadoras-visitantes/index.html">Cálculos de visitantes</a>.</p>
+    <p class="small" style="margin:0 0 6px">Simulações feitas na calculadora pública do site (quem criou conta só para ver o resultado, sem necessariamente ser mentorada). Para o histórico das mentoradas na ferramenta interna, veja <a href="../calculadoras/index.html">Cálculos das mentoradas</a>.</p>
 
     <div class="filtros">
-      <input type="text" id="fNome" placeholder="Buscar por nome…">
+      <input type="text" id="fNome" placeholder="Buscar por nome ou e-mail…">
       <input type="date" id="fDe" title="De">
       <input type="date" id="fAte" title="Até">
     </div>
@@ -88,7 +88,10 @@ function aplicarFiltros() {
   const ate = document.getElementById('fAte').value;
 
   const filtrados = todosRegistros.filter((reg) => {
-    if (nome && !(reg.profiles?.nome_completo || '').toLowerCase().includes(nome)) return false;
+    if (nome) {
+      const alvo = `${reg.profiles?.nome_completo || ''} ${reg.profiles?.email || ''}`.toLowerCase();
+      if (!alvo.includes(nome)) return false;
+    }
     const dataReg = reg.criado_em.slice(0, 10);
     if (de && dataReg < de) return false;
     if (ate && dataReg > ate) return false;
@@ -107,9 +110,9 @@ function aplicarFiltros() {
           <span class="data">${fmtData(reg.criado_em)}</span>
         </div>
         <div class="resumo">
+          <span>${reg.profiles?.email || ''}</span>
           <span>Pró-labore: <b>${fmt(r.prolabore)}</b></span>
           <span>Faturamento mínimo: <b>${fmt(r.fat)}</b></span>
-          ${r.sess != null ? `<span>Sessão: <b>${fmt(r.sess)}</b></span>` : ''}
         </div>
       </div>`;
   }).join('');
@@ -125,7 +128,7 @@ function aplicarFiltros() {
   await mountAppShell('admin', ctx.session, '../..');
 
   const { data, error } = await supabase
-    .from('calculadora_sessao_resultados')
+    .from('calculadora_publica_resultados')
     .select('id, criado_em, respostas, resultado, versao_regra, profiles(nome_completo, email)')
     .order('criado_em', { ascending: false });
 
