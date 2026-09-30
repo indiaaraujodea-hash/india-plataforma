@@ -108,15 +108,18 @@ body{background:#f4efe6}
         <div class="form-field"><label>Nome completo</label><input type="text" id="suNome" required></div>
         <div class="form-field"><label>E-mail</label><input type="email" id="suEmail" required></div>
         <div class="form-field"><label>Senha</label><input type="password" id="suSenha" minlength="6" required></div>
-        <div class="grid2">
-          <div class="form-field"><label>Telefone</label><input type="tel" id="suTelefone" required></div>
-          <div class="form-field"><label>Cidade</label><input type="text" id="suCidade"></div>
+        <div class="form-field"><label>Confirmar senha</label><input type="password" id="suSenhaConfirmar" minlength="6" required></div>
+        <div id="dadosProfissionais">
+          <div class="grid2">
+            <div class="form-field"><label>Telefone</label><input type="tel" id="suTelefone" required></div>
+            <div class="form-field"><label>Cidade</label><input type="text" id="suCidade"></div>
+          </div>
+          <div class="grid2">
+            <div class="form-field"><label>Formação</label><input type="text" id="suFormacao" placeholder="Ex.: Psicologia — UFC"></div>
+            <div class="form-field"><label>Ano de formação</label><input type="number" id="suAnoFormacao" min="1960" max="2100"></div>
+          </div>
+          <div class="form-field"><label>Tempo de atuação</label><input type="text" id="suTempoAtuacao" placeholder="Ex.: 5 anos"></div>
         </div>
-        <div class="grid2">
-          <div class="form-field"><label>Formação</label><input type="text" id="suFormacao" placeholder="Ex.: Psicologia — UFC"></div>
-          <div class="form-field"><label>Ano de formação</label><input type="number" id="suAnoFormacao" min="1960" max="2100"></div>
-        </div>
-        <div class="form-field"><label>Tempo de atuação</label><input type="text" id="suTempoAtuacao" placeholder="Ex.: 5 anos"></div>
         <button class="btn btn-primary" type="submit">Criar conta</button>
       </form>
 
@@ -156,6 +159,7 @@ import { montarCabecalhoPublico } from '../assets/js/site-header.js';
 avisarSupabaseNaoConfigurado();
 ativarToggleSenha('loginSenha');
 ativarToggleSenha('suSenha');
+ativarToggleSenha('suSenhaConfirmar');
 montarCabecalhoPublico({ container: document.getElementById('cabecalhoPublico'), rootPath: '..', paginaAtual: 'login' });
 
 // Enquanto o provedor Google não estiver configurado no Supabase, o botão fica
@@ -174,6 +178,14 @@ let redirectExplicito = null;
 if (params.get('redirect')) {
   const destino = new URL(params.get('redirect'), raizSite);
   if (destino.origin === location.origin) redirectExplicito = destino.href;
+}
+
+// Quem vem da calculadora pública já respondeu tudo que precisa ali —
+// não repete dados financeiros/profissionais, só nome, e-mail e senha.
+const modoSimplificado = !!redirectExplicito && new URL(redirectExplicito).pathname.includes('/calculadora/');
+if (modoSimplificado) {
+  document.getElementById('dadosProfissionais').style.display = 'none';
+  document.getElementById('suTelefone').required = false;
 }
 
 // Sem ?redirect= explícito, quem já tem Mentoria (individual ou de turma)
@@ -258,7 +270,9 @@ formCriar.addEventListener('submit', async (e) => {
   e.preventDefault();
   const email = document.getElementById('suEmail').value.trim();
   const senha = document.getElementById('suSenha').value;
+  const senhaConfirmar = document.getElementById('suSenhaConfirmar').value;
   const nome = document.getElementById('suNome').value.trim();
+  if (senha !== senhaConfirmar) { showMsg('As senhas não coincidem.'); return; }
   const { data, error } = await supabase.auth.signUp({
     email,
     password: senha,
@@ -267,14 +281,15 @@ formCriar.addEventListener('submit', async (e) => {
   if (error) { showMsg('Não foi possível criar a conta: ' + error.message); return; }
 
   if (data.user) {
-    await supabase.from('profiles').update({
-      nome_completo: nome,
-      telefone: document.getElementById('suTelefone').value.trim() || null,
-      cidade: document.getElementById('suCidade').value.trim() || null,
-      formacao: document.getElementById('suFormacao').value.trim() || null,
-      ano_formacao: document.getElementById('suAnoFormacao').value ? Number(document.getElementById('suAnoFormacao').value) : null,
-      tempo_atuacao: document.getElementById('suTempoAtuacao').value.trim() || null,
-    }).eq('id', data.user.id);
+    const dadosPerfil = { nome_completo: nome };
+    if (!modoSimplificado) {
+      dadosPerfil.telefone = document.getElementById('suTelefone').value.trim() || null;
+      dadosPerfil.cidade = document.getElementById('suCidade').value.trim() || null;
+      dadosPerfil.formacao = document.getElementById('suFormacao').value.trim() || null;
+      dadosPerfil.ano_formacao = document.getElementById('suAnoFormacao').value ? Number(document.getElementById('suAnoFormacao').value) : null;
+      dadosPerfil.tempo_atuacao = document.getElementById('suTempoAtuacao').value.trim() || null;
+    }
+    await supabase.from('profiles').update(dadosPerfil).eq('id', data.user.id);
   }
 
   if (!data.session) {

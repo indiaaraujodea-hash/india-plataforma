@@ -57,12 +57,14 @@ function renderDetalhe(reg) {
     ['Provisão férias', fmt(r.ferias)],
     ['Custos fixos', fmt(r.custos)],
   ];
-  if (r.inss) linhas.push(['INSS do pró-labore', fmt(r.inss)]);
-  linhas.push(['Reserva técnica', fmt(r.fat * r.reserva)]);
-  linhas.push(['Caixa da empresa', fmt(r.fat * r.margem)]);
+  if (r.inss) linhas.push(['INSS do pró-labore', fmt(r.inss)]); // cálculos antigos (modelo anterior)
+  linhas.push(['Reserva técnica' + (r.reservaTecnicaPct ? ` (${r.reservaTecnicaPct}%)` : ''), fmt(r.fat * r.reserva)]);
+  linhas.push(['Caixa da empresa' + (r.caixaEmpresaPct ? ` (${r.caixaEmpresaPct}%)` : ''), fmt(r.fat * r.margem)]);
   linhas.push(['Faturamento mínimo/mês', fmt(r.fat)]);
-  if (r.sess != null) linhas.push(['Valor da sessão individual', fmt(r.sess) + ' / sessão']);
-  if (r.grpPessoa != null) linhas.push(['Valor por pessoa no grupo', fmt(r.grpPessoa) + ' / mês']);
+  if (r.sess != null) linhas.push(['Valor necessário por sessão', fmt(r.sess) + ' / sessão']);
+  if (r.valorAtual != null) linhas.push(['Valor cobrado hoje (informado)', fmt(r.valorAtual)]);
+  if (r.diferenca != null) linhas.push(['Diferença', (r.diferenca > 0 ? '+' : '') + fmt(r.diferenca)]);
+  if (r.grpPessoa != null) linhas.push(['Valor por pessoa no grupo', fmt(r.grpPessoa) + ' / mês']); // cálculos antigos (modelo anterior, com serviço em grupo)
 
   document.getElementById('detalheWrap').innerHTML = `
     <div class="detalhe">
@@ -105,7 +107,7 @@ function renderDetalhe(reg) {
         <div class="resumo">
           <div><b>${fmt(r.prolabore)}</b><span>Pró-labore</span></div>
           <div><b>${fmt(r.fat)}</b><span>Faturamento mínimo</span></div>
-          ${r.sess != null ? `<div><b>${fmt(r.sess)}</b><span>Sessão individual</span></div>` : ''}
+          ${r.sess != null ? `<div><b>${fmt(r.sess)}</b><span>Valor necessário/sessão</span></div>` : ''}
           ${r.grpPessoa != null ? `<div><b>${fmt(r.grpPessoa)}</b><span>Por pessoa no grupo</span></div>` : ''}
         </div>
       </div>`;
