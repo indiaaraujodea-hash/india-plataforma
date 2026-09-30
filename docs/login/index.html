@@ -262,7 +262,7 @@ formCriar.addEventListener('submit', async (e) => {
   const { data, error } = await supabase.auth.signUp({
     email,
     password: senha,
-    options: { emailRedirectTo: `${window.location.origin}/mapa/index.html` },
+    options: { emailRedirectTo: redirectExplicito || new URL('mapa/index.html', raizSite).href },
   });
   if (error) { showMsg('Não foi possível criar a conta: ' + error.message); return; }
 
