@@ -112,8 +112,6 @@
   .pix-instrucao{font-size:14px;color:var(--tinta-suave);margin:0 0 22px}
   .aviso-tecnico{font-size:12.5px;color:var(--tinta-suave);margin-top:18px;text-align:center}
 
-  .confirmacao-icone{font-size:34px;margin-bottom:6px}
-
   @media(max-width:480px){
     .etapa{margin:24px auto}
     .card{padding:26px 20px}
@@ -193,16 +191,6 @@
   </div>
 </div>
 
-<!-- Etapa 3: solicitação registrada -->
-<div class="etapa" id="confirmacao" style="display:none">
-  <div class="card" style="text-align:center">
-    <div class="confirmacao-icone">✓</div>
-    <h1>Solicitação recebida</h1>
-    <p class="sub">Seu pagamento será conferido e, após a confirmação, seu acesso será liberado.</p>
-    <a class="btn-secundario" id="btnWhatsapp" href="#" target="_blank" rel="noopener">Falar por e-mail</a>
-  </div>
-</div>
-
 <script type="module">
 import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
 import { WHATSAPP_URL, EDUZZ_CHECKOUT_URL } from '../assets/js/site-config.js';
@@ -217,11 +205,6 @@ if (EDUZZ_CHECKOUT_URL) {
 } else {
   document.getElementById('ofertaAlt').style.display = 'none';
 }
-
-const emailContato = 'indiaaraujodea@gmail.com';
-const assuntoEmail = 'Comprovante — Mapa de 30 Dias';
-const mensagemEmail = 'Olá! Fiz o Pix do Mapa de 30 Dias e vou enviar o comprovante.';
-document.getElementById('btnWhatsapp').href = `mailto:${emailContato}?subject=${encodeURIComponent(assuntoEmail)}&body=${encodeURIComponent(mensagemEmail)}`;
 
 const btnCopiarPix = document.getElementById('btnCopiarPix');
 btnCopiarPix.addEventListener('click', async () => {
@@ -306,9 +289,13 @@ document.getElementById('btnJaPaguei').addEventListener('click', async () => {
     .then(({ error: erroFn }) => { if (erroFn) console.warn('Aviso por e-mail não enviado:', erroFn); })
     .catch((err) => console.warn('Aviso por e-mail não enviado:', err));
 
-  document.getElementById('pagamento').style.display = 'none';
-  document.getElementById('confirmacao').style.display = '';
-  window.scrollTo(0, 0);
+  // Solicitação registrada: leva direto para o cadastro (com o mesmo e-mail
+  // da compra pré-preenchido). O Mapa só é liberado quando a India confirmar
+  // o pagamento — o cadastro em si não libera nada.
+  const destinoLogin = new URL('../login/index.html', location.href);
+  destinoLogin.searchParams.set('origem', 'compra');
+  destinoLogin.searchParams.set('email', dadosCliente.email);
+  location.href = destinoLogin.href;
 });
 </script>
 </body>

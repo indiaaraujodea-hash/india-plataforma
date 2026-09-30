@@ -380,16 +380,17 @@ async function carregarSolicitacoesCompra() {
         confirmado_por: user.id,
       }).eq('id', sol.id);
 
-      const { data: perfil } = await supabase.from('profiles').select('id').ilike('email', sol.email).maybeSingle();
-      if (perfil) {
-        await supabase.from('profiles').update({
-          diagnostico_liberado: true,
-          diagnostico_liberado_em: new Date().toISOString(),
-          diagnostico_liberado_por: user.id,
-        }).eq('id', perfil.id);
-        alert('Acesso liberado.');
+      // A liberação em si já aconteceu no banco (trigger
+      // liberar_acesso_por_confirmacao, disparada pelo update acima) — aqui só
+      // resta checar se a conta já existe pra avisar por e-mail agora. Se
+      // ainda não existe, não é preciso clicar de novo depois: handle_new_user
+      // libera automaticamente no cadastro e o próprio login dispara o aviso.
+      const { data: perfil } = await supabase.from('profiles').select('id, diagnostico_liberado').ilike('email', sol.email).maybeSingle();
+      if (perfil && perfil.diagnostico_liberado) {
+        await supabase.functions.invoke('notificar-acesso-mapa', { body: { id: perfil.id } }).catch(() => {});
+        alert('Acesso liberado e e-mail de aviso enviado para a cliente.');
       } else {
-        alert(`Pagamento confirmado. Esta cliente ainda não criou conta — assim que ela criar a conta com o e-mail ${sol.email}, clique em "Liberar acesso" novamente para liberar o diagnóstico.`);
+        alert(`Pagamento confirmado. Esta cliente ainda não criou conta — o acesso será liberado automaticamente (e o aviso por e-mail enviado) assim que ela criar a conta com o e-mail ${sol.email}. Nenhuma ação adicional é necessária.`);
       }
       carregarSolicitacoesCompra();
     });

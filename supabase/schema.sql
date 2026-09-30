@@ -66,6 +66,13 @@ alter table public.profiles add column if not exists novo_diagnostico_liberado b
 alter table public.profiles add column if not exists novo_diagnostico_liberado_em timestamptz;
 alter table public.profiles add column if not exists novo_diagnostico_liberado_por uuid references public.profiles(id);
 
+-- Marca quando o e-mail "seu acesso foi liberado" (Edge Function
+-- notificar-acesso-mapa) já foi enviado, para não duplicar — mesma cliente
+-- pode ser liberada pelo clique do admin ou pelo próprio cadastro dela
+-- (handle_new_user), então a checagem de idempotência mora aqui, não numa
+-- das duas telas.
+alter table public.profiles add column if not exists acesso_mapa_notificado_em timestamptz;
+
 -- Só admin pode alterar os campos de liberação — mesmo que a policy de UPDATE
 -- abaixo permita a cliente atualizar seu próprio perfil (nome, telefone etc.),
 -- ela nunca pode se autoliberar. Segurança reforçada no banco, não só na tela.
@@ -131,7 +138,7 @@ begin
   -- evita depender de um segundo passo manual no Admin.
   select exists (
     select 1 from public.solicitacoes_compra
-    where email = new.email and status = 'confirmado'
+    where lower(email) = lower(new.email) and status = 'confirmado'
   ) into ja_confirmado;
 
   insert into public.profiles (id, email, diagnostico_liberado, diagnostico_liberado_em)
@@ -613,7 +620,7 @@ begin
     update public.profiles
     set diagnostico_liberado = true,
         diagnostico_liberado_em = coalesce(diagnostico_liberado_em, now())
-    where email = new.email and diagnostico_liberado = false;
+    where lower(email) = lower(new.email) and diagnostico_liberado = false;
   end if;
   return new;
 end;
