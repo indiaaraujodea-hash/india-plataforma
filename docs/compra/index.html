@@ -291,11 +291,18 @@ document.getElementById('btnJaPaguei').addEventListener('click', async () => {
     return;
   }
 
-  // Aviso por e-mail para a India. A solicitação já está salva: se o e-mail
-  // falhar, ela continua no banco e aparece em /admin/.
-  supabase.functions.invoke('notificar-compra', { body: { id: idSolicitacao } })
-    .then(({ error: erroFn }) => { if (erroFn) console.warn('Aviso por e-mail não enviado:', erroFn); })
-    .catch((err) => console.warn('Aviso por e-mail não enviado:', err));
+  // Aviso por e-mail para a India. Espera a chamada terminar ANTES de navegar
+  // — navegar embora cancela um fetch ainda em andamento, e nesse caso o
+  // e-mail nunca chegaria a ser tentado de verdade. A solicitação já está
+  // salva de qualquer forma: se o envio falhar, o erro fica registrado na
+  // própria linha (email_notificacao_erro) e pode ser reenviado pelo Admin —
+  // isso não bloqueia a cliente, que segue pro cadastro do mesmo jeito.
+  try {
+    const { error: erroFn } = await supabase.functions.invoke('notificar-compra', { body: { id: idSolicitacao } });
+    if (erroFn) console.warn('Aviso por e-mail não enviado (poderá ser reenviado pelo Admin):', erroFn);
+  } catch (err) {
+    console.warn('Aviso por e-mail não enviado (poderá ser reenviado pelo Admin):', err);
+  }
 
   // Solicitação registrada: leva direto para o cadastro (com o mesmo e-mail
   // da compra pré-preenchido). O Mapa só é liberado quando a India confirmar

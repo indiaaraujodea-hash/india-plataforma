@@ -354,15 +354,25 @@ async function carregarSolicitacoesCompra() {
     <details class="panel" style="margin-bottom:18px" ${pendentes.length > 0 ? 'open' : ''}>
       <summary style="cursor:pointer;font-weight:700;color:var(--green)">Solicitações de Acesso ${pendentes.length > 0 ? `<span class="badge badge-pending">${pendentes.length} aguardando confirmação</span>` : `(${sols.length})`}</summary>
       <div style="margin-top:12px">
-        ${sols.map((s) => `
+        ${sols.map((s) => {
+          const avisoFalhou = !!s.email_notificacao_erro;
+          const avisoOk = !!s.email_notificacao_em && !avisoFalhou;
+          return `
           <div class="resp-item" data-sol-id="${s.id}">
             <div class="lbl">${fmtDataHora(s.criado_em)} · ${escHtml(s.produto)} · R$ ${Number(s.valor).toFixed(2).replace('.', ',')}</div>
             <div class="val"><b>${escHtml(s.nome)}</b> · ${escHtml(s.email)} · ${escHtml(s.whatsapp)}</div>
-            <div class="val" style="margin-top:6px">
+            <div class="val" style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">
               <span class="badge ${s.status === 'confirmado' ? 'badge-ok' : 'badge-pending'}">${s.status === 'confirmado' ? 'Confirmado' : 'Aguardando confirmação'}</span>
+              ${avisoOk ? '<span class="badge badge-ok">Aviso por e-mail enviado</span>' : ''}
+              ${avisoFalhou ? `<span class="badge" style="background:#f6d4d4;color:#8a2020" title="${escHtml(s.email_notificacao_erro)}">Aviso por e-mail falhou</span>` : ''}
             </div>
-            <button class="btn alt btnLiberarSolicitacao" style="padding:5px 10px;margin-top:8px;font-size:12px">Liberar acesso</button>
-          </div>`).join('')}
+            ${avisoFalhou ? `<div class="val small" style="color:#8a2020;margin-top:4px">${escHtml(s.email_notificacao_erro)}</div>` : ''}
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+              <button class="btn alt btnLiberarSolicitacao" style="padding:5px 10px;font-size:12px">Liberar acesso</button>
+              ${!avisoOk ? `<button class="btn alt btnReenviarAviso" style="padding:5px 10px;font-size:12px">${avisoFalhou ? 'Reenviar aviso' : 'Enviar aviso agora'}</button>` : ''}
+            </div>
+          </div>`;
+        }).join('')}
       </div>
     </details>`;
 
@@ -391,6 +401,19 @@ async function carregarSolicitacoesCompra() {
         alert('Acesso liberado e e-mail de aviso enviado para a cliente.');
       } else {
         alert(`Pagamento confirmado. Esta cliente ainda não criou conta — o acesso será liberado automaticamente (e o aviso por e-mail enviado) assim que ela criar a conta com o e-mail ${sol.email}. Nenhuma ação adicional é necessária.`);
+      }
+      carregarSolicitacoesCompra();
+    });
+  });
+
+  wrap.querySelectorAll('.btnReenviarAviso').forEach((btn) => {
+    btn.addEventListener('click', async (e) => {
+      const item = e.target.closest('[data-sol-id]');
+      btn.disabled = true;
+      btn.textContent = 'Enviando…';
+      const { data, error: erroFn } = await supabase.functions.invoke('notificar-compra', { body: { id: item.dataset.solId } });
+      if (erroFn || !data?.enviado) {
+        alert('Não foi possível enviar o aviso agora. O erro ficou registrado — pode tentar de novo.');
       }
       carregarSolicitacoesCompra();
     });

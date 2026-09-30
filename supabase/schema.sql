@@ -584,6 +584,15 @@ create table if not exists public.solicitacoes_compra (
   confirmado_por uuid references public.profiles(id)
 );
 
+-- Controle de envio do e-mail de aviso pra administradora (Edge Function
+-- notificar-compra) — mesmo padrão de reserva-e-envia de
+-- calculadora_sessao_resultados.email_enviado_em: email_notificacao_em só
+-- fica preenchido quando o envio realmente funcionou; se falhar, volta a
+-- null e o motivo fica em email_notificacao_erro, permitindo reenviar sem
+-- duplicar a solicitação.
+alter table public.solicitacoes_compra add column if not exists email_notificacao_em timestamptz;
+alter table public.solicitacoes_compra add column if not exists email_notificacao_erro text;
+
 alter table public.solicitacoes_compra enable row level security;
 
 drop policy if exists solicitacoes_compra_insert_publico on public.solicitacoes_compra;

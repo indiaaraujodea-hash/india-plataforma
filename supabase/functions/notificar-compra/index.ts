@@ -8,9 +8,14 @@
 // - A solicitação já está salva antes desta função rodar: se o e-mail falhar,
 //   o registro continua no banco (e o erro fica visível em /admin/).
 // - Só envia uma vez por solicitação: a linha é "reservada" atomicamente
-//   (email_notificacao_em is null → now()) antes do envio.
-// - Só aceita solicitações recentes (últimas 2 h), para a URL pública não
-//   virar um disparador de e-mails antigos.
+//   (email_notificacao_em is null → now()) antes do envio. Se o envio falhar,
+//   a reserva é desfeita (volta a null) e o erro fica registrado — permite
+//   tentar de novo sem duplicar a solicitação em si.
+// - Só aceita solicitações recentes (últimas 2 h) quando quem chama não é
+//   identificado como admin — pra a URL pública não virar um disparador de
+//   e-mails antigos. Uma chamada com o token de uma admin autenticada (Admin
+//   → "Reenviar aviso") ignora esse limite, porque reenviar um aviso de uma
+//   solicitação de ontem é exatamente pra isso que serve o botão.
 //
 // Segredos (Supabase → Edge Functions → Secrets) — reaproveita os já usados
 // por notificar-mentoria:
@@ -21,7 +26,8 @@
 //
 // verify_jwt fica desligado porque o site usa a chave publicável nova
 // (sb_publishable_…), que não é um JWT. A função não expõe dados: só recebe
-// o id e só age sobre solicitações recém-criadas que ainda não foram avisadas.
+// o id e só age sobre solicitações que ainda não foram avisadas (ou, pra
+// quem é admin, sobre qualquer solicitação existente).
 
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 
@@ -39,6 +45,24 @@ function json(body: unknown, status = 200) {
 
 function esc(v: unknown) {
   return String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
+}
+
+// Decodifica o "sub" (user id) de um JWT sem validar a assinatura — a
+// validação de verdade é a consulta a profiles.role logo em seguida, feita
+// com a service role (a mesma linha que a própria cliente não conseguiria
+// ler/alterar por RLS). Isso só decide se o limite de 2h é ignorado; nunca
+// concede acesso a dado nenhum por si só.
+function subDoJwt(authHeader: string | null): string | null {
+  const token = (authHeader || '').replace(/^Bearer\s+/i, '').trim();
+  if (!token || token.split('.').length !== 3) return null;
+  try {
+    const payloadB64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+    const padded = payloadB64 + '='.repeat((4 - (payloadB64.length % 4)) % 4);
+    const payload = JSON.parse(atob(padded));
+    return typeof payload.sub === 'string' ? payload.sub : null;
+  } catch {
+    return null;
+  }
 }
 
 type Solicitacao = {
@@ -88,14 +112,25 @@ Deno.serve(async (req) => {
     auth: { persistSession: false },
   });
 
-  // Reserva a solicitação para envio (uma vez só, e só se for recente).
-  const limite = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
-  const { data: solicitacao, error: erroReserva } = await supabase
+  const userId = subDoJwt(req.headers.get('Authorization'));
+  let chamadaDeAdmin = false;
+  if (userId) {
+    const { data: perfilChamador } = await supabase.from('profiles').select('role').eq('id', userId).maybeSingle();
+    chamadaDeAdmin = perfilChamador?.role === 'admin';
+  }
+
+  // Reserva a solicitação para envio (uma vez só). Fora da janela de 2h só
+  // quem é admin pode reenviar (botão "Reenviar aviso" no Admin).
+  let query = supabase
     .from('solicitacoes_compra')
     .update({ email_notificacao_em: new Date().toISOString(), email_notificacao_erro: null })
     .eq('id', id)
-    .is('email_notificacao_em', null)
-    .gte('criado_em', limite)
+    .is('email_notificacao_em', null);
+  if (!chamadaDeAdmin) {
+    const limite = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
+    query = query.gte('criado_em', limite);
+  }
+  const { data: solicitacao, error: erroReserva } = await query
     .select('id, nome, email, whatsapp, produto, valor, criado_em')
     .maybeSingle();
 
