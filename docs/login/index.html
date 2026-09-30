@@ -230,15 +230,25 @@ function showEntrar() {
   hideAllForms();
   formEntrar.classList.remove('hidden');
   switchEntrar.classList.remove('hidden');
-  cardTitle.textContent = 'Acesse sua conta';
-  cardSub.textContent = 'Entre para acessar seu diagnóstico, relatórios, ferramentas e plano de ação.';
+  if (modoSimplificado) {
+    cardTitle.textContent = 'Falta só isso!';
+    cardSub.textContent = 'Entre na sua conta para ver e salvar o resultado da calculadora.';
+  } else {
+    cardTitle.textContent = 'Acesse sua conta';
+    cardSub.textContent = 'Entre para acessar seu diagnóstico, relatórios, ferramentas e plano de ação.';
+  }
 }
 function showCriar() {
   hideAllForms();
   formCriar.classList.remove('hidden');
   switchCriar.classList.remove('hidden');
-  cardTitle.textContent = 'Criar conta';
-  cardSub.textContent = '';
+  if (modoSimplificado) {
+    cardTitle.textContent = 'Falta só isso!';
+    cardSub.textContent = 'Crie sua conta gratuita para ver e salvar o resultado da calculadora.';
+  } else {
+    cardTitle.textContent = 'Criar conta';
+    cardSub.textContent = '';
+  }
 }
 function showEsqueci() {
   hideAllForms();
@@ -252,6 +262,10 @@ document.getElementById('toCriar').addEventListener('click', (e) => { e.preventD
 document.getElementById('toEntrar').addEventListener('click', (e) => { e.preventDefault(); showEntrar(); });
 document.getElementById('toEsqueci').addEventListener('click', (e) => { e.preventDefault(); showEsqueci(); });
 document.getElementById('toEntrarDeEsqueci').addEventListener('click', (e) => { e.preventDefault(); showEntrar(); });
+
+// Vindo da calculadora pública: já abre na aba de criar conta (mais provável
+// pra quem é visitante nova), com uma mensagem explicando por que chegou aqui.
+if (modoSimplificado) showCriar();
 
 supabase.auth.getSession().then(async ({ data }) => {
   if (data.session) location.href = await resolverDestino(data.session.user.id);
