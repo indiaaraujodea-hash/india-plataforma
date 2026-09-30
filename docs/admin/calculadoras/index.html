@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="robots" content="noindex">
+<title>Cálculos — Quanto preciso cobrar? | Painel Administrativo</title>
+<link rel="stylesheet" href="../../style.css">
+<link rel="stylesheet" href="../../assets/css/shell.css">
+<style>
+.filtros{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
+.filtros input{border:1px solid var(--line);border-radius:8px;padding:9px 11px;font:inherit;font-size:14px}
+.filtros input[type=text]{flex:1;min-width:180px}
+.calc-row{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:10px;cursor:pointer}
+.calc-row:hover{border-color:var(--terracota-dark,#9a5b34)}
+.calc-row .topo{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.calc-row .nome{font-weight:700;color:var(--green);font-size:15.5px}
+.calc-row .data{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.calc-row .resumo{display:flex;gap:18px;flex-wrap:wrap;margin-top:8px;font-size:13px;color:var(--muted)}
+.calc-row .resumo b{color:var(--ink-green,var(--green))}
+.detalhe{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-top:14px}
+.detalhe table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:10px}
+.detalhe td{padding:6px 4px;border-bottom:1px solid var(--line)}
+.detalhe td:last-child{text-align:right;font-weight:700}
+</style>
+</head>
+<body>
+<main class="wrap" style="max-width:900px">
+  <section class="section">
+    <div class="eyebrow">Painel Administrativo</div>
+    <h1 class="serif" style="font-size:34px;color:var(--green);margin:8px 0">Cálculos — Quanto preciso cobrar?</h1>
+    <p style="margin:0 0 6px"><a href="../index.html" class="small">← Voltar para clientes</a></p>
+    <p class="small" style="margin:0 0 6px">Todas as simulações feitas pelas mentoradas na calculadora, mais recentes primeiro.</p>
+
+    <div class="filtros">
+      <input type="text" id="fNome" placeholder="Buscar por nome…">
+      <input type="date" id="fDe" title="De">
+      <input type="date" id="fAte" title="Até">
+    </div>
+
+    <div id="aviso"></div>
+    <div id="lista"><p>Carregando…</p></div>
+    <div id="detalheWrap"></div>
+  </section>
+</main>
+<footer>INDIA · CAFÉ, PESSOAS E NEGÓCIOS DE VALOR · Clínica de Valor</footer>
+
+<script type="module">
+import { supabase, avisarSupabaseNaoConfigurado } from '../../assets/js/supabase-client.js';
+import { requireAdmin } from '../../assets/js/auth.js';
+import { mountAppShell } from '../../assets/js/app-shell.js';
+
+avisarSupabaseNaoConfigurado();
+
+const fmt = (n) => isFinite(n) ? 'R$ ' + Math.round(n).toLocaleString('pt-BR') : '—';
+const fmtData = (iso) => new Date(iso).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', dateStyle: 'short', timeStyle: 'short' });
+
+let todosRegistros = [];
+
+function renderDetalhe(reg) {
+  const r = reg.resultado || {};
+  const linhas = [
+    ['Pró-labore', fmt(r.prolabore)],
+    ['Provisão 13º', fmt(r.decimo)],
+    ['Provisão férias', fmt(r.ferias)],
+    ['Custos fixos', fmt(r.custos)],
+  ];
+  if (r.inss) linhas.push(['INSS do pró-labore', fmt(r.inss)]);
+  linhas.push(['Reserva técnica', fmt(r.fat * r.reserva)]);
+  linhas.push(['Caixa da empresa', fmt(r.fat * r.margem)]);
+  linhas.push(['Faturamento mínimo/mês', fmt(r.fat)]);
+  if (r.sess != null) linhas.push(['Valor da sessão individual', fmt(r.sess) + ' / sessão']);
+  if (r.grpPessoa != null) linhas.push(['Valor por pessoa no grupo', fmt(r.grpPessoa) + ' / mês']);
+  linhas.push(['Versão da regra de cálculo', reg.versao_regra || '—']);
+
+  document.getElementById('detalheWrap').innerHTML = `
+    <div class="detalhe">
+      <p class="small" style="margin:0"><b>${reg.profiles?.nome_completo || '(sem nome)'}</b> · ${reg.profiles?.email || ''}</p>
+      <p class="small" style="margin:2px 0 0;color:var(--muted)">Calculado em ${fmtData(reg.criado_em)}</p>
+      <table>${linhas.map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join('')}</table>
+    </div>`;
+}
+
+function aplicarFiltros() {
+  const nome = document.getElementById('fNome').value.trim().toLowerCase();
+  const de = document.getElementById('fDe').value;
+  const ate = document.getElementById('fAte').value;
+
+  const filtrados = todosRegistros.filter((reg) => {
+    if (nome && !(reg.profiles?.nome_completo || '').toLowerCase().includes(nome)) return false;
+    const dataReg = reg.criado_em.slice(0, 10);
+    if (de && dataReg < de) return false;
+    if (ate && dataReg > ate) return false;
+    return true;
+  });
+
+  const lista = document.getElementById('lista');
+  if (filtrados.length === 0) { lista.innerHTML = '<p class="small" style="margin-top:16px">Nenhum cálculo encontrado com esse filtro.</p>'; return; }
+
+  lista.innerHTML = filtrados.map((reg, i) => {
+    const r = reg.resultado || {};
+    return `
+      <div class="calc-row" data-idx="${i}">
+        <div class="topo">
+          <span class="nome">${reg.profiles?.nome_completo || '(sem nome)'}</span>
+          <span class="data">${fmtData(reg.criado_em)}</span>
+        </div>
+        <div class="resumo">
+          <span>Pró-labore: <b>${fmt(r.prolabore)}</b></span>
+          <span>Faturamento mínimo: <b>${fmt(r.fat)}</b></span>
+          ${r.sess != null ? `<span>Sessão: <b>${fmt(r.sess)}</b></span>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+
+  lista.querySelectorAll('.calc-row').forEach((el) => {
+    el.addEventListener('click', () => renderDetalhe(filtrados[Number(el.dataset.idx)]));
+  });
+}
+
+(async () => {
+  const ctx = await requireAdmin('../../index.html', '../../login/index.html');
+  if (!ctx) return;
+  await mountAppShell('admin', ctx.session, '../..');
+
+  const { data, error } = await supabase
+    .from('calculadora_sessao_resultados')
+    .select('id, criado_em, respostas, resultado, versao_regra, profiles(nome_completo, email)')
+    .order('criado_em', { ascending: false });
+
+  if (error) { document.getElementById('aviso').innerHTML = `<div class="alert alert-error">${error.message}</div>`; return; }
+  todosRegistros = data || [];
+  aplicarFiltros();
+
+  document.getElementById('fNome').addEventListener('input', aplicarFiltros);
+  document.getElementById('fDe').addEventListener('change', aplicarFiltros);
+  document.getElementById('fAte').addEventListener('change', aplicarFiltros);
+})();
+</script>
+</body>
+</html>
