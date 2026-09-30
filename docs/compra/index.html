@@ -263,13 +263,21 @@ document.getElementById('btnJaPaguei').addEventListener('click', async () => {
   btn.disabled = true;
   btn.textContent = 'Registrando…';
 
-  const { data: solicitacao, error } = await supabase.from('solicitacoes_compra').insert({
+  // Gera o id no cliente e não usa .select() depois do insert: a policy de
+  // leitura de solicitacoes_compra é só pra admin, e o Postgres exige que a
+  // policy de SELECT também deixe passar a linha retornada por um INSERT
+  // ... RETURNING — sem isso, o insert "funciona" mas o RETURNING é barrado
+  // pelo RLS e o Supabase devolve tudo como erro (é o que estava quebrando
+  // o botão pra qualquer visitante não-admin).
+  const idSolicitacao = crypto.randomUUID();
+  const { error } = await supabase.from('solicitacoes_compra').insert({
+    id: idSolicitacao,
     nome: dadosCliente.nome,
     email: dadosCliente.email,
     whatsapp: dadosCliente.whatsapp,
     produto: 'Seu Mapa de 30 Dias',
     valor: 47.90,
-  }).select('id').single();
+  });
 
   if (error) {
     console.error('Falha ao registrar solicitação de compra:', error);
@@ -285,7 +293,7 @@ document.getElementById('btnJaPaguei').addEventListener('click', async () => {
 
   // Aviso por e-mail para a India. A solicitação já está salva: se o e-mail
   // falhar, ela continua no banco e aparece em /admin/.
-  supabase.functions.invoke('notificar-compra', { body: { id: solicitacao.id } })
+  supabase.functions.invoke('notificar-compra', { body: { id: idSolicitacao } })
     .then(({ error: erroFn }) => { if (erroFn) console.warn('Aviso por e-mail não enviado:', erroFn); })
     .catch((err) => console.warn('Aviso por e-mail não enviado:', err));
 
