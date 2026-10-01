@@ -342,6 +342,10 @@ formCriar.addEventListener('submit', async (e) => {
       dadosPerfil.tempo_atuacao = document.getElementById('suTempoAtuacao').value.trim() || null;
     }
     await supabase.from('profiles').update(dadosPerfil).eq('id', data.user.id);
+    // Avisa a administradora por e-mail que alguém se cadastrou — vale pra
+    // qualquer rota de cadastro (calculadora, compra do Mapa ou direto),
+    // já que todas passam por aqui. Melhor esforço: nunca trava o cadastro.
+    try { await supabase.functions.invoke('notificar-novo-cadastro', { body: { id: data.user.id } }); } catch { /* melhor esforço */ }
   }
 
   if (!data.session) {

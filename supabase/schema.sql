@@ -73,6 +73,11 @@ alter table public.profiles add column if not exists novo_diagnostico_liberado_p
 -- das duas telas.
 alter table public.profiles add column if not exists acesso_mapa_notificado_em timestamptz;
 
+-- Marca quando o e-mail "novo cadastro na plataforma" (Edge Function
+-- notificar-novo-cadastro, avisa a administradora) já foi enviado — evita
+-- duplicar se a chamada do formulário de cadastro for repetida.
+alter table public.profiles add column if not exists aviso_cadastro_enviado_em timestamptz;
+
 -- Só admin pode alterar os campos de liberação — mesmo que a policy de UPDATE
 -- abaixo permita a cliente atualizar seu próprio perfil (nome, telefone etc.),
 -- ela nunca pode se autoliberar. Segurança reforçada no banco, não só na tela.
