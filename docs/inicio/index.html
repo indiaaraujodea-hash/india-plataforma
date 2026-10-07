@@ -103,7 +103,7 @@
 .product-card ul li:before{content:none}
 .product-card ul li svg{color:var(--terracota,#9a5b34);flex-shrink:0}
 
-/* card Fortalecer (em breve): sem link, botão apagado */
+/* cards Fortalecer e Formação (em breve): sem link, botão apagado */
 .product-card .photo.p8{background:radial-gradient(circle at 50% 60%,#efe6d8 0,#e3d6c3 70%);color:var(--ink-green,#173f31)}
 .product-card.em-breve .cta{background:#d8cbb8;color:#5a4a3a;cursor:default;pointer-events:none}
 .landing-footer{background:var(--ink-green,#173f31)}
@@ -164,7 +164,8 @@
       </div>
     </div>
 
-    <div class="product-card formacao">
+    <div class="product-card formacao em-breve" aria-disabled="true">
+      <span class="selo-comece">Em breve</span>
       <div class="photo p7">
         <video class="video-card" poster="../assets/img/aulas-roda-poster.jpg"
                autoplay muted loop playsinline preload="metadata"
@@ -176,12 +177,7 @@
       <div class="body">
         <div class="kicker">Aprender</div>
         <h3>Formação</h3>
-        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Aprender com liberdade.</p>
-        <ul>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 5.5v13l11-6.5z"/></svg>As Raízes do Negócio</li>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 5.5v13l11-6.5z"/></svg>A Dor Real da Clínica</li>
-        </ul>
-        <a class="cta" href="../aulas/index.html" id="ctaAulas">Assistir às aulas →</a>
+        <span class="cta">Em breve</span>
       </div>
     </div>
 
@@ -198,7 +194,7 @@
     <div class="product-card evento">
       <div class="photo p9" role="img" aria-label="Mesa com café, notebook e caderno"></div>
       <div class="body">
-        <div class="kicker">Encontro de valor</div>
+        <div class="kicker">Encontrar</div>
         <h3>Café, Clínica &amp; Negócios</h3>
         <a class="cta" href="#" id="ctaEvento">Próxima edição →</a>
       </div>
