@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Painel Administrativo | Clínica de Valor</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+.resp-item{border-bottom:1px solid var(--line);padding:8px 0}
+.resp-item .lbl{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+.resp-item .val{font-size:14px;margin-top:2px}
+.ciclo-card{border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:16px;background:#fff}
+.ciclo-card .mini-mfc{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:10px}
+.ciclo-card .mini-mfc div{font-size:12.5px}
+.ciclo-card .mini-mfc b{display:block;font-size:11px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.acessos-box{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--paper,#fbfaf7);border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:10px}
+</style>
+<link rel="stylesheet" href="../assets/css/shell.css">
+</head>
+<body>
+<main class="wrap" style="max-width:1100px">
+  <section class="section">
+    <div class="eyebrow">Painel Administrativo</div>
+    <h1 class="serif" style="font-size:36px;color:var(--green);margin:8px 0">Clientes</h1>
+    <p style="margin:0 0 14px;display:flex;gap:10px;flex-wrap:wrap">
+      <a class="btn alt" href="aplicacoes/index.html" style="padding:9px 16px;font-size:14px">Intenções de mentoria →</a>
+      <a class="btn alt" href="mentorias/index.html" style="padding:9px 16px;font-size:14px">Mentorias Individuais →</a>
+      <a class="btn alt" href="turmas/index.html" style="padding:9px 16px;font-size:14px">Turmas →</a>
+      <a class="btn alt" href="exercicios/index.html" style="padding:9px 16px;font-size:14px">Biblioteca de Exercícios →</a>
+      <a class="btn alt" href="calculadoras/index.html" style="padding:9px 16px;font-size:14px">Cálculos das mentoradas →</a>
+      <a class="btn alt" href="calculadoras-visitantes/index.html" style="padding:9px 16px;font-size:14px">Cálculos de visitantes →</a>
+    </p>
+    <div id="mensagensSuporte"></div>
+    <div id="solicitacoesCompra"></div>
+    <div id="leadsCalculadora"></div>
+    <div id="conteudo"><p>Carregando…</p></div>
+  </section>
+</main>
+<footer>INDIA · CAFÉ, PESSOAS E NEGÓCIOS DE VALOR · Clínica de Valor</footer>
+
+<script type="module">
+import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
+import { requireAdmin } from '../assets/js/auth.js';
+import { mountAppShell } from '../assets/js/app-shell.js';
+
+avisarSupabaseNaoConfigurado();
+
+const TITULOS_PONTO = { captar: 'Captar', precificar: 'Precificar', posicionar: 'Posicionar', produto_mix: 'Produto / Mix', esteira: 'Esteira', escalar: 'Escalar' };
+const MOMENTO_LABEL = { estruturacao: 'Estruturação', consolidacao: 'Consolidação', crescimento: 'Crescimento' };
+const STATUS_ACAO_LABEL = { nao_iniciado: 'Não iniciado', em_andamento: 'Em andamento', concluido: 'Concluído' };
+
+function fmtData(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString('pt-BR');
+}
+function fmtDataHora(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleString('pt-BR');
+}
+
+function escHtml(v) {
+  return String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function csvEscape(v) {
+  const s = v === null || v === undefined ? '' : String(v);
+  return `"${s.replace(/"/g, '""')}"`;
+}
+
+// =========================================================
+// Lista de clientes
+// =========================================================
+
+async function carregarLista(conteudo) {
+  const [{ data: perfis, error: perfisErr }, { data: diagnosticos }] = await Promise.all([
+    supabase.from('profiles').select('*').eq('role', 'client').order('criado_em', { ascending: false }),
+    supabase.from('diagnosticos').select('id, user_id, criado_em, resultado_calculado').order('criado_em', { ascending: false }),
+  ]);
+  if (perfisErr) { conteudo.innerHTML = `<div class="alert alert-error">${perfisErr.message}</div>`; return; }
+
+  const ultimoDiagPorUser = new Map();
+  const ciclosPorUser = new Map();
+  for (const d of diagnosticos || []) {
+    ciclosPorUser.set(d.user_id, (ciclosPorUser.get(d.user_id) || 0) + 1);
+    if (!ultimoDiagPorUser.has(d.user_id)) ultimoDiagPorUser.set(d.user_id, d);
+  }
+
+  if (!perfis || perfis.length === 0) { conteudo.innerHTML = `<div class="alert alert-info">Nenhuma cliente cadastrada ainda.</div>`; return; }
+
+  const rows = perfis.map((p) => {
+    const ultimo = ultimoDiagPorUser.get(p.id);
+    const resultado = ultimo?.resultado_calculado || {};
+    const statusAcesso = p.diagnostico_liberado
+      ? '<span class="badge badge-ok">Liberado</span>'
+      : '<span class="badge badge-pending">Bloqueado</span>';
+    return `<tr>
+      <td>${p.nome_completo || '—'}</td>
+      <td>${p.email || '—'}</td>
+      <td>${fmtData(p.criado_em)}</td>
+      <td>${statusAcesso}</td>
+      <td>${ultimo ? fmtData(ultimo.criado_em) : '—'}</td>
+      <td>${ciclosPorUser.get(p.id) || 0}</td>
+      <td>${resultado.ponto_latente_principal ? TITULOS_PONTO[resultado.ponto_latente_principal] : '—'}</td>
+      <td><a href="#" class="btn alt" data-id="${p.id}" style="padding:6px 12px">Ver ficha</a></td>
+    </tr>`;
+  }).join('');
+
+  conteudo.innerHTML = `
+    <div class="action-row" style="justify-content:flex-end;margin-bottom:12px">
+      <button class="btn alt" id="btnExportarCsv" style="padding:8px 14px">Exportar CSV</button>
+    </div>
+    <div class="panel" style="overflow:auto">
+      <table class="admin-table">
+        <thead><tr><th>Nome</th><th>E-mail</th><th>Cadastro</th><th>Status</th><th>Último diagnóstico</th><th>Ciclos</th><th>Ponto Latente Principal</th><th></th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+
+  conteudo.querySelectorAll('a[data-id]').forEach((a) => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      history.pushState({}, '', `?id=${a.dataset.id}`);
+      carregarFicha(conteudo, a.dataset.id);
+    });
+  });
+
+  document.getElementById('btnExportarCsv').addEventListener('click', () => {
+    const linhas = [['Nome', 'E-mail', 'Cadastro', 'Status de acesso', 'Data de liberação', 'Último diagnóstico', 'Ciclos', 'Ponto Latente Principal'].map(csvEscape).join(',')];
+    for (const p of perfis) {
+      const ultimo = ultimoDiagPorUser.get(p.id);
+      const resultado = ultimo?.resultado_calculado || {};
+      linhas.push([
+        p.nome_completo || '', p.email || '', fmtData(p.criado_em),
+        p.diagnostico_liberado ? 'Liberado' : 'Bloqueado', fmtData(p.diagnostico_liberado_em),
+        ultimo ? fmtData(ultimo.criado_em) : '', ciclosPorUser.get(p.id) || 0,
+        resultado.ponto_latente_principal ? (TITULOS_PONTO[resultado.ponto_latente_principal] || '') : '',
+      ].map(csvEscape).join(','));
+    }
+    const blob = new Blob(['﻿' + linhas.join('\n')], { type: 'text/csv;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `clientes-clinica-de-valor-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+}
+
+// =========================================================
+// Ficha completa de uma cliente
+// =========================================================
+
+function renderCicloCard(d, campos, plano) {
+  const resultado = d.resultado_calculado || {};
+  const mfc = resultado.manter ? resultado : { manter: [], fortalecer: [], criar: [] };
+  const mfcCol = (label, itens) => `<div><b>${label}</b>${(itens || []).map((i) => `<div>• ${i.label}</div>`).join('') || '<div style="color:var(--muted)">—</div>'}</div>`;
+
+  const respostasHtml = (campos || []).map((c) => {
+    const v = d.respostas[c.field_id];
+    let vTxt;
+    if (v === undefined || v === null || v === '') vTxt = '<span class="badge badge-pending">não informado</span>';
+    else if (typeof v === 'boolean') vTxt = v ? 'Sim' : 'Não';
+    else vTxt = String(v);
+    return `<div class="resp-item"><div class="lbl">${c.label}</div><div class="val">${vTxt}</div></div>`;
+  }).join('');
+
+  const acoesHtml = plano ? (plano.planos_acao_itens || []).sort((a, b) => a.ordem - b.ordem)
+    .map((it) => `<li>${it.descricao} — prazo ${fmtData(it.prazo)} — <b>${STATUS_ACAO_LABEL[it.status] || it.status}</b></li>`).join('') : '';
+
+  return `
+    <div class="ciclo-card" data-diag-id="${d.id}">
+      <div class="action-row" style="justify-content:space-between;align-items:flex-start">
+        <div>
+          <b style="color:var(--green)">Ciclo de ${fmtData(d.criado_em)}</b>
+          <div class="small">
+            Principal: ${resultado.ponto_latente_principal ? TITULOS_PONTO[resultado.ponto_latente_principal] : '—'}
+            ${resultado.ponto_latente_complementar ? ` · Complementar: ${TITULOS_PONTO[resultado.ponto_latente_complementar]}` : ''}
+          </div>
+        </div>
+        <a class="btn alt" style="padding:6px 12px" href="../relatorio/index.html?id=${d.id}" target="_blank" rel="noopener">Abrir relatório da cliente →</a>
+      </div>
+
+      <div class="action-row" style="margin-top:12px">
+        <span class="small" style="font-weight:700;color:var(--green2)">Momento da Clínica:</span>
+        <select class="momentoSelect">
+          <option value="">— a definir —</option>
+          <option value="estruturacao" ${d.momento_clinica === 'estruturacao' ? 'selected' : ''}>Estruturação</option>
+          <option value="consolidacao" ${d.momento_clinica === 'consolidacao' ? 'selected' : ''}>Consolidação</option>
+          <option value="crescimento" ${d.momento_clinica === 'crescimento' ? 'selected' : ''}>Crescimento</option>
+        </select>
+        <button class="btn alt salvarMomento" style="padding:6px 12px">Salvar</button>
+        <span class="momentoMsg small"></span>
+      </div>
+
+      <div class="mini-mfc">
+        ${mfcCol('Manter', mfc.manter)}
+        ${mfcCol('Fortalecer', mfc.fortalecer)}
+        ${mfcCol('Criar', mfc.criar)}
+      </div>
+
+      ${resultado.recomendacao_principal ? `<div class="small" style="margin-top:10px">
+        ${resultado.recomendacao_principal.capitulo_numero ? `Capítulo recomendado: ${resultado.recomendacao_principal.capitulo_numero} — ${resultado.recomendacao_principal.capitulo_titulo || ''}<br>` : ''}
+        ${resultado.recomendacao_principal.ferramenta ? `Ferramenta indicada: ${resultado.recomendacao_principal.ferramenta}` : ''}
+      </div>` : ''}
+
+      <h4 style="color:var(--green2);margin:16px 0 6px;font-size:13px;text-transform:uppercase">Plano de 30 dias</h4>
+      ${plano ? `<div class="small">Resultado esperado: ${plano.resultado_30_dias || '—'}</div><ul style="margin:6px 0 0;padding-left:18px">${acoesHtml || '<li>Nenhuma ação escolhida ainda</li>'}</ul>` : '<div class="small">Plano ainda não criado pela cliente.</div>'}
+
+      <details style="margin-top:14px"><summary style="cursor:pointer;color:var(--terracota-dark,#7c4827);font-size:13px">Ver respostas completas deste ciclo</summary>
+        <div class="panel" style="background:#fff;margin-top:10px">${respostasHtml}</div>
+      </details>
+    </div>`;
+}
+
+async function carregarFicha(conteudo, userId) {
+  conteudo.innerHTML = '<p>Carregando ficha…</p>';
+
+  const [{ data: perfil, error: perfilErr }, { data: diagnosticos }, { data: campos }] = await Promise.all([
+    supabase.from('profiles').select('*').eq('id', userId).single(),
+    supabase.from('diagnosticos').select('*').eq('user_id', userId).order('criado_em', { ascending: false }),
+    supabase.from('diagnostic_fields').select('*').order('etapa', { ascending: true }).order('ordem', { ascending: true }),
+  ]);
+  if (perfilErr) { conteudo.innerHTML = `<div class="alert alert-error">${perfilErr.message}</div>`; return; }
+
+  const planosPorDiag = new Map();
+  if (diagnosticos && diagnosticos.length > 0) {
+    const { data: planos } = await supabase.from('planos_acao').select('*, planos_acao_itens(*)').in('diagnostico_id', diagnosticos.map((d) => d.id));
+    for (const pl of planos || []) planosPorDiag.set(pl.diagnostico_id, pl);
+  }
+
+  const ciclosHtml = (diagnosticos || []).map((d) => renderCicloCard(d, campos, planosPorDiag.get(d.id))).join('')
+    || '<p class="small" style="margin-top:16px">Esta cliente ainda não fez nenhum diagnóstico.</p>';
+
+  conteudo.innerHTML = `
+    <a href="#" id="voltarLista" class="small">← Voltar para a lista de clientes</a>
+    <div class="panel" style="margin-top:14px">
+      <h2 style="color:var(--green);margin-top:0">${perfil.nome_completo || '—'}</h2>
+      <div class="small">${perfil.email || ''} · ${perfil.telefone || ''} · ${perfil.cidade || ''}</div>
+      <div class="small">${perfil.formacao || ''} ${perfil.ano_formacao ? `(${perfil.ano_formacao})` : ''} · atua há ${perfil.tempo_atuacao || '—'}</div>
+      <div class="small">Cadastro: ${fmtData(perfil.criado_em)}</div>
+
+      <h3 style="color:var(--green2);margin-top:22px">Acessos</h3>
+      <div class="acessos-box">
+        <div>
+          <b style="display:block">Diagnóstico da Clínica</b>
+          <span id="statusAcessoTxt">${perfil.diagnostico_liberado ? 'Liberado' : 'Bloqueado'}${perfil.diagnostico_liberado_em ? ` em ${fmtDataHora(perfil.diagnostico_liberado_em)}` : ''}</span>
+        </div>
+        <button class="btn ${perfil.diagnostico_liberado ? 'alt' : ''}" id="btnToggleLiberacao" style="padding:8px 14px">${perfil.diagnostico_liberado ? 'Bloquear acesso' : 'Liberar diagnóstico'}</button>
+        <span id="liberacaoMsg" class="small"></span>
+      </div>
+      ${(diagnosticos && diagnosticos.length > 0) ? `
+      <div class="acessos-box" style="margin-top:10px">
+        <div>
+          <b style="display:block">Novo ciclo de diagnóstico</b>
+          <span id="statusNovoCicloTxt">${perfil.novo_diagnostico_liberado ? `Liberado em ${fmtDataHora(perfil.novo_diagnostico_liberado_em)} — aguardando a cliente refazer` : 'Nenhum novo ciclo liberado'}</span>
+        </div>
+        <button class="btn ${perfil.novo_diagnostico_liberado ? 'alt' : ''}" id="btnLiberarNovoCiclo" style="padding:8px 14px" ${perfil.novo_diagnostico_liberado ? 'disabled' : ''}>${perfil.novo_diagnostico_liberado ? 'Já liberado' : 'Liberar novo diagnóstico'}</button>
+        <span id="novoCicloMsg" class="small"></span>
+      </div>` : ''}
+    </div>
+
+    <h3 style="color:var(--green);margin:24px 0 4px">Histórico de diagnósticos</h3>
+    ${ciclosHtml}
+  `;
+
+  document.getElementById('voltarLista').addEventListener('click', (e) => {
+    e.preventDefault();
+    history.pushState({}, '', location.pathname);
+    carregarLista(conteudo);
+  });
+
+  document.getElementById('btnToggleLiberacao').addEventListener('click', async () => {
+    const msg = document.getElementById('liberacaoMsg');
+    const novoValor = !perfil.diagnostico_liberado;
+    const { data: { user } } = await supabase.auth.getUser();
+    const { error } = await supabase.from('profiles').update({
+      diagnostico_liberado: novoValor,
+      diagnostico_liberado_em: new Date().toISOString(),
+      diagnostico_liberado_por: user.id,
+    }).eq('id', userId);
+    if (error) { msg.textContent = `Erro: ${error.message}`; return; }
+    carregarFicha(conteudo, userId);
+  });
+
+  const btnLiberarNovoCiclo = document.getElementById('btnLiberarNovoCiclo');
+  if (btnLiberarNovoCiclo) {
+    btnLiberarNovoCiclo.addEventListener('click', async () => {
+      const msg = document.getElementById('novoCicloMsg');
+      const { data: { user } } = await supabase.auth.getUser();
+      const { error } = await supabase.from('profiles').update({
+        novo_diagnostico_liberado: true,
+        novo_diagnostico_liberado_em: new Date().toISOString(),
+        novo_diagnostico_liberado_por: user.id,
+      }).eq('id', userId);
+      if (error) { msg.textContent = `Erro: ${error.message}`; return; }
+      carregarFicha(conteudo, userId);
+    });
+  }
+
+  conteudo.querySelectorAll('.ciclo-card').forEach((card) => {
+    const diagId = card.dataset.diagId;
+    card.querySelector('.salvarMomento').addEventListener('click', async () => {
+      const valor = card.querySelector('.momentoSelect').value || null;
+      const msg = card.querySelector('.momentoMsg');
+      const { data: { user } } = await supabase.auth.getUser();
+      const { error } = await supabase.from('diagnosticos').update({
+        momento_clinica: valor,
+        momento_clinica_definido_por: user.id,
+        momento_clinica_definido_em: new Date().toISOString(),
+      }).eq('id', diagId);
+      msg.textContent = error ? `Erro: ${error.message}` : 'Salvo.';
+    });
+  });
+}
+
+async function carregarMensagensSuporte() {
+  const wrap = document.getElementById('mensagensSuporte');
+  const { data: msgs } = await supabase.from('mensagens_suporte').select('*').eq('status', 'novo').order('criado_em', { ascending: false }).limit(20);
+  if (!msgs || msgs.length === 0) return;
+  wrap.innerHTML = `
+    <details class="panel" style="margin-bottom:18px" open>
+      <summary style="cursor:pointer;font-weight:700;color:var(--green)">Mensagens de Ajuda (${msgs.length} não respondida${msgs.length > 1 ? 's' : ''})</summary>
+      <div style="margin-top:12px">
+        ${msgs.map((m) => `
+          <div class="resp-item" data-msg-id="${m.id}">
+            <div class="lbl">${escHtml(m.nome)} · ${escHtml(m.email)} · ${fmtDataHora(m.criado_em)}</div>
+            <div class="val">${escHtml(m.mensagem)}</div>
+            <button class="btn alt marcarRespondido" style="padding:5px 10px;margin-top:6px;font-size:12px">Marcar como respondido</button>
+          </div>`).join('')}
+      </div>
+    </details>`;
+  wrap.querySelectorAll('.marcarRespondido').forEach((btn) => {
+    btn.addEventListener('click', async (e) => {
+      const item = e.target.closest('[data-msg-id]');
+      await supabase.from('mensagens_suporte').update({ status: 'respondido' }).eq('id', item.dataset.msgId);
+      carregarMensagensSuporte();
+    });
+  });
+}
+
+// =========================================================
+// Solicitações de acesso — venda provisória (PIX manual) de "Minha
+// Clínica de Valor" enquanto o checkout da Eduzz está indisponível.
+// A liberação reutiliza profiles.diagnostico_liberado (mesma função
+// já usada na ficha da cliente) — não é um segundo sistema de acesso.
+// =========================================================
+async function carregarSolicitacoesCompra() {
+  const wrap = document.getElementById('solicitacoesCompra');
+  const { data: sols, error } = await supabase.from('solicitacoes_compra').select('*').order('criado_em', { ascending: false }).limit(100);
+  if (error || !sols || sols.length === 0) return;
+  const pendentes = sols.filter((s) => s.status === 'aguardando_confirmacao');
+
+  wrap.innerHTML = `
+    <details class="panel" style="margin-bottom:18px" ${pendentes.length > 0 ? 'open' : ''}>
+      <summary style="cursor:pointer;font-weight:700;color:var(--green)">Solicitações de Acesso ${pendentes.length > 0 ? `<span class="badge badge-pending">${pendentes.length} aguardando confirmação</span>` : `(${sols.length})`}</summary>
+      <div style="margin-top:12px">
+        ${sols.map((s) => {
+          const avisoFalhou = !!s.email_notificacao_erro;
+          const avisoOk = !!s.email_notificacao_em && !avisoFalhou;
+          return `
+          <div class="resp-item" data-sol-id="${s.id}">
+            <div class="lbl">${fmtDataHora(s.criado_em)} · ${escHtml(s.produto)} · R$ ${Number(s.valor).toFixed(2).replace('.', ',')}</div>
+            <div class="val"><b>${escHtml(s.nome)}</b> · ${escHtml(s.email)} · ${escHtml(s.whatsapp)}</div>
+            <div class="val" style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+              <span class="badge ${s.status === 'confirmado' ? 'badge-ok' : 'badge-pending'}">${s.status === 'confirmado' ? 'Confirmado' : 'Aguardando confirmação'}</span>
+              ${avisoOk ? '<span class="badge badge-ok">Aviso por e-mail enviado</span>' : ''}
+              ${avisoFalhou ? `<span class="badge" style="background:#f6d4d4;color:#8a2020" title="${escHtml(s.email_notificacao_erro)}">Aviso por e-mail falhou</span>` : ''}
+            </div>
+            ${avisoFalhou ? `<div class="val small" style="color:#8a2020;margin-top:4px">${escHtml(s.email_notificacao_erro)}</div>` : ''}
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+              <button class="btn alt btnLiberarSolicitacao" style="padding:5px 10px;font-size:12px">Liberar acesso</button>
+              ${!avisoOk ? `<button class="btn alt btnReenviarAviso" style="padding:5px 10px;font-size:12px">${avisoFalhou ? 'Reenviar aviso' : 'Enviar aviso agora'}</button>` : ''}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </details>`;
+
+  wrap.querySelectorAll('.btnLiberarSolicitacao').forEach((btn) => {
+    btn.addEventListener('click', async (e) => {
+      const item = e.target.closest('[data-sol-id]');
+      const sol = sols.find((s) => s.id === item.dataset.solId);
+      const confirmou = confirm('Confirma que o pagamento foi recebido e deseja liberar o acesso?');
+      if (!confirmou) return;
+
+      const { data: { user } } = await supabase.auth.getUser();
+      await supabase.from('solicitacoes_compra').update({
+        status: 'confirmado',
+        confirmado_em: new Date().toISOString(),
+        confirmado_por: user.id,
+      }).eq('id', sol.id);
+
+      // A liberação em si já aconteceu no banco (trigger
+      // liberar_acesso_por_confirmacao, disparada pelo update acima) — aqui só
+      // resta checar se a conta já existe pra avisar por e-mail agora. Se
+      // ainda não existe, não é preciso clicar de novo depois: handle_new_user
+      // libera automaticamente no cadastro e o próprio login dispara o aviso.
+      const { data: perfil } = await supabase.from('profiles').select('id, diagnostico_liberado').ilike('email', sol.email).maybeSingle();
+      if (perfil && perfil.diagnostico_liberado) {
+        await supabase.functions.invoke('notificar-acesso-mapa', { body: { id: perfil.id } }).catch(() => {});
+        alert('Acesso liberado e e-mail de aviso enviado para a cliente.');
+      } else {
+        alert(`Pagamento confirmado. Esta cliente ainda não criou conta — o acesso será liberado automaticamente (e o aviso por e-mail enviado) assim que ela criar a conta com o e-mail ${sol.email}. Nenhuma ação adicional é necessária.`);
+      }
+      carregarSolicitacoesCompra();
+    });
+  });
+
+  wrap.querySelectorAll('.btnReenviarAviso').forEach((btn) => {
+    btn.addEventListener('click', async (e) => {
+      const item = e.target.closest('[data-sol-id]');
+      btn.disabled = true;
+      btn.textContent = 'Enviando…';
+      const { data, error: erroFn } = await supabase.functions.invoke('notificar-compra', { body: { id: item.dataset.solId } });
+      if (erroFn || !data?.enviado) {
+        alert('Não foi possível enviar o aviso agora. O erro ficou registrado — pode tentar de novo.');
+      }
+      carregarSolicitacoesCompra();
+    });
+  });
+}
+
+async function carregarLeadsCalculadora() {
+  const wrap = document.getElementById('leadsCalculadora');
+  // Sem limite: a lista completa também alimenta o CSV. Ordena no navegador
+  // para funcionar mesmo se a coluna de data tiver outro nome no banco.
+  const { data: leads, error } = await supabase.from('leads_calculadora').select('*');
+  const dataLead = (l) => l.criado_em || l.created_at || null;
+  if (leads) leads.sort((a, b) => String(dataLead(b) || '').localeCompare(String(dataLead(a) || '')));
+  const total = leads ? leads.length : 0;
+  let corpo;
+  if (error) {
+    corpo = `<p class="small" style="color:#a43b45">Não foi possível carregar os leads: ${escHtml(error.message)}. Confira se o SQL de <code>supabase/migracao_leads_calculadora.sql</code> foi rodado no Supabase.</p>`;
+  } else if (total === 0) {
+    corpo = '<p class="small">Nenhum cadastro na calculadora ainda. Eles aparecem aqui assim que alguém preencher nome e e-mail em /calculadora.</p>';
+  } else {
+    corpo = `
+      <button class="btn alt" id="btnExportarLeads" style="padding:6px 12px;font-size:12px;margin-bottom:8px">Baixar planilha (CSV)</button>
+      ${leads.map((l) => `
+        <div class="resp-item">
+          <div class="lbl">${fmtDataHora(dataLead(l))}</div>
+          <div class="val">${escHtml(l.nome)} · ${escHtml(l.email)}${l.calculadora ? ` · <span style="color:#6b7266">${escHtml(l.calculadora)}</span>` : ''}</div>
+        </div>`).join('')}`;
+  }
+  wrap.innerHTML = `
+    <details class="panel" style="margin-bottom:18px">
+      <summary style="cursor:pointer;font-weight:700;color:var(--green)">Leads da Calculadora (${total})</summary>
+      <div style="margin-top:12px">${corpo}</div>
+    </details>`;
+
+  const btn = document.getElementById('btnExportarLeads');
+  if (btn) btn.addEventListener('click', () => {
+    const linhas = [['Nome', 'E-mail', 'Calculadora', 'Data'].map(csvEscape).join(',')];
+    for (const l of leads) linhas.push([l.nome, l.email, l.calculadora || '', fmtDataHora(dataLead(l))].map(csvEscape).join(','));
+    const blob = new Blob(['\ufeff' + linhas.join('\n')], { type: 'text/csv;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `leads-calculadora-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+}
+
+(async () => {
+  const ctx = await requireAdmin('../index.html', '../login/index.html');
+  if (!ctx) return;
+  await mountAppShell('admin', ctx.session, '..');
+  const conteudo = document.getElementById('conteudo');
+  carregarMensagensSuporte();
+  carregarSolicitacoesCompra();
+  carregarLeadsCalculadora();
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id');
+  if (id) carregarFicha(conteudo, id);
+  else carregarLista(conteudo);
+})();
+</script>
+</body>
+</html>

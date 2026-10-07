@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#173f31">
+<link rel="icon" href="/assets/img/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/img/icon-180.png">
+<title>Seu Mapa de 30 Dias | INDIA</title>
+<style>
+  @font-face {
+    font-family: 'Cambria';
+    src: local('Cambria');
+  }
+  :root{
+    color-scheme: light;
+    --verde: #1D6B4E;
+    --verde-escuro: #12432F;
+    --terracota: #B5613C;
+    --creme: #FAFAF7;
+    --creme-linha: #EDE8DE;
+    --tinta: #22281F;
+    --tinta-suave: #5B6357;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--creme);
+    color:var(--tinta);
+    font-family:'Calibri','Trebuchet MS',sans-serif;
+    line-height:1.5;
+  }
+  h1,h2,.serif{font-family:'Cambria','Georgia',serif}
+
+  .etapa{max-width:560px;margin:48px auto;padding:0 20px}
+  .card{background:#fff;border:1px solid var(--creme-linha);border-radius:10px;padding:34px 30px}
+  .eyebrow{
+    text-transform:uppercase;letter-spacing:.14em;font-size:11px;
+    color:var(--terracota);font-weight:700;margin-bottom:8px;
+  }
+  h1{font-size:28px;margin:0 0 10px;color:var(--verde-escuro);font-weight:700}
+  .sub{color:var(--tinta-suave);font-size:15px;margin:0 0 22px}
+
+  .preco{
+    display:flex;align-items:baseline;gap:8px;margin:0 0 22px;
+    padding:14px 18px;background:var(--creme);border:1px solid var(--creme-linha);border-radius:8px;
+  }
+  .preco .valor{font-family:'Cambria',serif;font-size:30px;color:var(--verde-escuro);font-weight:700}
+  .preco .obs{font-size:13px;color:var(--tinta-suave)}
+
+  ul.beneficios{list-style:none;padding:0;margin:0 0 26px;display:grid;gap:11px}
+  ul.beneficios li{display:flex;gap:10px;font-size:14.5px;color:var(--tinta)}
+  ul.beneficios li:before{content:'✓';color:var(--verde);font-weight:700;flex-shrink:0}
+
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:14px;font-weight:600;margin-bottom:6px;color:var(--tinta)}
+  .field input{
+    width:100%;padding:12px 14px;border:1px solid var(--creme-linha);border-radius:6px;
+    font-size:15px;font-family:inherit;color:var(--tinta);background:var(--creme);
+  }
+
+  .btn-primary{
+    width:100%;padding:14px;border:none;border-radius:999px;background:var(--verde-escuro);
+    color:#fff;font-weight:700;font-size:15px;cursor:pointer;font-family:inherit;margin-top:6px;
+  }
+  .btn-primary:hover{background:var(--verde)}
+  .btn-primary:disabled{opacity:.6;cursor:default}
+  .btn-secundario{
+    display:inline-block;width:100%;text-align:center;box-sizing:border-box;
+    padding:13px;border:1px solid var(--verde-escuro);border-radius:999px;background:transparent;
+    color:var(--verde-escuro);font-weight:700;font-size:14.5px;text-decoration:none;font-family:inherit;
+    margin-top:12px;
+  }
+  .btn-secundario:hover{background:var(--creme)}
+  .oferta-alt{text-align:center;margin-top:16px}
+  .oferta-alt span{display:block;font-size:12.5px;color:var(--tinta-suave);margin-bottom:10px}
+
+  .erro{color:var(--terracota);font-size:13px;margin-top:10px;display:none}
+
+  .pix-valor{font-size:16px;font-weight:700;color:var(--verde-escuro);margin:0 0 20px}
+  .pix-qr-wrap{
+    display:flex;justify-content:center;margin:0 0 22px;
+  }
+  .pix-qr-wrap img{
+    width:min(300px,100%);height:auto;display:block;background:#fff;border:1px solid var(--creme-linha);
+    border-radius:8px;padding:10px;
+  }
+  .pix-qr-fallback{
+    display:none;font-size:13.5px;color:#8a5a11;background:#fff5e5;border:1px solid #f0d9a8;
+    border-radius:8px;padding:14px 16px;text-align:center;
+  }
+
+  .pix-copia-cola{margin:0 0 22px}
+  .pix-copia-cola label{display:block;font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--tinta-suave);margin:0 0 8px}
+  .pix-copia-cola-box{
+    display:flex;align-items:center;gap:10px;background:var(--creme);border:1px solid var(--creme-linha);
+    border-radius:8px;padding:10px 12px;
+  }
+  .pix-copia-cola-box code{
+    flex:1;min-width:0;font-family:'Courier New',monospace;font-size:12px;color:var(--tinta);
+    word-break:break-all;line-height:1.4;
+  }
+  .btn-copiar{
+    flex-shrink:0;border:none;border-radius:999px;background:var(--verde-escuro);color:#fff;
+    font-weight:700;font-size:13px;padding:9px 16px;cursor:pointer;font-family:inherit;white-space:nowrap;
+  }
+  .btn-copiar:hover{background:var(--verde)}
+  .btn-copiar.copiado{background:var(--verde)}
+
+  .pix-instrucao{font-size:14px;color:var(--tinta-suave);margin:0 0 22px}
+  .aviso-tecnico{font-size:12.5px;color:var(--tinta-suave);margin-top:18px;text-align:center}
+
+  @media(max-width:480px){
+    .etapa{margin:24px auto}
+    .card{padding:26px 20px}
+    h1{font-size:24px}
+  }
+
+  #cabecalhoPublico{--ph-bg:var(--creme);--ph-ink:var(--verde-escuro);--ph-accent:var(--terracota)}
+  #cabecalhoPublico .ph-header{border-bottom:1px solid var(--creme-linha)}
+</style>
+</head>
+<body>
+<div id="cabecalhoPublico"></div>
+
+<!-- Etapa 1: oferta + identificação -->
+<div class="etapa" id="oferta">
+  <div class="card">
+    <div class="eyebrow">Seu Mapa de 30 Dias · Acesso</div>
+    <h1>Seu Mapa de 30 Dias</h1>
+    <p class="sub">Um caminho para compreender sua clínica, identificar sua prioridade e transformar diagnóstico em ação.</p>
+
+    <div class="preco">
+      <span class="valor">R$ 47,90</span>
+      <span class="obs">pagamento único</span>
+    </div>
+
+    <ul class="beneficios">
+      <li>Diagnóstico da Clínica</li>
+      <li>Mapa personalizado</li>
+      <li>Direcionamento: Manter, Fortalecer e Criar</li>
+      <li>Identificação da prioridade atual</li>
+      <li>Conteúdo do Manual indicado para o momento da clínica</li>
+      <li>Ferramentas recomendadas</li>
+      <li>Plano de Ação de 30 dias</li>
+      <li>Histórico dentro da plataforma</li>
+    </ul>
+
+    <form id="formOferta">
+      <div class="field"><label>Nome</label><input type="text" id="ofNome" required></div>
+      <div class="field"><label>E-mail</label><input type="email" id="ofEmail" required></div>
+      <div class="field"><label>WhatsApp</label><input type="tel" id="ofWhatsapp" required placeholder="(00) 00000-0000"></div>
+      <button class="btn-primary" type="submit">Continuar para pagamento via PIX →</button>
+    </form>
+    <div class="oferta-alt" id="ofertaAlt">
+      <span>ou</span>
+      <a class="btn-secundario" id="btnEduzz" href="#" target="_blank" rel="noopener">Pagar com cartão (via Eduzz) →</a>
+    </div>
+  </div>
+</div>
+
+<!-- Etapa 2: pagamento PIX -->
+<div class="etapa" id="pagamento" style="display:none">
+  <div class="card">
+    <div class="eyebrow">Seu Mapa de 30 Dias · Pagamento</div>
+    <h1>Pagamento via PIX</h1>
+    <p class="pix-valor">Valor: R$ 47,90</p>
+
+    <div class="pix-qr-wrap">
+      <img alt="QR Code PIX — Seu Mapa de 30 Dias" id="pixQrImg" style="display:none">
+    </div>
+    <div class="pix-qr-fallback" id="pixQrFallback">
+      O QR Code PIX ainda não foi configurado nesta página. Assim que a imagem original for enviada, ela aparecerá aqui.
+    </div>
+
+    <div class="pix-copia-cola">
+      <label>Pix Copia e Cola</label>
+      <div class="pix-copia-cola-box">
+        <code id="pixCopiaColaCodigo">00020126620014br.gov.bcb.pix0114+55439842576690222Clinica de valor -Mapa520400005303986540547.905802BR5923India Araujo de Almeida6006Brasil62290525202609240007U83FET09F6BRR6304E0AE</code>
+        <button type="button" class="btn-copiar" id="btnCopiarPix">Copiar código</button>
+      </div>
+    </div>
+
+    <p class="pix-instrucao">Após realizar o PIX, envie sua solicitação para confirmação.</p>
+
+    <button class="btn-primary" type="button" id="btnJaPaguei">Já realizei o pagamento</button>
+    <div class="erro" id="pagamentoErro"></div>
+    <p class="aviso-tecnico">O sistema não possui integração bancária. Este botão registra sua solicitação — ele não confirma o pagamento automaticamente.</p>
+  </div>
+</div>
+
+<script type="module">
+import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
+import { WHATSAPP_URL, EDUZZ_CHECKOUT_URL } from '../assets/js/site-config.js';
+import { montarCabecalhoPublico } from '../assets/js/site-header.js';
+
+avisarSupabaseNaoConfigurado();
+montarCabecalhoPublico({ container: document.getElementById('cabecalhoPublico'), rootPath: '..', paginaAtual: 'compra' });
+
+const btnEduzz = document.getElementById('btnEduzz');
+if (EDUZZ_CHECKOUT_URL) {
+  btnEduzz.href = EDUZZ_CHECKOUT_URL;
+} else {
+  document.getElementById('ofertaAlt').style.display = 'none';
+}
+
+const btnCopiarPix = document.getElementById('btnCopiarPix');
+btnCopiarPix.addEventListener('click', async () => {
+  const codigo = document.getElementById('pixCopiaColaCodigo').textContent.trim();
+  try {
+    await navigator.clipboard.writeText(codigo);
+  } catch (err) {
+    const temp = document.createElement('textarea');
+    temp.value = codigo;
+    temp.style.position = 'fixed';
+    temp.style.opacity = '0';
+    document.body.appendChild(temp);
+    temp.select();
+    document.execCommand('copy');
+    document.body.removeChild(temp);
+  }
+  const textoOriginal = btnCopiarPix.textContent;
+  btnCopiarPix.textContent = 'Copiado!';
+  btnCopiarPix.classList.add('copiado');
+  setTimeout(() => {
+    btnCopiarPix.textContent = textoOriginal;
+    btnCopiarPix.classList.remove('copiado');
+  }, 2000);
+});
+
+// A imagem só ganha src depois de já ter os listeners presos — evita a
+// corrida em que o <img> começa a carregar (e falha) antes do módulo rodar.
+const pixQrImg = document.getElementById('pixQrImg');
+pixQrImg.addEventListener('load', function () { this.style.display = 'block'; });
+pixQrImg.addEventListener('error', function () {
+  this.style.display = 'none';
+  document.getElementById('pixQrFallback').style.display = 'block';
+});
+pixQrImg.src = '../assets/img/pix-qrcode.jpg';
+
+let dadosCliente = null;
+
+document.getElementById('formOferta').addEventListener('submit', (e) => {
+  e.preventDefault();
+  dadosCliente = {
+    nome: document.getElementById('ofNome').value.trim(),
+    email: document.getElementById('ofEmail').value.trim(),
+    whatsapp: document.getElementById('ofWhatsapp').value.trim(),
+  };
+  if (!dadosCliente.nome || !dadosCliente.email || !dadosCliente.whatsapp) return;
+  document.getElementById('oferta').style.display = 'none';
+  document.getElementById('pagamento').style.display = '';
+  window.scrollTo(0, 0);
+});
+
+document.getElementById('btnJaPaguei').addEventListener('click', async () => {
+  if (!dadosCliente) return;
+  const btn = document.getElementById('btnJaPaguei');
+  const erroEl = document.getElementById('pagamentoErro');
+  erroEl.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Registrando…';
+
+  // Gera o id no cliente e não usa .select() depois do insert: a policy de
+  // leitura de solicitacoes_compra é só pra admin, e o Postgres exige que a
+  // policy de SELECT também deixe passar a linha retornada por um INSERT
+  // ... RETURNING — sem isso, o insert "funciona" mas o RETURNING é barrado
+  // pelo RLS e o Supabase devolve tudo como erro (é o que estava quebrando
+  // o botão pra qualquer visitante não-admin).
+  const idSolicitacao = crypto.randomUUID();
+  const { error } = await supabase.from('solicitacoes_compra').insert({
+    id: idSolicitacao,
+    nome: dadosCliente.nome,
+    email: dadosCliente.email,
+    whatsapp: dadosCliente.whatsapp,
+    produto: 'Seu Mapa de 30 Dias',
+    valor: 47.90,
+  });
+
+  if (error) {
+    console.error('Falha ao registrar solicitação de compra:', error);
+    const whatsappBase = WHATSAPP_URL || 'https://wa.me/5543984257669';
+    const mensagemFallback = 'Olá! Fiz o Pix do Mapa de 30 Dias mas o site não conseguiu registrar minha solicitação agora. Vou te enviar o comprovante por aqui.';
+    const linkFallback = `${whatsappBase}?text=${encodeURIComponent(mensagemFallback)}`;
+    erroEl.innerHTML = `Não foi possível registrar automaticamente sua solicitação agora. Sem problema — <a href="${linkFallback}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;font-weight:700">fale comigo pelo WhatsApp</a> e envie o comprovante por lá.`;
+    erroEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Já realizei o pagamento';
+    return;
+  }
+
+  // Aviso por e-mail para a India. Espera a chamada terminar ANTES de navegar
+  // — navegar embora cancela um fetch ainda em andamento, e nesse caso o
+  // e-mail nunca chegaria a ser tentado de verdade. A solicitação já está
+  // salva de qualquer forma: se o envio falhar, o erro fica registrado na
+  // própria linha (email_notificacao_erro) e pode ser reenviado pelo Admin —
+  // isso não bloqueia a cliente, que segue pro cadastro do mesmo jeito.
+  try {
+    const { error: erroFn } = await supabase.functions.invoke('notificar-compra', { body: { id: idSolicitacao } });
+    if (erroFn) console.warn('Aviso por e-mail não enviado (poderá ser reenviado pelo Admin):', erroFn);
+  } catch (err) {
+    console.warn('Aviso por e-mail não enviado (poderá ser reenviado pelo Admin):', err);
+  }
+
+  // Solicitação registrada: leva direto para o cadastro (com o mesmo e-mail
+  // da compra pré-preenchido). O Mapa só é liberado quando a India confirmar
+  // o pagamento — o cadastro em si não libera nada.
+  const destinoLogin = new URL('../login/index.html', location.href);
+  destinoLogin.searchParams.set('origem', 'compra');
+  destinoLogin.searchParams.set('email', dadosCliente.email);
+  location.href = destinoLogin.href;
+});
+</script>
+</body>
+</html>

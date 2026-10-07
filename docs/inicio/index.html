@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#173f31">
+<link rel="icon" href="/assets/img/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/img/icon-180.png">
+<title>INDIA | Centro de Desenvolvimento de Negócio da Clínica ACP</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../assets/css/shell.css">
+<style>
+/* ---- Hero limpo: sem fotografia, fundo claro, tipografia elegante ---- */
+.landing-hero{
+  background:var(--cream,#f7f3eb);
+  min-height:0;
+  color:var(--green,#173f31);
+  padding-bottom:8px;
+}
+.landing-copy{max-width:780px;padding:56px 40px 20px}
+/* com o menu fixo no topo, a âncora "Produtos" não fica escondida atrás dele */
+#produtos{scroll-margin-top:96px}
+.landing-copy h1{color:var(--green,#173f31);font-family:Georgia,'Cambria',serif;font-weight:500;font-size:clamp(26px,4.6vw,48px);line-height:1.1;letter-spacing:.005em;margin:0 0 6px;text-transform:none}
+.landing-copy .hero-lede{color:var(--terracota,#9a5b34);font-family:Georgia,'Cambria',serif;font-style:italic;font-size:clamp(18px,2.4vw,22px);margin:0 0 4px;font-weight:400}
+.landing-copy p{color:#4b5148;font-size:18px;max-width:520px}
+.hero-calc{display:inline-flex;align-items:center;gap:10px;margin-top:26px;background:var(--terracota,#9a5b34);color:#fdfaf4;text-decoration:none;font-weight:700;font-size:clamp(13px,3.6vw,15px);white-space:nowrap;padding:13px 16px 13px 18px;border-radius:999px;box-shadow:0 6px 18px rgba(154,91,52,.28);transition:transform .15s ease,box-shadow .15s ease}
+.hero-calc:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(154,91,52,.34)}
+.hero-calc svg{flex-shrink:0}
+.hero-calc .badge{background:#fdfaf4;color:var(--terracota,#9a5b34);font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:4px 9px;border-radius:999px}
+.hero-ctas{display:flex;flex-wrap:nowrap;gap:12px;margin-top:26px}
+/* celular: os dois botões lado a lado, texto em 2 linhas e selo no canto */
+@media(max-width:900px){
+  .hero-ctas{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-top:8px}
+  .hero-ctas .hero-calc{position:relative;white-space:normal;font-size:12.5px;line-height:1.25;gap:8px;padding:12px 14px;border-radius:22px;min-height:56px}
+  .hero-ctas .hero-calc .badge{position:absolute;top:-8px;right:10px;font-size:8.5px;padding:3px 7px;box-shadow:0 2px 6px rgba(0,0,0,.12)}
+}
+.hero-ctas .hero-calc{margin-top:0}
+.hero-calc.mapa{background:var(--ink-green,#173f31);box-shadow:0 6px 18px rgba(23,63,49,.25)}
+.hero-calc.mapa .badge{color:var(--ink-green,#173f31)}
+@media(max-width:400px){.hero-calc{gap:7px;font-size:12px;padding:12px 12px 12px 14px;max-width:100%}.hero-calc svg{width:16px;height:16px}.hero-calc .badge{font-size:9px;padding:3px 7px}}
+
+/* ---- Acesso rápido: atalho compacto para os 4 produtos, sem mexer nos
+   cards abaixo. 2×2 no celular, 1 linha de 4 a partir de 640px (mesmo
+   breakpoint já usado pelos cards). ---- */
+.quick-access{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:1400px;margin:0 auto;padding:0 24px 28px;list-style:none}
+@media(min-width:640px){.quick-access{grid-template-columns:repeat(4,1fr);padding:0 24px 32px}}
+.quick-access-item{display:flex;align-items:center;gap:10px;padding:6px 2px;text-decoration:none;color:var(--green,#173f31);transition:opacity .15s}
+.quick-access-item:hover,.quick-access-item:focus-visible{opacity:.75}
+.quick-access-item .qa-icon{flex-shrink:0;width:38px;height:38px;border-radius:50%;background:var(--cream,#f7f3eb);color:var(--terracota,#9a5b34);display:flex;align-items:center;justify-content:center}
+.quick-access-item .qa-label{font-size:13.5px;font-weight:700;line-height:1.2}
+
+/* ---- cards: os 3 existentes, largura ajustada para caber lado a lado ---- */
+.landing-cards{gap:18px;padding-left:24px;padding-right:24px;padding-bottom:64px;align-items:stretch}
+/* 4 cards: lado a lado no computador, 2×2 em telas médias, 1 por linha no celular */
+.landing-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));max-width:1400px;margin-left:auto;margin-right:auto;justify-content:center}
+.product-card{width:auto;display:flex;flex-direction:column}
+@media(max-width:1180px){.landing-cards{grid-template-columns:repeat(2,minmax(0,340px))}}
+@media(max-width:640px){.landing-cards{grid-template-columns:minmax(0,1fr)}}
+.product-card .photo{height:190px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background-size:cover;background-position:center;background-repeat:no-repeat}
+
+/* selo "Comece por aqui" no canto do card do Mapa */
+.product-card{position:relative}
+.selo-comece{position:absolute;top:14px;left:14px;z-index:2;background:var(--terracota,#9a5b34);color:#fdfaf4;font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:6px 11px;border-radius:999px;box-shadow:0 2px 8px rgba(23,63,49,.18)}
+.product-card .photo.p4{background:linear-gradient(to bottom,rgba(233,224,214,0) 78%,#e9e0d6),url('../assets/img/india-mapa-esquerda.jpg') 8% 30%/cover no-repeat,#e9e0d6}
+/* foto sem esticar nem ampliar, deslocada para a esquerda (mesma foto da
+   página do Mapa): a India fica do lado esquerdo do card; à direita fica o
+   próprio bege do fundo, com transição suave. */
+@supports (width:1cqw){
+  .product-card.mentoria{container-type:inline-size}
+  .product-card .photo.p4{
+    --foto-l:max(100cqw,285px);
+    background:
+      linear-gradient(to bottom,rgba(233,224,214,0) 78%,#e9e0d6),
+      linear-gradient(to left,#e9e0d6 8%,rgba(233,224,214,0) 45%),
+      url('../assets/img/india-mapa-esquerda.jpg') left top/var(--foto-l) auto no-repeat,
+      #e9e0d6;
+  }
+}
+/* card Mentoria: foto e texto no mesmo bege do fundo da foto */
+.product-card.mentoria{background:#e9e0d6}
+/* card Formação: animação da roda em loop (os vídeos das aulas ficam na página /aulas) */
+.product-card .photo.p7{background:#ececea;position:relative;overflow:hidden;align-items:stretch;justify-content:stretch}
+.product-card .photo.p7 .video-card{width:100%;height:100%;display:block;object-fit:cover;object-position:50% 50%}
+/* mesma grade vertical nos 3 cards: cada linha (etiqueta/título/texto/lista)
+   reserva a mesma altura, e o CTA fica sempre grudado no rodapé do card. */
+.product-card .body{display:flex;flex-direction:column;flex:1;padding:24px 26px 26px}
+.product-card .kicker{min-height:14px}
+.product-card h3{min-height:68px;display:flex;align-items:flex-start;line-height:1.2}
+.product-card .body>p{min-height:62px}
+.product-card ul{min-height:72px;align-content:start}
+/* um card por linha (celular): o alinhamento entre cards não se aplica */
+@media(max-width:640px){.product-card .kicker,.product-card h3,.product-card .body>p,.product-card ul{min-height:0}}
+.product-card .cta{margin-top:auto;white-space:nowrap;font-size:15px;padding:14px 10px}
+.product-card.mentoria .cta{background:var(--ink-green2,#1f4a3a)}
+.product-card.formacao .cta{background:var(--terracota,#9a5b34)}
+.product-card.evento .cta{background:var(--terracota,#9a5b34)}
+.product-card .photo.p9{background-image:url('../assets/img/calculadora-card.jpg')}
+/* card Mentoria: nome e botão em destaque */
+.product-card.mentoria h3{font-size:28px}
+.product-card.mentoria .cta{font-size:16px}
+.product-card ul li:before{content:none}
+.product-card ul li svg{color:var(--terracota,#9a5b34);flex-shrink:0}
+
+/* card Fortalecer (em breve): sem link, botão apagado */
+.product-card .photo.p8{background:radial-gradient(circle at 50% 60%,#efe6d8 0,#e3d6c3 70%);color:var(--ink-green,#173f31)}
+.product-card.em-breve .cta{background:#d8cbb8;color:#5a4a3a;cursor:default;pointer-events:none}
+.landing-footer{background:var(--ink-green,#173f31)}
+.landing-footer .flinks{gap:22px}
+</style>
+</head>
+<body>
+<div id="cabecalhoPublico"></div>
+<div class="landing-hero">
+
+  <div class="landing-copy">
+    <h1>Centro de Desenvolvimento de Negócio da Clínica ACP</h1>
+    <p class="hero-lede">O solo fértil para ela florescer</p>
+    <div class="hero-ctas">
+      <a class="hero-calc" href="../calculadora/index.html">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><path d="M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg>
+        <span>Calcule o preço da sua sessão</span>
+        <span class="badge">Grátis</span>
+      </a>
+      <a class="hero-calc mapa" href="../mapa-30-dias/index.html" id="ctaClinica">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M6 21V10M12 21V4M18 21v-7"/></svg>
+        <span>Descobrir meus próximos passos</span>
+        <span class="badge">Meu Mapa</span>
+      </a>
+    </div>
+  </div>
+
+  <nav class="quick-access" aria-label="Acesso rápido aos produtos">
+    <a class="quick-access-item" href="#fortalecer">
+      <span class="qa-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V11"/><path d="M12 11c0-3.9 2.8-6.5 7-6.5 0 4.2-2.8 6.5-7 6.5z"/><path d="M12 13.5c0-3.3-2.4-5.5-6-5.5 0 3.5 2.4 5.5 6 5.5z"/></svg></span>
+      <span class="qa-label">Fortalecer</span>
+    </a>
+    <a class="quick-access-item" href="../aulas/index.html">
+      <span class="qa-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></span>
+      <span class="qa-label">Aulas</span>
+    </a>
+    <a class="quick-access-item" href="../mentoria/index.html">
+      <span class="qa-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+      <span class="qa-label">Mentoria</span>
+    </a>
+    <a class="quick-access-item" href="#cafe">
+      <span class="qa-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5a6 6 0 0 1-6 6h-1a6 6 0 0 1-6-6z"/><path d="M17 11h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3v3M12 3v3"/></svg></span>
+      <span class="qa-label">Café, Clínica &amp; Negócios</span>
+    </a>
+  </nav>
+
+  <div class="landing-cards" id="produtos">
+    <div class="product-card fortalecer em-breve" id="fortalecer" aria-disabled="true">
+      <span class="selo-comece">Em breve</span>
+      <div class="photo p8" aria-hidden="true">
+        <svg width="110" height="150" viewBox="0 0 24 33" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V8"/><path d="M12 8c0-3.3 2.4-5.6 6-5.6 0 3.6-2.4 5.6-6 5.6z"/><path d="M12 10.4c0-2.8-2-4.7-5-4.7 0 3 2 4.7 5 4.7z"/><path d="M4 15h16" stroke-opacity=".4"/><path d="M12 15c.2 4.5-.6 9-2 15"/><path d="M12.1 17.2c1.8.9 4 1.8 5.3 5.2"/><path d="M11.9 19.6c-1.7.6-3.9 1.6-5.2 4.6"/><path d="M11.2 23.8c1.3.8 2.6 2.4 3 5"/><path d="M15.6 20.2c.6 1.2.6 2.6.1 4" stroke-width=".8"/><path d="M8.3 22.4c-.7 1-1 2.3-.7 3.6" stroke-width=".8"/><path d="M10.6 27.2c-.9.6-1.6 1.6-1.9 2.8" stroke-width=".8"/></svg>
+      </div>
+      <div class="body">
+        <div class="kicker">Novidade</div>
+        <h3>Fortalecer</h3>
+        <span class="cta">Em breve</span>
+      </div>
+    </div>
+
+    <div class="product-card formacao">
+      <span class="selo-comece">Em breve</span>
+      <div class="photo p7">
+        <video class="video-card" poster="../assets/img/aulas-roda-poster.jpg"
+               autoplay muted loop playsinline preload="metadata"
+               aria-label="Ilustração de um grupo de pessoas conversando em roda">
+          <source src="../assets/video/aulas-roda.mp4" type="video/mp4">
+          <source src="../assets/video/aulas-roda.webm" type="video/webm">
+        </video>
+      </div>
+      <div class="body">
+        <div class="kicker">Aprender</div>
+        <h3>Formação</h3>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 5.5v13l11-6.5z"/></svg>As Raízes do Negócio</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 5.5v13l11-6.5z"/></svg>A Dor Real da Clínica</li>
+        </ul>
+        <a class="cta" href="../aulas/index.html" id="ctaAulas">Assistir às aulas →</a>
+      </div>
+    </div>
+
+    <div class="product-card mentoria">
+      <div class="photo p4" role="img" aria-label="India Araújo de Almeida sorrindo, de braços cruzados, em fundo bege"></div>
+      <div class="body">
+        <div class="kicker">Aprofundar</div>
+        <h3>Mentoria Clínica de Valor</h3>
+        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Acompanhamento estratégico para transformar o diagnóstico em execução e avançar na construção de uma clínica sustentável.</p>
+        <a class="cta" href="../mentoria/index.html" id="ctaMentoria">Conhecer a Mentoria →</a>
+      </div>
+    </div>
+
+    <div class="product-card evento" id="cafe">
+      <div class="photo p9" role="img" aria-label="Mesa com café, notebook e caderno"></div>
+      <div class="body">
+        <div class="kicker">Encontrar</div>
+        <h3>Café, Clínica &amp; Negócios</h3>
+        <a class="cta" href="#" id="ctaEvento">Próxima edição →</a>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+<footer class="landing-footer">
+  <b>INDIA</b>
+  <span>PESSOAS · ENCONTROS · NEGÓCIOS</span>
+  <div class="flinks">
+    <a href="../sobre/index.html">Sobre a India</a>
+    <a href="#" id="linkInstagram">Instagram</a>
+    <a href="#" id="linkTiktok">TikTok</a>
+    <a href="#" id="linkContatoFooter">Contato</a>
+  </div>
+  <span>© 2026 INDIA. Todos os direitos reservados.</span>
+</footer>
+
+<script type="module">
+import { avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
+import { CONTATO_URL, INSTAGRAM_URL, TIKTOK_URL } from '../assets/js/site-config.js';
+import { montarCabecalhoPublico } from '../assets/js/site-header.js';
+
+avisarSupabaseNaoConfigurado();
+
+// Quem pede menos movimento vê só a imagem parada dos vídeos dos cards.
+const videosCards = document.querySelectorAll('.video-card');
+const menosMovimento = window.matchMedia('(prefers-reduced-motion: reduce)');
+function ajustarVideosCards() {
+  videosCards.forEach((v) => {
+    if (menosMovimento.matches) { v.pause(); v.currentTime = 0; }
+    else v.play().catch(() => {});
+  });
+}
+ajustarVideosCards();
+menosMovimento.addEventListener('change', ajustarVideosCards);
+
+
+// Cabeçalho (Início, Sobre, Produtos, Ajuda, Contato, Entrar/Sair) é o
+// componente único compartilhado com as demais páginas do site — mudar o
+// menu é mudar só site-header.js.
+montarCabecalhoPublico({ container: document.getElementById('cabecalhoPublico'), rootPath: '..', paginaAtual: 'inicio' });
+
+if (CONTATO_URL) {
+  const link = document.getElementById('linkContatoFooter');
+  if (link) {
+    link.href = CONTATO_URL;
+    if (CONTATO_URL.startsWith('http') || CONTATO_URL.startsWith('mailto:')) link.target = '_blank';
+  }
+}
+
+// "Próxima edição" do evento abre o WhatsApp de contato com a pergunta pronta.
+if (CONTATO_URL) {
+  const ev = document.getElementById('ctaEvento');
+  if (ev) {
+    const texto = 'Olá! Quero saber da próxima edição do Café, Clínica & Negócios.';
+    ev.href = CONTATO_URL.includes('wa.me') ? CONTATO_URL + '?text=' + encodeURIComponent(texto) : CONTATO_URL;
+    ev.target = '_blank';
+    ev.rel = 'noopener';
+  }
+}
+
+function ligarBotaoConfiguravel(id, url, mensagemPendente) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('click', function (e) {
+    if (!url) {
+      e.preventDefault();
+      alert(mensagemPendente);
+      return;
+    }
+    this.href = url;
+    this.target = '_blank';
+  });
+}
+
+ligarBotaoConfiguravel('linkInstagram', INSTAGRAM_URL, 'O link do Instagram ainda não foi configurado. Assim que for definido em site-config.js, este link abrirá o perfil diretamente.');
+ligarBotaoConfiguravel('linkTiktok', TIKTOK_URL, 'O link do TikTok ainda não foi configurado. Assim que for definido em site-config.js, este link abrirá o perfil diretamente.');
+
+</script>
+</body>
+</html>

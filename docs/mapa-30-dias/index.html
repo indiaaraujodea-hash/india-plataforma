@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="description" content="Um diagnóstico feito para a clínica na ACP. Veja sua realidade, reconheça uma prioridade e receba um Mapa com plano de ação de 30 dias.">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#173f31">
+<link rel="icon" href="/assets/img/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/img/icon-180.png">
+<title>Seu Mapa de 30 Dias | INDIA</title>
+<style>
+/* Página pública do Mapa de 30 Dias: base clara, dourado nos detalhes e
+   verde como cor de apoio (cartão do topo, botões e rodapé). */
+:root{color-scheme:light;--ivory:#f3efe7;--white:#fffdf9;--beige:#e9e0d6;--green:#183d31;--deep:#123127;--gold:#a6874c;--gold-ink:#80632f;--ink:#27372e;--muted:#617067;--line:#d9d3c8}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--ivory);color:var(--ink);font:16px/1.55 Arial,Helvetica,sans-serif}a{color:inherit}
+.wrap{width:min(1120px,calc(100% - 48px));margin:auto}
+h1,h2,h3,p{margin-top:0}h1,h2,h3,.quote{font-family:Georgia,'Times New Roman',serif;font-weight:400;color:var(--green)}
+h1{font-size:clamp(40px,5vw,70px);line-height:1.03;letter-spacing:-.035em;margin:0 0 27px}
+h2{font-size:clamp(31px,3.7vw,50px);line-height:1.1;letter-spacing:-.025em;margin:14px 0 20px}
+h3{font-size:25px;margin:10px 0}
+.kicker{display:block;color:var(--gold-ink);font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase}
+.button{display:inline-flex;align-items:center;justify-content:center;min-height:51px;padding:12px 25px;background:var(--green);color:#fff;text-decoration:none;font-size:14px;font-weight:700;border:1px solid var(--green);transition:background .2s,transform .2s}
+.button:hover{background:var(--deep);transform:translateY(-2px)}
+
+/* cabeçalho compartilhado do site, no tom da página */
+#cabecalhoPublico{--ph-bg:var(--ivory);--ph-ink:var(--green);--ph-accent:var(--green)}
+#cabecalhoPublico .ph-header{border-bottom:1px solid var(--line)}
+section{padding:92px 0}section[id]{scroll-margin-top:84px}
+
+/* topo */
+.hero{padding:72px 0 98px}
+.hero-grid{display:grid;grid-template-columns:1.3fr .7fr;gap:80px;align-items:center}
+.quote{font-size:clamp(21px,2.35vw,30px);line-height:1.25;border-left:3px solid var(--gold);padding-left:19px;margin:24px 0 7px}
+.credit{display:block;margin:0 0 42px 22px;color:var(--gold-ink);font-size:10px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
+.hero .lead{font-size:18px;max-width:610px;line-height:1.5;margin-bottom:28px}
+.actions{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.price{color:var(--green);font-size:14px;font-weight:700}
+.video-card{width:100%;max-width:400px;justify-self:end;background:var(--green);color:#e7ece6;border-top:5px solid var(--gold);padding:20px 20px 22px;display:flex;flex-direction:column;gap:16px}
+.video-card .topline{display:flex;justify-content:space-between;font-size:10px;letter-spacing:.17em;text-transform:uppercase;color:#cdb37f}
+.video-card video{display:block;width:100%;max-height:min(520px,70vh);aspect-ratio:450/642;object-fit:contain;background:#0f1f19;border:1px solid rgba(205,179,127,.35)}
+.video-card strong{display:block;font:24px/1.15 Georgia,serif;font-weight:400;color:#fffdf9}
+.video-card small{font-size:13px;color:#c9d3cb}
+
+/* a ideia por trás do Mapa: foto e texto no mesmo bege */
+.story{background:var(--beige);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.story-grid{display:grid;grid-template-columns:.86fr 1.14fr;gap:80px;align-items:center}
+.story-photo{display:block;width:100%;height:380px;object-fit:cover;object-position:15% center;background:var(--beige);
+  /* bordas da foto se dissolvem no bege da seção */
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 7%,#000 93%,transparent),linear-gradient(to bottom,transparent,#000 7%,#000 93%,transparent);
+  -webkit-mask-composite:source-in;
+  mask-image:linear-gradient(to right,transparent,#000 7%,#000 93%,transparent),linear-gradient(to bottom,transparent,#000 7%,#000 93%,transparent);
+  mask-composite:intersect}
+.story p{max-width:555px;font-size:17px}.story .button{margin-top:10px}
+
+/* do diagnóstico ao plano */
+.features .intro{max-width:720px}.features .intro p{font-size:18px;color:var(--muted)}
+.four-grid{display:grid;grid-template-columns:repeat(4,1fr);margin:48px 0 34px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.feature{padding:27px 22px 30px;border-right:1px solid var(--line)}.feature:first-child{padding-left:0}.feature:last-child{border-right:0}
+.feature .number{font:23px Georgia,serif;color:var(--gold)}.feature p{font-size:14px;color:var(--muted);margin:0}
+
+/* relatos reais, publicados com autorização */
+.voices{background:var(--white);border-top:1px solid var(--line)}
+.voices .intro{max-width:670px}
+.voices-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:40px;margin:40px 0 36px}
+.voice{margin:0;border-top:2px solid var(--gold);padding:24px 0 0}
+.voice blockquote{margin:0 0 16px;font:21px/1.4 Georgia,'Times New Roman',serif;color:var(--green)}
+.voice figcaption{color:var(--muted);font-size:13px;letter-spacing:.04em}
+
+/* oferta */
+.offer{background:var(--beige);border-top:5px solid var(--gold)}
+.offer-grid{display:grid;grid-template-columns:1fr .75fr;gap:75px;align-items:center}
+.offer-card{border:1px solid #baa98e;background:var(--white);padding:30px}
+.offer-card .amount{font:48px Georgia,serif;color:var(--green);line-height:1.1;margin:10px 0 17px}
+.offer-card ul{padding-left:18px;margin:0 0 24px}.offer-card li{padding:4px 0;font-size:14px}.offer-card li::marker{color:var(--gold)}
+.offer-card .button{width:100%}
+.offer-card small{display:block;text-align:center;margin-top:12px;color:var(--muted)}
+
+/* gancho no alto da página, antes do topo: o topo vem logo abaixo */
+.gancho{padding-bottom:0}
+/* posicionamento & valor + oferta complementar (Mapa + Aula) */
+.valor{border-top:1px solid var(--line)}.valor [hidden]{display:none}
+.valor .video-card{justify-self:auto;max-width:720px;margin:0 0 36px}
+.valor .video-card video{aspect-ratio:1272/628;max-height:none}
+.valor .quote{margin:0 0 16px}
+.valor .texto{max-width:620px;font-size:17px}
+.combo{max-width:460px;margin-top:40px}
+.combo h3{margin:6px 0 10px}
+.combo .de{font-size:14px;color:var(--muted);margin:0}
+.combo .amount{margin:4px 0 20px}
+.combo .so-mapa{display:block;text-align:center;margin-top:14px;font-size:14px;color:var(--green)}
+
+footer{padding:31px 0;background:var(--deep);color:#d7dfd6;font-size:12px}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:20px}
+footer b{font:23px Georgia,serif;color:#fff}footer a{text-decoration:none}
+
+@media(max-width:850px){
+  .voices-grid{gap:24px}
+  .hero-grid,.story-grid,.offer-grid{grid-template-columns:1fr;gap:36px}
+  .video-card{justify-self:start}
+  .four-grid{grid-template-columns:repeat(2,1fr)}
+  .feature:nth-child(2){border-right:0}.feature:nth-child(-n+2){border-bottom:1px solid var(--line)}.feature:nth-child(3){padding-left:0}
+}
+@media(max-width:590px){
+  .wrap{width:min(100% - 32px,1120px)}
+  section{padding:60px 0}.hero{padding:40px 0 60px}
+  .credit{margin-bottom:30px}.hero .lead{font-size:16px}
+  .actions .button{width:100%}.actions .price{width:100%;text-align:center}
+  .video-card{max-width:none}
+  .story-photo{height:300px}
+  .story .button,.features .button{width:100%}
+  .four-grid{grid-template-columns:1fr}
+  .feature,.feature:first-child,.feature:nth-child(3){border-right:0;border-bottom:1px solid var(--line);padding:18px 0}.feature:last-child{border-bottom:0}
+  .voices-grid{grid-template-columns:1fr;gap:28px}.voice blockquote{font-size:19px}.voices .button{width:100%}
+  .valor .video-card,.combo{max-width:none}
+  .offer-card{padding:22px}.offer-card .amount{font-size:42px}
+  footer .wrap{display:block}footer span{display:block;margin-top:10px}
+}
+a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.button{transition:none}}
+</style>
+</head>
+<body>
+<div id="cabecalhoPublico"></div>
+<main>
+<section class="features gancho"><div class="wrap"><div class="intro">
+  <h2>Quanto mais sua agenda cresce, mais vulnerável sua clínica pode estar.</h2>
+  <p>Você pode atender mais, faturar mais e, ainda assim, continuar dependendo exclusivamente das suas horas disponíveis para sustentar sua clínica.</p>
+  <p>Antes de pensar no próximo passo, é preciso entender o que a sua Clínica ACP precisa agora para se tornar mais sustentável.</p>
+</div></div></section>
+
+<section class="hero"><div class="wrap hero-grid">
+  <div>
+    <span class="kicker">Clínica de Valor / Seu Mapa de 30 Dias</span>
+    <p class="quote">“O curioso paradoxo é que, quando me aceito como sou, então posso mudar.”</p>
+    <span class="credit">Carl Rogers · tradução livre</span>
+    <h1>Comece pela clínica que você tem hoje.</h1>
+    <p class="lead">Um diagnóstico com perguntas feitas para a clínica na ACP. Suas respostas dão origem a um Mapa da sua realidade e a um plano de ação de 30 dias.</p>
+    <div class="actions"><a class="button" href="#comprar">Quero meu Mapa</a><span class="price">R$ 47,90 · pagamento único</span></div>
+  </div>
+  <div class="video-card">
+    <div class="topline"><span>INDIA / Por dentro</span><span>Vídeo</span></div>
+    <video src="../assets/video/mapa-por-dentro.mp4" poster="../assets/img/mapa-por-dentro-poster.jpg"
+           autoplay muted loop playsinline controls preload="metadata"
+           aria-label="Gravação da tela da plataforma mostrando o Meu Mapa da Clínica, o plano de ação de 30 dias e o Manual"></video>
+    <div><strong>Conheça o Mapa por dentro</strong><small>Diagnóstico, Mapa e plano de 30 dias na plataforma.</small></div>
+  </div>
+</div></section>
+
+<section id="valor" class="valor"><div class="wrap">
+  <div class="intro"><span class="kicker">Posicionamento &amp; Valor</span><h2>Não fale em preço antes de saber isso.</h2></div>
+  <!-- Corte da aula Posicionamento & Valor: aparece quando VIDEO_POSICIONAMENTO (no script do fim da página) receber o arquivo/URL. -->
+  <div class="video-card" id="videoValor" hidden>
+    <div class="topline"><span>INDIA / Aula</span><span>Vídeo</span></div>
+    <video controls playsinline preload="metadata" poster="../assets/img/posicionamento-valor-poster.jpg" aria-label="Corte da aula Posicionamento & Valor"></video>
+    <div><strong>Posicionamento &amp; Valor</strong><small>Corte da aula.</small></div>
+  </div>
+  <p class="quote">Preço é uma variável. Não um diagnóstico.</p>
+  <p class="texto">Antes de decidir aumentar preço, atender mais, divulgar mais ou criar outro serviço, é preciso entender o que está acontecendo no conjunto da sua clínica.</p>
+
+  <!-- Oferta complementar: aparece quando CHECKOUT_COMBO (no script do fim da página) receber o link do checkout. -->
+  <div class="offer-card combo" id="ofertaCombo" hidden>
+    <span class="kicker">Mapa + Aula</span>
+    <h3>Quer aprofundar esse tema?</h3>
+    <p>Tenha acesso à aula completa Posicionamento &amp; Valor + seu Mapa de 30 Dias para a Clínica ACP em uma condição especial.</p>
+    <ul><li>Mapa de 30 Dias — R$ 47,90</li><li>Aula Posicionamento &amp; Valor — R$ 87,00</li></ul>
+    <p class="de">Separadamente: <s>R$ 134,90</s></p>
+    <div class="amount">R$ 97,00</div>
+    <a class="button" id="ctaCombo">QUERO O MAPA + AULA POR R$ 97</a>
+    <a class="so-mapa" href="#comprar">Quero somente meu Mapa por R$ 47,90</a>
+  </div>
+</div></section>
+
+<section id="mapa" class="features"><div class="wrap">
+  <div class="intro"><span class="kicker">O que acontece na prática</span><h2>Do diagnóstico ao plano.</h2><p>Uma sequência objetiva para transformar respostas em direção.</p></div>
+  <div class="four-grid">
+    <div class="feature"><span class="number">01</span><h3>Acesso</h3><p>Você paga. Eu confirmo e libero sua entrada na plataforma.</p></div>
+    <div class="feature"><span class="number">02</span><h3>Diagnóstico</h3><p>Perguntas sobre agenda, serviços, finanças e captação na clínica ACP.</p></div>
+    <div class="feature"><span class="number">03</span><h3>Mapa</h3><p>Uma leitura da sua realidade e da prioridade indicada pelas respostas.</p></div>
+    <div class="feature"><span class="number">04</span><h3>30 dias</h3><p>Um plano de ação e conteúdos relacionados ao seu momento.</p></div>
+  </div>
+  <a class="button" href="#comprar">Quero meu Mapa</a>
+</div></section>
+
+<section id="relatos" class="voices"><div class="wrap">
+  <div class="intro"><span class="kicker">Vozes de quem usou</span><h2>O que as psicólogas estão dizendo.</h2></div>
+  <div class="voices-grid">
+    <figure class="voice">
+      <blockquote>“Eu adorei.. preciso aprender muito ainda sobre cobrar o valor justo. Eu tenho pouco tempo de clínica sozinha, antes era contratada por uma clínica, agora que estou trabalhando pra mim, vejo o quanto preciso mudar alguns processos.”</blockquote>
+      <figcaption>Psicóloga · relato por mensagem</figcaption>
+    </figure>
+    <figure class="voice">
+      <blockquote>“Eu agradeço, inclusive já estou fazendo algumas ações, já mexendo um pouquinho algumas coisas, criando um portfoliozinho mais legalzinho pra colocar no WhatsApp. Enfim, obrigado mesmo pela plataforma e que dê vários frutos aí pra sua colega aí e pra vocês. Aí já estou torcendo aqui.”</blockquote>
+      <figcaption>Psicóloga · relato em áudio</figcaption>
+    </figure>
+  </div>
+  <a class="button" href="#comprar">Quero meu Mapa</a>
+</div></section>
+
+<section id="origem" class="story"><div class="wrap story-grid">
+  <img class="story-photo" src="../assets/img/india-mapa-esquerda.jpg" width="1200" height="800" alt="India Araújo de Almeida, criadora do Mapa de 30 Dias">
+  <div>
+    <span class="kicker">A ideia por trás do Mapa</span>
+    <h2>Clareza não é cobrança.</h2>
+    <p>Criei este espaço para que você consiga olhar para sua clínica sem se medir pelo lugar onde acha que deveria estar.</p>
+    <p>O Mapa mostra o que as suas respostas revelam hoje, ajuda a reconhecer uma prioridade e organiza o começo da ação. Pode ser o seu ponto de partida, mesmo antes de uma mentoria.</p>
+    <p><b>Eu não sou psicóloga. Sou gestora de negócios.</b></p>
+    <p>Minha trajetória profissional passou por estratégia, comercial, liderança e expansão, incluindo atuação como Head de Expansão em uma multinacional. Há cerca de um ano, atuo diretamente com psicólogas da Abordagem Centrada na Pessoa, trazendo a lente da gestão para a sustentabilidade da clínica.</p>
+    <p class="quote">Você conhece a clínica. Eu ajudo você a enxergar o negócio que a sustenta.</p>
+    <a class="button" href="#comprar">Quero meu Mapa</a>
+  </div>
+</div></section>
+
+<section id="comprar" class="offer"><div class="wrap offer-grid">
+  <div><span class="kicker">Seu Mapa de 30 Dias</span><h2>Um ponto de partida para a sua clínica.</h2><p>Diagnóstico, Mapa e plano de ação. Sem precisar entrar agora em um acompanhamento.</p></div>
+  <div class="offer-card">
+    <span class="kicker">Pagamento único</span>
+    <div class="amount">R$ 47,90</div>
+    <ul><li>Diagnóstico feito para a clínica na ACP</li><li>Mapa conforme suas respostas</li><li>Plano de ação de 30 dias</li></ul>
+    <a class="button" href="../compra/index.html" id="ctaCompra">Quero meu Mapa</a>
+    <small>Eu confirmo o pagamento e libero seu acesso.</small>
+  </div>
+</div></section>
+</main>
+<footer><div class="wrap"><a href="../inicio/index.html"><b>INDIA</b></a><span>Pessoas · Encontros · Negócios</span><span>© 2026 INDIA</span></div></footer>
+
+<script type="module">
+import { montarCabecalhoPublico } from '../assets/js/site-header.js';
+montarCabecalhoPublico({ container: document.getElementById('cabecalhoPublico'), rootPath: '..', paginaAtual: 'mapa-30-dias' });
+
+// Posicionamento & Valor: preencha para ativar o vídeo e a oferta Mapa + Aula.
+// Enquanto estiverem vazios, os blocos ficam ocultos (nada de link ou vídeo inventado).
+const VIDEO_POSICIONAMENTO = '../assets/video/posicionamento-valor.mp4';
+const CHECKOUT_COMBO = '';       // link do checkout do Mapa + Aula (R$ 97)
+if (VIDEO_POSICIONAMENTO) {
+  document.querySelector('#videoValor video').src = VIDEO_POSICIONAMENTO;
+  document.getElementById('videoValor').hidden = false;
+}
+if (CHECKOUT_COMBO) {
+  document.getElementById('ctaCombo').href = CHECKOUT_COMBO;
+  document.getElementById('ofertaCombo').hidden = false;
+}
+
+// Quem pede menos movimento vê o vídeo parado (pode dar play pelos controles).
+const video = document.querySelector('.video-card video');
+if (video && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { video.removeAttribute('autoplay'); video.pause(); }
+</script>
+</body>
+</html>

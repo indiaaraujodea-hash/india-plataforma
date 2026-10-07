@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
 <title>Quanto vale o meu serviço em grupo?</title>
 <style>
   @font-face {
@@ -294,6 +295,7 @@
     font-weight:600;
   }
 </style>
+<link rel="stylesheet" href="../assets/css/shell.css">
 </head>
 <body>
 <div class="wrap">
@@ -577,6 +579,24 @@ function calc(){
 
 ids.forEach(id => el[id].addEventListener('input', calc));
 calc();
+</script>
+<script type="module">
+import { requireAuth, temAcessoFerramentas } from '../assets/js/auth.js';
+import { mountAppShell } from '../assets/js/app-shell.js';
+import { montarSubNavMapaClinica } from '../assets/js/mapa-clinica-nav.js';
+(async () => {
+  const session = await requireAuth('../login/index.html');
+  if (!session) return;
+  await mountAppShell('ferramentas', session, '..');
+  montarSubNavMapaClinica('ferramentas', '..');
+
+  if (!(await temAcessoFerramentas(session.user.id))) {
+    // Ferramenta exclusiva de quem tem acesso liberado ao Mapa/mentoria —
+    // uma conta criada só na calculadora pública não abre isso sozinha.
+    location.href = '../compra/index.html';
+    return;
+  }
+})();
 </script>
 </body>
 </html>

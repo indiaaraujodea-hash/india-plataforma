@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="robots" content="noindex">
+<title>Biblioteca de Exercícios | Painel Administrativo</title>
+<link rel="stylesheet" href="../../style.css">
+<link rel="stylesheet" href="../../assets/css/shell.css">
+<style>
+.ex-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:14px}
+.ex-card.inativo{opacity:.55}
+.ex-topo{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.ex-topo h3{margin:0;color:var(--green);font-size:19px}
+.ex-meta{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-top:4px}
+.ex-acoes{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.ex-acoes button,.ex-acoes a{font-size:12.5px;padding:7px 14px}
+.perguntas-lista{margin:8px 0 0;padding-left:18px;font-size:13.5px}
+.form-exercicio{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:16px}
+.form-exercicio label{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);margin:12px 0 4px}
+.form-exercicio label:first-child{margin-top:0}
+.form-exercicio input,.form-exercicio textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:9px 11px;font:inherit;font-size:14px}
+.form-exercicio textarea{min-height:70px}
+.pergunta-row{display:flex;gap:8px;align-items:center;margin-top:6px}
+.pergunta-row input{flex:1}
+.pergunta-row button{flex-shrink:0;background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;text-decoration:underline}
+.form-acoes{display:flex;gap:10px;margin-top:16px}
+</style>
+</head>
+<body>
+<main class="wrap" style="max-width:900px">
+  <section class="section">
+    <div class="eyebrow">Painel Administrativo</div>
+    <h1 class="serif" style="font-size:34px;color:var(--green);margin:8px 0">Biblioteca de Exercícios</h1>
+    <p style="margin:0 0 6px"><a href="../index.html" class="small">← Voltar para clientes</a></p>
+    <p class="small" style="margin:0 0 16px">Reutilizável entre mentoradas. Editar aqui não muda o que já foi enviado a ninguém — só afeta novas atribuições.</p>
+
+    <button type="button" class="btn" id="btnNovo" style="padding:10px 18px;font-size:14px">+ Novo exercício</button>
+
+    <div id="formNovo"></div>
+    <div id="lista"><p>Carregando…</p></div>
+  </section>
+</main>
+<footer>INDIA · CAFÉ, PESSOAS E NEGÓCIOS DE VALOR · Clínica de Valor</footer>
+
+<script type="module">
+import { supabase, avisarSupabaseNaoConfigurado } from '../../assets/js/supabase-client.js';
+import { requireAdmin } from '../../assets/js/auth.js';
+import { mountAppShell } from '../../assets/js/app-shell.js';
+
+avisarSupabaseNaoConfigurado();
+
+function formularioHtml(ex) {
+  const perguntas = (ex && ex.perguntas) || [];
+  return `
+    <div class="form-exercicio">
+      <h3 style="margin:0;color:var(--green)">${ex && ex.id ? 'Editar exercício' : 'Novo exercício'}</h3>
+      <label>Título</label><input type="text" id="fTitulo" value="${ex && ex.titulo ? ex.titulo.replace(/"/g, '&quot;') : ''}">
+      <label>Objetivo</label><textarea id="fObjetivo">${ex && ex.objetivo || ''}</textarea>
+      <label>Instruções</label><textarea id="fInstrucoes">${ex && ex.instrucoes || ''}</textarea>
+      <label>Link (opcional)</label><input type="url" id="fLink" value="${ex && ex.link_url || ''}" placeholder="https://...">
+      <label>Arquivo — link do Drive/PDF (opcional)</label><input type="url" id="fArquivo" value="${ex && ex.arquivo_url || ''}" placeholder="https://...">
+      <label>Tempo estimado (minutos)</label><input type="number" id="fTempo" value="${ex && ex.tempo_estimado_min || ''}" min="1">
+      <label>Perguntas para a mentorada responder</label>
+      <div id="perguntasWrap"></div>
+      <button type="button" id="btnAddPergunta" style="margin-top:8px;background:none;border:1px dashed var(--line);border-radius:8px;padding:7px 12px;font-size:12.5px;color:var(--green);cursor:pointer">+ Adicionar pergunta</button>
+      <div class="form-acoes">
+        <button type="button" class="btn" id="btnSalvarExercicio" style="padding:10px 18px;font-size:14px">Salvar</button>
+        <button type="button" class="btn alt" id="btnCancelarExercicio" style="padding:10px 18px;font-size:14px">Cancelar</button>
+      </div>
+      <p class="small" id="formMsg" style="margin-top:8px"></p>
+    </div>`;
+  // (perguntas preenchidas via JS logo após injetar o HTML, para reaproveitar renderPerguntas)
+}
+
+let perguntasForm = [];
+
+function renderPerguntas() {
+  document.getElementById('perguntasWrap').innerHTML = perguntasForm.map((p, i) => `
+    <div class="pergunta-row" data-idx="${i}">
+      <input type="text" class="pergunta-input" value="${(p || '').replace(/"/g, '&quot;')}" placeholder="Ex.: Quantos pacientes você tem em cada faixa de valor?">
+      <button type="button" data-remove-pergunta="${i}">remover</button>
+    </div>`).join('') || '<p class="small">Nenhuma pergunta ainda.</p>';
+  document.querySelectorAll('[data-remove-pergunta]').forEach((btn) => {
+    btn.addEventListener('click', () => { perguntasForm.splice(Number(btn.dataset.removePergunta), 1); renderPerguntas(); });
+  });
+}
+
+function abrirFormulario(ex) {
+  perguntasForm = (ex && ex.perguntas) ? [...ex.perguntas] : [];
+  document.getElementById('formNovo').innerHTML = formularioHtml(ex);
+  renderPerguntas();
+  document.getElementById('btnAddPergunta').addEventListener('click', () => { perguntasForm.push(''); renderPerguntas(); });
+  document.getElementById('btnCancelarExercicio').addEventListener('click', () => { document.getElementById('formNovo').innerHTML = ''; });
+  document.getElementById('btnSalvarExercicio').addEventListener('click', async () => {
+    perguntasForm = [...document.querySelectorAll('.pergunta-input')].map((i) => i.value.trim()).filter(Boolean);
+    const payload = {
+      titulo: document.getElementById('fTitulo').value.trim(),
+      objetivo: document.getElementById('fObjetivo').value.trim() || null,
+      instrucoes: document.getElementById('fInstrucoes').value.trim() || null,
+      link_url: document.getElementById('fLink').value.trim() || null,
+      arquivo_url: document.getElementById('fArquivo').value.trim() || null,
+      tempo_estimado_min: document.getElementById('fTempo').value ? Number(document.getElementById('fTempo').value) : null,
+      perguntas: perguntasForm,
+      atualizado_em: new Date().toISOString(),
+    };
+    if (!payload.titulo) { document.getElementById('formMsg').textContent = 'Título é obrigatório.'; return; }
+    let error;
+    if (ex && ex.id) {
+      ({ error } = await supabase.from('exercicios_biblioteca').update(payload).eq('id', ex.id));
+    } else {
+      const { data: { user } } = await supabase.auth.getUser();
+      ({ error } = await supabase.from('exercicios_biblioteca').insert({ ...payload, criado_por: user.id }));
+    }
+    if (error) { document.getElementById('formMsg').textContent = `Erro: ${error.message}`; return; }
+    document.getElementById('formNovo').innerHTML = '';
+    await carregarLista();
+  });
+}
+
+async function carregarLista() {
+  const wrap = document.getElementById('lista');
+  const { data, error } = await supabase.from('exercicios_biblioteca').select('*').order('criado_em', { ascending: false });
+  if (error) { wrap.innerHTML = `<div class="alert alert-error">${error.message}</div>`; return; }
+  if (!data || data.length === 0) { wrap.innerHTML = '<p class="small" style="margin-top:16px">Biblioteca vazia — clique em "+ Novo exercício" para criar o primeiro.</p>'; return; }
+  wrap.innerHTML = data.map((ex) => `
+    <div class="ex-card ${ex.ativo ? '' : 'inativo'}" data-id="${ex.id}">
+      <div class="ex-topo">
+        <div>
+          <h3>${ex.titulo}</h3>
+          <div class="ex-meta">
+            ${ex.tempo_estimado_min ? `<span>${ex.tempo_estimado_min} min</span>` : ''}
+            ${ex.ativo ? '' : '<span>Arquivado</span>'}
+            ${ex.link_url ? `<a href="${ex.link_url}" target="_blank" rel="noopener">Link ↗</a>` : ''}
+            ${ex.arquivo_url ? `<a href="${ex.arquivo_url}" target="_blank" rel="noopener">Arquivo ↗</a>` : ''}
+          </div>
+        </div>
+      </div>
+      ${ex.objetivo ? `<p style="font-size:13.5px;margin:10px 0 0"><b>Objetivo:</b> ${ex.objetivo}</p>` : ''}
+      ${ex.instrucoes ? `<p style="font-size:13.5px;margin:6px 0 0"><b>Instruções:</b> ${ex.instrucoes}</p>` : ''}
+      ${(ex.perguntas && ex.perguntas.length) ? `<ol class="perguntas-lista">${ex.perguntas.map((p) => `<li>${p}</li>`).join('')}</ol>` : ''}
+      <div class="ex-acoes">
+        <button type="button" class="btn alt" data-editar="${ex.id}">Editar</button>
+        <button type="button" class="btn alt" data-arquivar="${ex.id}">${ex.ativo ? 'Arquivar' : 'Reativar'}</button>
+      </div>
+    </div>`).join('');
+
+  document.querySelectorAll('[data-editar]').forEach((btn) => {
+    btn.addEventListener('click', () => { const ex = data.find((e) => e.id === btn.dataset.editar); abrirFormulario(ex); window.scrollTo(0, 0); });
+  });
+  document.querySelectorAll('[data-arquivar]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const ex = data.find((e) => e.id === btn.dataset.arquivar);
+      await supabase.from('exercicios_biblioteca').update({ ativo: !ex.ativo }).eq('id', ex.id);
+      carregarLista();
+    });
+  });
+}
+
+(async () => {
+  const ctx = await requireAdmin('../../index.html', '../../login/index.html');
+  if (!ctx) return;
+  await mountAppShell('admin', ctx.session, '../..');
+  document.getElementById('btnNovo').addEventListener('click', () => { abrirFormulario(null); window.scrollTo(0, 0); });
+  await carregarLista();
+})();
+</script>
+</body>
+</html>

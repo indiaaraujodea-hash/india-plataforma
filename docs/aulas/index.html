@@ -1,20 +1,181 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Aulas | Clínica de Valor</title><link rel="stylesheet" href="../style.css"></head><body><header class="top"><nav class="nav"><a class="brand" href="../index.html"><span class="mark">❧</span><b>INDIA</b></a><div class="navlinks"><a href="../index.html">Início</a><a href="../mapa/index.html">Meu Mapa</a><a href="../ferramentas/index.html">Ferramentas</a><a href="../manual/index.html">Manual</a><a href="../aulas/index.html">Aulas</a><a href="../mentoria/index.html">Mentoria</a><a href="../eventos/index.html">Eventos</a><a href="../plano/index.html">Meu Plano</a></div></nav></header><main class="wrap"><section class="section pagehead"><div class="eyebrow">Aulas</div><h1>Aprenda só o que o seu momento pede.</h1><p class="lead">As aulas estão organizadas em trilhas, uma para cada movimento do Mapa. Se você já fez o seu Mapa, a trilha recomendada aparece em destaque.</p><div id="rec"></div><div id="trilhas"></div><div class="cta"><div><h3>Quer aplicar com acompanhamento?</h3><p>Na mentoria você leva a trilha para a realidade da sua clínica.</p></div><a class="btn" href="../mentoria/index.html">Conhecer a mentoria →</a></div></section></main><script>
-// Trilhas = movimentos do Mapa. Cada aula aponta para o capítulo do Manual.
-// Para adicionar um vídeo, preencha "video" com o link (YouTube, Vimeo, Drive...).
-const TRILHAS=[
-{id:'Estruturar',title:'Estruturar a base da clínica',text:'Reduza improviso e risco na operação antes de acelerar.',aulas:[{t:'Onde estou? O diagnóstico da clínica',cap:1},{t:'Estrutura física: o ambiente também comunica cuidado',cap:5},{t:'Estrutura administrativa: agenda, contratos e documentos',cap:6},{t:'A jornada da pessoa atendida',cap:7},{t:'Protocolos: transformar rotina em segurança',cap:8}]},
-{id:'Organizar finanças',title:'Organizar a sustentabilidade financeira',text:'Custos, caixa, retirada e indicadores com previsibilidade.',tool:['../ferramentas/sessao.html','Calcular minha sessão'],aulas:[{t:'Quanto vale o seu trabalho? Precificação sustentável',cap:14},{t:'O financeiro da clínica: números que contam histórias',cap:15},{t:'Pessoa Física, Pessoa Jurídica e CNPJ',cap:16},{t:'A organização também protege',cap:17}]},
-{id:'Captar',title:'Fortalecer captação e jornada de entrada',text:'Torne a chegada de novos pacientes mais previsível.',aulas:[{t:'Relacionamentos que fortalecem a clínica',cap:12},{t:'Comunicação ética e presença profissional',cap:11},{t:'A jornada da pessoa atendida',cap:7}]},
-{id:'Posicionar e narrar valor',title:'Tornar o valor do trabalho compreensível',text:'Posicionamento, diferenciação e comunicação antes de mexer no preço.',aulas:[{t:'Quem sou como psicóloga? Identidade, valores e propósito',cap:2},{t:'Posicionamento: por que escolhem você?',cap:9},{t:'Diferenciação, especialidade e modelo de negócio',cap:10},{t:'Comunicação ética e presença profissional',cap:11}]},
-{id:'Rever preço e modelo',title:'Rever preço e capacidade do modelo',text:'Compare o preço necessário com a capacidade real da agenda.',tool:['../ferramentas/sessao.html','Calcular minha sessão'],aulas:[{t:'A clínica também é um negócio: desfazendo mitos',cap:4},{t:'Quanto vale o seu trabalho?',cap:14},{t:'Diferenciação, especialidade e modelo de negócio',cap:10}]},
-{id:'Crescer / diversificar',title:'Redesenhar o modelo de crescimento',text:'Novas fontes de receita e formatos além do atendimento individual.',tool:['../ferramentas/grupo.html','Simular serviço em grupo'],aulas:[{t:'Como crescer mantendo os princípios da ACP',cap:19},{t:'Novos serviços: novas fontes de receita',cap:20},{t:'Supervisão, grupos, cursos e comunidade',cap:21},{t:'Planejamento da clínica para os próximos anos',cap:22}]},
-{id:'Proteger capacidade e energia',title:'Proteger capacidade antes de crescer',text:'Agenda sustentável antes de mais volume ou novas frentes.',aulas:[{t:'A Clínica Centrada na Pessoa: gestão humanista',cap:3},{t:'Quem cuida também precisa ser cuidado',cap:18},{t:'Como crescer mantendo os princípios da ACP',cap:19}]}
-];
-const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let primary='';try{primary=(JSON.parse(localStorage.getItem('clinicaDiag')||'{}').primary)||''}catch(e){}
-const rec=TRILHAS.find(t=>t.id===primary);
-if(rec)document.getElementById('rec').innerHTML=`<div class="empty" style="margin-top:22px;border-style:solid">Pelo seu Mapa, comece pela trilha <b style="color:var(--green)">${esc(rec.title)}</b>. <a href="#t${TRILHAS.indexOf(rec)}">Ir para a trilha →</a></div>`;
-else document.getElementById('rec').innerHTML=`<div class="empty" style="margin-top:22px">Ainda não sabe por onde começar? <a href="../mapa/index.html">Faça o seu Mapa</a> e a trilha certa aparece aqui.</div>`;
-const ordem=rec?[rec,...TRILHAS.filter(t=>t!==rec)]:TRILHAS;
-document.getElementById('trilhas').innerHTML=ordem.map(t=>{const i=TRILHAS.indexOf(t);return `<div id="t${i}" style="margin-top:34px;scroll-margin-top:90px"><span class="tag">Trilha ${i+1}${t===rec?' · recomendada para você':''}</span><h2 style="margin:0">${esc(t.title)}</h2><p class="lead" style="margin:4px 0 0">${esc(t.text)}</p><div class="list">${t.aulas.map((a,j)=>`<div class="item${t===rec?' hl':''}"><div class="num">${j+1}</div><div><h3>${esc(a.t)}</h3><p>${a.video?'Aula em vídeo + capítulo do Manual':'Aula em texto · capítulo '+a.cap+' do Manual'}</p></div><div class="acts">${a.video?`<a class="btn sm" href="${esc(a.video)}" target="_blank" rel="noopener">Assistir</a>`:''}<a class="btn alt sm" href="../manual/index.html?cap=${a.cap}">Ler capítulo</a></div></div>`).join('')}</div>${t.tool?`<p style="margin-top:14px"><a class="btn alt sm" href="${t.tool[0]}">${t.tool[1]} →</a></p>`:''}</div>`}).join('');
-</script><footer>INDIA · CAFÉ, PESSOAS E NEGÓCIOS DE VALOR · Clínica de Valor</footer></body></html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#173f31">
+<link rel="icon" href="/assets/img/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/img/icon-180.png">
+<title>Aulas | INDIA</title>
+<style>
+  @font-face {
+    font-family: 'Cambria';
+    src: local('Cambria');
+  }
+  :root{
+    color-scheme: light;
+    --verde: #1D6B4E;
+    --verde-escuro: #12432F;
+    --terracota: #B5613C;
+    --creme: #FAFAF7;
+    --creme-linha: #EDE8DE;
+    --tinta: #22281F;
+    --tinta-suave: #5B6357;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--creme);
+    color:var(--tinta);
+    font-family:'Calibri','Trebuchet MS',sans-serif;
+    line-height:1.5;
+  }
+  h1,h2,.serif{font-family:'Cambria','Georgia',serif}
+
+  .etapa{max-width:820px;margin:48px auto;padding:0 20px}
+  .eyebrow{
+    text-transform:uppercase;letter-spacing:.14em;font-size:11px;
+    color:var(--terracota);font-weight:700;margin-bottom:8px;
+  }
+  h1{font-size:30px;margin:0 0 10px;color:var(--verde-escuro);font-weight:700;line-height:1.25}
+  .sub{font-size:16px;color:var(--tinta-suave);margin:0 0 30px}
+
+  .aula{background:#fff;border:1px solid var(--creme-linha);border-radius:10px;overflow:hidden;margin-bottom:22px}
+  .aula video{display:block;width:100%;aspect-ratio:2/1;background:#fff;object-fit:contain}
+  .aula .info{padding:18px 24px 22px}
+  .aula .num{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--terracota);font-weight:700}
+  .aula h2{font-size:22px;color:var(--verde-escuro);margin:4px 0 6px;font-weight:700}
+  .aula p{font-size:15px;color:var(--tinta-suave);margin:0}
+
+  .inscricao{background:#fff;border:1px solid var(--creme-linha);border-radius:10px;padding:30px 28px;margin-top:34px}
+  .inscricao h2{font-size:22px;color:var(--verde-escuro);margin:0 0 6px;font-weight:700}
+  .inscricao .sub{margin:0 0 22px;font-size:15px}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:13px;font-weight:700;color:var(--tinta);margin-bottom:6px}
+  .field label .opc{font-weight:400;color:var(--tinta-suave)}
+  .field input,.field textarea{
+    width:100%;font:inherit;font-size:15px;padding:11px 13px;border:1px solid #d9d2c4;border-radius:8px;background:#fff;color:var(--tinta);
+  }
+  .field textarea{min-height:90px;resize:vertical}
+  .field input:focus,.field textarea:focus{outline:2px solid var(--verde);outline-offset:1px;border-color:transparent}
+  .escondido{position:absolute;left:-9999px}
+  .btn-primary{
+    display:inline-block;background:var(--terracota);color:#fff;text-decoration:none;border:0;cursor:pointer;
+    font:inherit;font-weight:700;font-size:15px;padding:14px 26px;border-radius:999px;
+  }
+  .btn-primary:disabled{opacity:.6;cursor:default}
+  .form-msg{font-size:14.5px;margin:14px 0 0}
+  .form-msg.erro{color:#a33a1f}
+  .inscricao-ok{text-align:center;padding:10px 0}
+  .inscricao-ok .icone{width:52px;height:52px;border-radius:50%;background:var(--verde);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 12px}
+
+  @media(max-width:480px){
+    .etapa{margin:24px auto}
+    h1{font-size:24px}
+    .aula .info{padding:16px 18px 18px}
+  }
+
+  #cabecalhoPublico{--ph-bg:var(--creme);--ph-ink:var(--verde-escuro);--ph-accent:var(--terracota)}
+  #cabecalhoPublico .ph-header{border-bottom:1px solid var(--creme-linha)}
+</style>
+</head>
+<body>
+<div id="cabecalhoPublico"></div>
+
+<div class="etapa">
+  <div class="eyebrow">Aulas</div>
+  <h1>A clínica como negócio, na prática</h1>
+  <p class="sub">Trechos das aulas da India para você conhecer a abordagem.</p>
+
+  <div class="aula">
+    <video controls playsinline preload="none" poster="../assets/img/aula-raizes-do-negocio.jpg">
+      <source src="../assets/video/aula-raizes-do-negocio.mp4" type="video/mp4">
+    </video>
+    <div class="info">
+      <div class="num">Aula 1</div>
+      <h2>As Raízes do Negócio</h2>
+      <p>Por que, mesmo com boa formação, muitas psicólogas sentem que sua estrutura profissional é frágil?</p>
+    </div>
+  </div>
+
+  <div class="aula">
+    <video controls playsinline preload="none" poster="../assets/img/aula-dor-real-da-clinica.jpg">
+      <source src="../assets/video/aula-dor-real-da-clinica.mp4" type="video/mp4">
+    </video>
+    <div class="info">
+      <div class="num">Aula 2</div>
+      <h2>A Dor Real da Clínica</h2>
+      <p>Isso não é incapacidade. É dificuldade de sustentar o próprio lugar.</p>
+    </div>
+  </div>
+
+  <!-- Inscrição: enviada pelo FormSubmit (formsubmit.co), que repassa cada
+       inscrição para o e-mail da India. Funciona em qualquer hospedagem
+       estática (o site é publicado pela Cloudflare Pages). -->
+  <div class="inscricao" id="inscricao">
+    <h2>Quero assistir às aulas completas</h2>
+    <p class="sub">Deixe seus dados e a India entra em contato com as informações de acesso.</p>
+    <form id="formInscricao">
+      <input type="hidden" name="_subject" value="Nova inscrição nas Aulas — site Clínica de Valor">
+      <input type="hidden" name="_template" value="table">
+      <p class="escondido"><label>Não preencha: <input name="_honey" tabindex="-1" autocomplete="off"></label></p>
+      <div class="field"><label for="insNome">Nome</label><input id="insNome" name="nome" type="text" autocomplete="name" required></div>
+      <div class="field"><label for="insEmail">E-mail</label><input id="insEmail" name="email" type="email" autocomplete="email" required></div>
+      <div class="field"><label for="insWhatsapp">WhatsApp</label><input id="insWhatsapp" name="whatsapp" type="tel" autocomplete="tel" placeholder="(00) 00000-0000" required></div>
+      <div class="field"><label for="insMensagem">Quer contar algo sobre sua clínica? <span class="opc">(opcional)</span></label><textarea id="insMensagem" name="mensagem"></textarea></div>
+      <button class="btn-primary" type="submit" id="btnInscricao">Enviar inscrição →</button>
+      <p class="form-msg" id="formMsg" role="status"></p>
+    </form>
+  </div>
+</div>
+
+<script type="module">
+import { montarCabecalhoPublico } from '../assets/js/site-header.js';
+import { EMAIL_INSCRICOES } from '../assets/js/site-config.js';
+montarCabecalhoPublico({ container: document.getElementById('cabecalhoPublico'), rootPath: '..', paginaAtual: 'aulas' });
+
+// Envia pelo FormSubmit sem sair da página. No primeiro envio, o FormSubmit
+// manda um e-mail de ativação para EMAIL_INSCRICOES — só depois de confirmar
+// as inscrições passam a chegar.
+const form = document.getElementById('formInscricao');
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('btnInscricao');
+  const msg = document.getElementById('formMsg');
+  msg.className = 'form-msg';
+  msg.textContent = '';
+  btn.disabled = true;
+  btn.textContent = 'Enviando…';
+  try {
+    const resp = await fetch(`https://formsubmit.co/ajax/${EMAIL_INSCRICOES}`, {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: new FormData(form),
+    });
+    const dados = await resp.json().catch(() => ({}));
+    if (!resp.ok || String(dados.success) !== 'true') throw new Error(dados.message || `HTTP ${resp.status}`);
+    document.getElementById('inscricao').innerHTML = `
+      <div class="inscricao-ok">
+        <div class="icone">✓</div>
+        <h2>Inscrição recebida!</h2>
+        <p class="sub" style="margin:0">Obrigada. A India vai entrar em contato pelo seu e-mail ou WhatsApp.</p>
+      </div>`;
+  } catch (err) {
+    console.error('Falha ao enviar inscrição:', err);
+    msg.className = 'form-msg erro';
+    msg.textContent = 'Não foi possível enviar agora. Tente novamente em instantes.';
+    btn.disabled = false;
+    btn.textContent = 'Enviar inscrição →';
+  }
+});
+
+// Um vídeo por vez: ao dar play em uma aula, pausa a outra.
+const videos = document.querySelectorAll('.aula video');
+videos.forEach((v) => v.addEventListener('play', () => {
+  videos.forEach((outro) => { if (outro !== v) outro.pause(); });
+}));
+</script>
+</body>
+</html>

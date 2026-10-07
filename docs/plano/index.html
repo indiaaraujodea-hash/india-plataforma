@@ -1,1 +1,424 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Meu Plano | Clínica de Valor</title><link rel="stylesheet" href="../style.css"></head><body><header class="top"><nav class="nav"><a class="brand" href="../index.html"><span class="mark">❧</span><b>INDIA</b></a><div class="navlinks"><a href="../index.html">Início</a><a href="../mapa/index.html">Meu Mapa</a><a href="../ferramentas/index.html">Ferramentas</a><a href="../manual/index.html">Manual</a><a href="../plano/index.html">Meu Plano</a></div></nav></header><main class="wrap"><section class="section"><div class="eyebrow">Meu Plano</div><h1 class="serif" style="font-size:46px;color:var(--green);margin:8px 0">Transforme o diagnóstico em execução.</h1><p class="lead">Registre um movimento principal, uma ação concreta e um prazo. Esta versão salva o plano neste navegador.</p><form id="p" class="panel" style="max-width:780px;margin-top:26px"><label>Meu movimento principal<input id="mov" required style="width:100%;padding:12px;margin:6px 0 16px;border:1px solid var(--line);border-radius:8px"></label><label>O que vou fazer primeiro<textarea id="acao" required rows="4" style="width:100%;padding:12px;margin:6px 0 16px;border:1px solid var(--line);border-radius:8px"></textarea></label><label>Prazo<input id="prazo" type="date" required style="width:100%;padding:12px;margin:6px 0 16px;border:1px solid var(--line);border-radius:8px"></label><label>Indicador de acompanhamento<input id="indic" style="width:100%;padding:12px;margin:6px 0 16px;border:1px solid var(--line);border-radius:8px" placeholder="Ex.: ticket médio, pacientes ativos, faturamento"></label><button class="btn" type="submit">Salvar meu plano</button><span id="status" class="small" style="margin-left:12px"></span></form></section></main><script>const f=document.getElementById('p');const ids=['mov','acao','prazo','indic'];try{const d=JSON.parse(localStorage.getItem('clinicaPlano')||'{}');ids.forEach(x=>document.getElementById(x).value=d[x]||'');const m=JSON.parse(localStorage.getItem('clinicaDiag')||'{}');if(!document.getElementById('mov').value&&m.primary)document.getElementById('mov').value=m.primary}catch(e){}f.addEventListener('submit',e=>{e.preventDefault();const d={};ids.forEach(x=>d[x]=document.getElementById(x).value);localStorage.setItem('clinicaPlano',JSON.stringify(d));document.getElementById('status').textContent='Plano salvo neste navegador.'})</script><footer>INDIA · CAFÉ, PESSOAS E NEGÓCIOS DE VALOR · Clínica de Valor</footer></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Meu Plano de Ação — 30 dias | Clínica de Valor</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../assets/css/shell.css">
+<style>
+.mfc-mini{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:14px}
+.mfc-mini .col{background:#fff;border:1px solid var(--line-soft);border-radius:12px;padding:14px}
+.mfc-mini .col b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+.mfc-mini .col.manter b{color:#3f7a55}
+.mfc-mini .col.fortalecer b{color:#b67a22}
+.mfc-mini .col.criar b{color:#9a5057}
+.mfc-mini .col ul{margin:0;padding-left:16px;font-size:12.5px;color:#3d463f}
+.mfc-mini .col li{margin-bottom:4px}
+.mfc-mini .col .empty{color:var(--muted2);font-size:12px}
+.acao-catalogo{display:grid;gap:10px;margin-top:14px}
+.acao-item{border:1px solid var(--line-soft);border-radius:12px;padding:14px 16px;background:#fff;display:flex;gap:12px;align-items:flex-start}
+.acao-item.prioritaria{border-color:var(--terracota);background:#fbf3ec}
+.acao-item input[type=checkbox]{margin-top:3px;accent-color:var(--ink-green)}
+.acao-item .txt{flex:1}
+.acao-item .txt .row1{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.acao-item .txt b{color:var(--ink-green);font-size:14px}
+.acao-item .meta{font-size:12px;color:var(--muted2);margin-top:4px;display:flex;gap:14px;flex-wrap:wrap}
+.acao-item .meta a{color:var(--terracota);text-decoration:none;font-weight:700}
+.acao-custom{border:1px dashed var(--line-soft);border-radius:12px;padding:12px 16px;margin-top:6px}
+.acao-custom input[type=text]{width:100%;border:1px solid var(--line-soft);border-radius:8px;padding:9px 10px;font:inherit}
+.limite-msg{font-size:12.5px;color:var(--terracota-dark);margin-top:8px;min-height:16px}
+.compromisso-table{width:100%;border-collapse:collapse;margin-top:12px}
+.compromisso-table th{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted2);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line-soft)}
+.compromisso-table td{padding:10px;border-bottom:1px solid var(--line-soft);font-size:13.5px;vertical-align:middle}
+.compromisso-table input[type=date]{border:1px solid var(--line-soft);border-radius:8px;padding:7px 8px;font:inherit}
+.compromisso-table select{border:1px solid var(--line-soft);border-radius:8px;padding:7px 8px;font:inherit}
+.resultado-card{background:var(--sidebar-active-bg);border-radius:14px;padding:18px;margin-top:14px;font-size:14px;color:var(--ink-green)}
+.resumo-final{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-top:18px}
+.resumo-final .txt{font-size:13px;color:var(--muted2)}
+</style>
+</head>
+<body>
+
+<div class="plan-header">
+  <div class="eyebrow">Meu Plano de Ação</div>
+  <h1>Meu Plano de Ação — Próximos 30 dias</h1>
+  <p class="lead" style="color:var(--muted2)">Construído automaticamente a partir do seu diagnóstico.</p>
+</div>
+
+<div id="avisoSemDiagnostico"></div>
+
+<div class="plan-grid" id="planGrid" style="display:none">
+  <div>
+    <div class="plan-card">
+      <div class="kicker">A. Sua prioridade agora</div>
+      <div class="action-row" style="justify-content:space-between;align-items:flex-start;margin-top:8px">
+        <div>
+          <div class="small" id="pontoKicker" style="text-transform:uppercase;letter-spacing:.05em;font-weight:800;color:var(--terracota-dark)">Ponto Latente Principal</div>
+          <h2 id="pontoTitulo" style="margin:4px 0 6px">—</h2>
+        </div>
+      </div>
+      <p style="color:#4b5148;font-size:14px" id="pontoDescricao">—</p>
+
+      <div class="kicker" style="margin-top:22px">B. Manter / Fortalecer / Criar</div>
+      <div class="mfc-mini" id="mfcMini"></div>
+    </div>
+
+    <div class="plan-card" style="margin-top:20px">
+      <div class="kicker">C. Ações recomendadas</div>
+      <p style="color:#4b5148;font-size:13.5px;margin-top:6px">Escolha até 3 ações para o seu compromisso de 30 dias. A ação prioritária já vem marcada.</p>
+      <div class="acao-catalogo" id="acaoCatalogo"></div>
+      <div class="limite-msg" id="limiteMsg"></div>
+      <button type="button" class="btn alt" id="btnAdicionarMinha" style="margin-top:10px">+ Adicionar uma ação minha</button>
+    </div>
+
+    <div class="plan-card" style="margin-top:20px">
+      <div class="kicker">D. Meu compromisso de 30 dias</div>
+      <table class="compromisso-table" id="compromissoTable">
+        <thead><tr><th>Ação</th><th>Prazo</th><th>Status</th></tr></thead>
+        <tbody id="compromissoBody"></tbody>
+      </table>
+      <div id="semSelecao" class="small" style="color:var(--muted2);margin-top:10px">Selecione ao menos uma ação acima para montar seu compromisso.</div>
+
+      <div class="kicker" style="margin-top:22px">E. Resultado esperado</div>
+      <div class="resultado-card" id="resultadoCard">—</div>
+
+      <div id="planoMsg"></div>
+      <div class="resumo-final">
+        <button type="button" class="btn" id="btnSalvarPlano">Salvar meu plano de 30 dias</button>
+        <span class="txt" id="resumoFinal"></span>
+      </div>
+
+      <div id="compartilharBar" class="action-row" style="margin-top:16px"></div>
+
+      <div class="kicker" style="margin-top:22px">F. Próximo passo</div>
+      <p style="color:#4b5148;font-size:13.5px;margin:4px 0 10px">Acompanhe a execução das ações que você escolheu.</p>
+      <a href="../acompanhamento/index.html" class="btn alt">Ir para Acompanhamento →</a>
+    </div>
+  </div>
+
+  <div class="side-col">
+    <div class="progress-card">
+      <h4>Meu progresso</h4>
+      <div class="ring-wrap">
+        <svg width="86" height="86" viewBox="0 0 86 86">
+          <circle cx="43" cy="43" r="36" fill="none" stroke="#ecdfc9" stroke-width="9"/>
+          <circle id="ringFg" cx="43" cy="43" r="36" fill="none" stroke="#173f31" stroke-width="9" stroke-linecap="round" stroke-dasharray="226" stroke-dashoffset="226" transform="rotate(-90 43 43)"/>
+          <text id="ringPct" x="43" y="48" text-anchor="middle" font-family="Georgia,serif" font-size="18" fill="#173f31">0%</text>
+        </svg>
+        <div class="ring-list" id="ringList">
+          <div class="ritem on"><span><i class="dot"></i>Ações concluídas</span><span class="count" id="ringCount">0/0</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="remember-card">
+      <b>Lembre-se</b>
+      <p>Clareza hoje, resultados reais amanhã. Você está construindo uma clínica sustentável.</p>
+    </div>
+
+    <div class="tip-card">
+      <span style="font-size:18px">💡</span>
+      <div><b>Dica</b><p>As ações vieram do seu diagnóstico. Priorize as que mais destravam o seu Ponto Latente Principal.</p></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
+import { requireAuth } from '../assets/js/auth.js';
+import { mountAppShell } from '../assets/js/app-shell.js';
+import { montarSubNavMapaClinica } from '../assets/js/mapa-clinica-nav.js';
+import { calcularScoresCompostos, classificarManterFortalecerCriar } from '../assets/js/diagnostico-engine.js';
+
+avisarSupabaseNaoConfigurado();
+
+const TITULOS_PONTO = { captar: 'Captar', precificar: 'Precificar', posicionar: 'Posicionar', produto_mix: 'Produto / Mix', esteira: 'Esteira', escalar: 'Escalar' };
+const STATUS_OPCOES = [['nao_iniciado', 'Não iniciado'], ['em_andamento', 'Em andamento'], ['concluido', 'Concluído']];
+const MAX_ACOES = 3;
+
+// Ação prioritária: derivada diretamente do Ponto Latente Principal identificado no
+// diagnóstico — é sempre a primeira sugestão e já vem pré-selecionada.
+const ACAO_PRIORITARIA = {
+  precificar: { label: 'Calcular o valor sustentável da sua sessão', prazoDias: 15, recurso: { label: 'Calculadora de Valor da Sessão', href: '../ferramentas/sessao.html' } },
+  produto_mix: { label: 'Avaliar um formato em grupo para ampliar sua capacidade', prazoDias: 15, recurso: { label: 'Calculadora de Grupo', href: '../ferramentas/grupo.html' } },
+  captar: { label: 'Mapear e organizar seus canais de captação', prazoDias: 20, recurso: { label: 'Capítulo do Manual', href: '../manual/index.html?cap=7' } },
+  posicionar: { label: 'Clarear seu público e seus diferenciais', prazoDias: 20, recurso: { label: 'Capítulo do Manual', href: '../manual/index.html?cap=9' } },
+  esteira: { label: 'Organizar seus serviços em uma esteira coerente', prazoDias: 30, recurso: { label: 'Capítulo do Manual', href: '../manual/index.html?cap=21' } },
+  escalar: { label: 'Planejar sua expansão preservando estrutura e qualidade', prazoDias: 30, recurso: { label: 'Capítulo do Manual', href: '../manual/index.html?cap=19' } },
+};
+
+// Prazo sugerido e recurso de apoio para cada item de CRIAR (vindo do motor de
+// diagnóstico) — não inventa novas regras: só conecta os itens já identificados
+// a um recurso do app (calculadora ou capítulo do Manual) e a um prazo razoável.
+const ITEM_OVERRIDES = {
+  financas_custo_conhecido: { prazoDias: 7, recurso: { label: 'Calculadora de Valor da Sessão', href: '../ferramentas/sessao.html' } },
+  financas_contas_separadas: { prazoDias: 10, recurso: null },
+  financas_retirada_previsivel: { prazoDias: 20, recurso: { label: 'Capítulo do Manual', href: '../manual/index.html?cap=14' } },
+  financas_reserva: { prazoDias: 30, recurso: null },
+  financas_acompanha_indicadores: { prazoDias: 30, recurso: null },
+  financas_ponto_equilibrio: { prazoDias: 15, recurso: { label: 'Calculadora de Valor da Sessão', href: '../ferramentas/sessao.html' } },
+  estrutura_contrato: { prazoDias: 15, recurso: { label: 'Capítulo do Manual', href: '../manual/index.html?cap=6' } },
+  estrutura_prontuario: { prazoDias: 15, recurso: { label: 'Capítulo do Manual', href: '../manual/index.html?cap=6' } },
+  estrutura_cadastro: { prazoDias: 10, recurso: { label: 'Capítulo do Manual', href: '../manual/index.html?cap=6' } },
+  estrutura_cancelamento: { prazoDias: 15, recurso: { label: 'Capítulo do Manual', href: '../manual/index.html?cap=6' } },
+  estrutura_reajuste: { prazoDias: 15, recurso: { label: 'Capítulo do Manual', href: '../manual/index.html?cap=6' } },
+  estrutura_protocolos: { prazoDias: 20, recurso: { label: 'Capítulo do Manual', href: '../manual/index.html?cap=8' } },
+  acq_sabe_origem: { prazoDias: 15, recurso: { label: 'Capítulo do Manual', href: '../manual/index.html?cap=7' } },
+  acq_dois_canais: { prazoDias: 25, recurso: { label: 'Capítulo do Manual', href: '../manual/index.html?cap=7' } },
+  acq_primeiro_contato_organizado: { prazoDias: 20, recurso: { label: 'Capítulo do Manual', href: '../manual/index.html?cap=7' } },
+  acq_nao_depende_uma_fonte: { prazoDias: 30, recurso: { label: 'Capítulo do Manual', href: '../manual/index.html?cap=7' } },
+  financas_score: { prazoDias: 30, recurso: { label: 'Capítulo do Manual', href: '../manual/index.html?cap=14' } },
+  captacao_score: { prazoDias: 30, recurso: { label: 'Capítulo do Manual', href: '../manual/index.html?cap=7' } },
+  posicionamento_score: { prazoDias: 30, recurso: { label: 'Capítulo do Manual', href: '../manual/index.html?cap=9' } },
+  modelo_score: { prazoDias: 30, recurso: { label: 'Capítulo do Manual', href: '../manual/index.html?cap=10' } },
+};
+const AREA_ORDEM = { captar: ['captacao'], precificar: ['financas'], posicionar: ['posicionamento'], produto_mix: ['modelo'], esteira: ['modelo'], escalar: ['financas', 'captacao'] };
+
+function prazoData(dias) {
+  const d = new Date();
+  d.setDate(d.getDate() + dias);
+  return d.toISOString().slice(0, 10);
+}
+
+(async () => {
+  const session = await requireAuth('../login/index.html');
+  if (!session) return;
+  await mountAppShell('plano', session, '..');
+  montarSubNavMapaClinica('meu-plano', '..');
+
+  // "diagnóstico atual" = o mais recente do usuário (histórico por ciclo).
+  const { data: diagnosticos, error: diagErr } = await supabase.from('diagnosticos').select('*').eq('user_id', session.user.id).order('criado_em', { ascending: false }).limit(1);
+  if (diagErr) { document.getElementById('avisoSemDiagnostico').innerHTML = `<div class="alert alert-error">${diagErr.message}</div>`; return; }
+  const diag = diagnosticos?.[0];
+  if (!diag) { location.href = '../mapa/index.html'; return; }
+  const resultado = diag.resultado_calculado;
+  if (!resultado || !resultado.ponto_latente_principal) {
+    document.getElementById('avisoSemDiagnostico').innerHTML = `<div class="alert alert-info">Seu Plano de Ação fica disponível depois que seu diagnóstico tiver um Ponto Latente calculado. Veja <a href="../relatorio/index.html">Meu Relatório</a>.</div>`;
+    return;
+  }
+  document.getElementById('planGrid').style.display = '';
+
+  const pontoPrincipal = resultado.ponto_latente_principal;
+  const { data: texto } = await supabase.from('pontos_latentes_textos').select('titulo, sintese').eq('ponto_latente', pontoPrincipal).single();
+
+  document.getElementById('pontoKicker').textContent = `Ponto Latente Principal — ${(TITULOS_PONTO[pontoPrincipal] || '').toUpperCase()}`;
+  document.getElementById('pontoTitulo').textContent = texto?.titulo || TITULOS_PONTO[pontoPrincipal];
+  document.getElementById('pontoDescricao').textContent = texto?.sintese || '';
+
+  // B. Manter / Fortalecer / Criar (resumido)
+  const { valores: valoresCompostos } = calcularScoresCompostos(diag.respostas);
+  const mfc = classificarManterFortalecerCriar(diag.respostas, valoresCompostos);
+  const mfcMini = document.getElementById('mfcMini');
+  for (const [cls, label, itens] of [['manter', 'Manter', mfc.manter], ['fortalecer', 'Fortalecer', mfc.fortalecer], ['criar', 'Criar', mfc.criar]]) {
+    const col = document.createElement('div');
+    col.className = `col ${cls}`;
+    const lista = itens.slice(0, 4).map((i) => `<li>${i.label}</li>`).join('');
+    col.innerHTML = `<b>${label}</b>${itens.length > 0 ? `<ul>${lista}</ul>` : '<div class="empty">—</div>'}`;
+    mfcMini.appendChild(col);
+  }
+
+  // C. Catálogo de ações recomendadas: prioritária + itens de CRIAR, ordenados
+  // priorizando a mesma área do Ponto Latente Principal.
+  const areasPrioritarias = AREA_ORDEM[pontoPrincipal] || [];
+  const criarOrdenado = [...mfc.criar].sort((a, b) => {
+    const pa = areasPrioritarias.includes(a.area) ? 0 : 1;
+    const pb = areasPrioritarias.includes(b.area) ? 0 : 1;
+    return pa - pb;
+  });
+
+  const catalogo = [];
+  const prioritaria = ACAO_PRIORITARIA[pontoPrincipal];
+  if (prioritaria) {
+    catalogo.push({ uid: 'prioritaria', label: prioritaria.label, prazoDias: prioritaria.prazoDias, recurso: prioritaria.recurso, prioritaria: true });
+  }
+  for (const item of criarOrdenado.slice(0, 6)) {
+    const ov = ITEM_OVERRIDES[item.id] || { prazoDias: 30, recurso: null };
+    catalogo.push({ uid: item.id, label: item.label, prazoDias: ov.prazoDias, recurso: ov.recurso, prioritaria: false });
+  }
+
+  let { data: plano } = await supabase.from('planos_acao').select('*').eq('diagnostico_id', diag.id).maybeSingle();
+  if (!plano) {
+    const { data: novoPlano, error: criarErr } = await supabase.from('planos_acao').insert({
+      diagnostico_id: diag.id,
+      user_id: session.user.id,
+      momento_atual_snapshot: diag.momento_clinica,
+      ponto_latente_principal_snapshot: resultado.ponto_latente_principal,
+      ponto_latente_complementar_snapshot: resultado.ponto_latente_complementar,
+    }).select().single();
+    if (criarErr) { document.getElementById('planoMsg').innerHTML = `<div class="alert alert-error">Não foi possível criar seu plano: ${criarErr.message}</div>`; return; }
+    plano = novoPlano;
+  }
+
+  const { data: itensSalvos } = await supabase.from('planos_acao_itens').select('*').eq('plano_id', plano.id).order('ordem', { ascending: true });
+
+  // Estado de seleção: uid -> { label, prazo (yyyy-mm-dd), status, custom }
+  const selecionadas = new Map();
+  if (itensSalvos && itensSalvos.length > 0) {
+    itensSalvos.forEach((it, idx) => {
+      // Se a descrição salva bate com uma ação do catálogo, reusa o uid dela para
+      // que o checkbox correspondente já apareça marcado; senão, trata como ação própria.
+      const doCatalogo = catalogo.find((c) => c.label === it.descricao);
+      const uid = doCatalogo ? doCatalogo.uid : 'salva-' + (it.id || idx);
+      selecionadas.set(uid, { label: it.descricao, prazo: it.prazo || prazoData(30), status: it.status || 'nao_iniciado', custom: !doCatalogo });
+    });
+  } else if (prioritaria) {
+    selecionadas.set('prioritaria', { label: prioritaria.label, prazo: prazoData(prioritaria.prazoDias), status: 'nao_iniciado', custom: false });
+  }
+
+  const catalogoEl = document.getElementById('acaoCatalogo');
+  const limiteMsg = document.getElementById('limiteMsg');
+
+  function podeSelecionarMais() { return selecionadas.size < MAX_ACOES; }
+
+  function renderCatalogo() {
+    catalogoEl.innerHTML = '';
+    for (const item of catalogo) {
+      const marcado = selecionadas.has(item.uid);
+      const row = document.createElement('label');
+      row.className = 'acao-item' + (item.prioritaria ? ' prioritaria' : '');
+      row.innerHTML = `
+        <input type="checkbox" data-uid="${item.uid}" ${marcado ? 'checked' : ''}>
+        <div class="txt">
+          <div class="row1"><b>${item.label}</b>${item.prioritaria ? '<span class="badge badge-ok">Prioritária</span>' : ''}</div>
+          <div class="meta">
+            <span>Prazo sugerido: ${item.prazoDias} dias</span>
+            ${item.recurso ? `<a href="${item.recurso.href}" target="_blank" rel="noopener">${item.recurso.label} →</a>` : ''}
+          </div>
+        </div>`;
+      const checkbox = row.querySelector('input');
+      checkbox.addEventListener('change', () => {
+        if (checkbox.checked) {
+          if (!podeSelecionarMais()) {
+            checkbox.checked = false;
+            limiteMsg.textContent = `Você pode escolher até ${MAX_ACOES} ações. Desmarque uma para escolher outra.`;
+            return;
+          }
+          limiteMsg.textContent = '';
+          selecionadas.set(item.uid, { label: item.label, prazo: prazoData(item.prazoDias), status: 'nao_iniciado', custom: false });
+        } else {
+          selecionadas.delete(item.uid);
+        }
+        renderCompromisso();
+      });
+      catalogoEl.appendChild(row);
+    }
+  }
+
+  let customSeq = 0;
+  document.getElementById('btnAdicionarMinha').addEventListener('click', () => {
+    if (!podeSelecionarMais()) {
+      limiteMsg.textContent = `Você pode escolher até ${MAX_ACOES} ações. Desmarque uma para adicionar a sua.`;
+      return;
+    }
+    limiteMsg.textContent = '';
+    const uid = 'custom-' + (customSeq++);
+    selecionadas.set(uid, { label: '', prazo: prazoData(30), status: 'nao_iniciado', custom: true });
+    renderCompromisso();
+  });
+
+  function gerarResultadoEsperado() {
+    const labels = [...selecionadas.values()].map((v) => v.label).filter(Boolean);
+    if (labels.length === 0) return 'Escolha suas ações para ver o resultado esperado em 30 dias.';
+    const lista = labels.length === 1 ? labels[0] : labels.slice(0, -1).join(', ') + ' e ' + labels[labels.length - 1];
+    return `Em 30 dias, você terá avançado em: ${lista} — fortalecendo diretamente o seu Ponto Latente Principal (${TITULOS_PONTO[pontoPrincipal]}).`;
+  }
+
+  function atualizarProgresso() {
+    const valores = [...selecionadas.values()];
+    const total = valores.length;
+    const concluidas = valores.filter((v) => v.status === 'concluido').length;
+    const pct = total > 0 ? Math.round((concluidas / total) * 100) : 0;
+    const circumference = 226;
+    document.getElementById('ringFg').setAttribute('stroke-dashoffset', String(circumference - (circumference * pct) / 100));
+    document.getElementById('ringPct').textContent = pct + '%';
+    document.getElementById('ringCount').textContent = `${concluidas}/${total}`;
+  }
+
+  function renderCompromisso() {
+    const body = document.getElementById('compromissoBody');
+    const semSelecao = document.getElementById('semSelecao');
+    body.innerHTML = '';
+    if (selecionadas.size === 0) {
+      semSelecao.style.display = '';
+    } else {
+      semSelecao.style.display = 'none';
+      for (const [uid, val] of selecionadas.entries()) {
+        const tr = document.createElement('tr');
+        const descCell = val.custom
+          ? `<input type="text" placeholder="Descreva sua ação" value="${val.label.replace(/"/g, '&quot;')}" data-role="desc" style="width:100%;border:1px solid var(--line-soft);border-radius:8px;padding:7px 8px;font:inherit">`
+          : `${val.label}`;
+        tr.innerHTML = `
+          <td>${descCell}</td>
+          <td><input type="date" value="${val.prazo}" data-role="prazo"></td>
+          <td><select data-role="status">${STATUS_OPCOES.map(([v, l]) => `<option value="${v}" ${v === val.status ? 'selected' : ''}>${l}</option>`).join('')}</select></td>`;
+        if (val.custom) {
+          const descInput = tr.querySelector('[data-role=desc]');
+          descInput.addEventListener('input', () => { val.label = descInput.value; document.getElementById('resultadoCard').textContent = gerarResultadoEsperado(); });
+        }
+        tr.querySelector('[data-role=prazo]').addEventListener('change', (e) => { val.prazo = e.target.value; });
+        tr.querySelector('[data-role=status]').addEventListener('change', (e) => { val.status = e.target.value; atualizarProgresso(); });
+        body.appendChild(tr);
+      }
+    }
+    document.getElementById('resultadoCard').textContent = gerarResultadoEsperado();
+    document.getElementById('resumoFinal').textContent = `${selecionadas.size} ${selecionadas.size === 1 ? 'ação escolhida' : 'ações escolhidas'} • 30 dias • 1 prioridade`;
+    atualizarProgresso();
+  }
+
+  renderCatalogo();
+  renderCompromisso();
+
+  const planoMsg = document.getElementById('planoMsg');
+  document.getElementById('btnSalvarPlano').addEventListener('click', async () => {
+    planoMsg.innerHTML = '';
+    const btn = document.getElementById('btnSalvarPlano');
+    btn.disabled = true;
+
+    const resultadoEsperado = gerarResultadoEsperado();
+    const { error: updErr } = await supabase.from('planos_acao').update({ resultado_30_dias: resultadoEsperado }).eq('id', plano.id);
+
+    // Reescreve as até 3 linhas de planos_acao_itens a partir da seleção atual.
+    await supabase.from('planos_acao_itens').delete().eq('plano_id', plano.id);
+    let erroItens = null;
+    let ordem = 1;
+    for (const val of selecionadas.values()) {
+      if (!val.label || !val.label.trim()) continue;
+      const { error } = await supabase.from('planos_acao_itens').insert({
+        plano_id: plano.id, ordem, descricao: val.label.trim(), prazo: val.prazo || null, status: val.status,
+        concluido_em: val.status === 'concluido' ? new Date().toISOString() : null,
+      });
+      if (error) erroItens = error;
+      ordem++;
+      if (ordem > MAX_ACOES) break;
+    }
+
+    btn.disabled = false;
+    if (updErr || erroItens) {
+      planoMsg.innerHTML = `<div class="alert alert-error">Não foi possível salvar tudo: ${(updErr || erroItens).message}</div>`;
+    } else {
+      planoMsg.innerHTML = `<div class="alert alert-info">Plano salvo.</div>`;
+      montarCompartilhar();
+    }
+  });
+
+  function montarCompartilhar() {
+    const bar = document.getElementById('compartilharBar');
+    const linhas = [
+      'Meu Plano de Ação — Próximos 30 dias — Clínica de Valor',
+      `Prioridade: ${TITULOS_PONTO[pontoPrincipal] || '—'}`,
+      gerarResultadoEsperado(),
+      ...[...selecionadas.values()].filter((v) => v.label).map((v) => `- ${v.label} (prazo: ${v.prazo})`),
+    ];
+    const texto = linhas.join('\n');
+    bar.innerHTML = `
+      <a class="btn alt" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(texto)}">Compartilhar no WhatsApp</a>
+      <a class="btn alt" href="mailto:?subject=${encodeURIComponent('Meu Plano de Ação — 30 dias — Clínica de Valor')}&body=${encodeURIComponent(texto)}">Enviar por e-mail</a>
+    `;
+  }
+  montarCompartilhar();
+})();
+</script>
+</body>
+</html>

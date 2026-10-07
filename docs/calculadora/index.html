@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#173f31">
+<link rel="icon" href="/assets/img/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/img/icon-180.png">
+<title>Quanto preciso cobrar? | INDIA</title>
+<style>
+  @font-face {
+    font-family: 'Cambria';
+    src: local('Cambria');
+  }
+  :root{
+    color-scheme: light;
+    --verde:#1D6B4E; --verde-escuro:#12432F; --terracota:#B5613C;
+    --creme:#FAFAF7; --creme-linha:#EDE8DE; --tinta:#22281F; --tinta-suave:#5B6357;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--creme);color:var(--tinta);font-family:'Calibri','Trebuchet MS',sans-serif;line-height:1.5;}
+  h1,h2,h3,.serif{font-family:'Cambria','Georgia',serif;}
+  .wrap{max-width:640px;margin:0 auto;padding:20px 16px 80px;}
+  header{margin-bottom:18px;}
+  .eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:11px;color:var(--terracota);font-weight:700;margin-bottom:8px;}
+  h1{font-size:24px;margin:0 0 12px;color:var(--verde-escuro);font-weight:700;}
+  .sub{color:var(--tinta-suave);font-size:14px;max-width:60ch;margin:0 0 10px;}
+  .sub:last-of-type{margin-bottom:0;}
+
+  .progress-wrap{margin:22px 0 18px;}
+  .progress-label{font-size:12.5px;color:var(--tinta-suave);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+  .progress-bar{height:6px;border-radius:99px;background:var(--creme-linha);overflow:hidden;}
+  .progress-fill{height:100%;background:var(--verde);border-radius:99px;transition:width .25s ease;}
+
+  .quest-card{background:#fff;border:1px solid var(--creme-linha);border-radius:10px;padding:26px 22px;}
+  .quest-titulo{font-size:19px;font-weight:700;color:var(--verde-escuro);margin:0 0 8px;font-family:'Cambria','Georgia',serif;}
+  .quest-ajuda{font-size:13.5px;color:var(--tinta-suave);margin:0 0 22px;}
+
+  .campo{margin-bottom:6px;}
+  .moeda-row{display:flex;align-items:center;gap:8px;}
+  .moeda-row .unit{font-size:22px;font-weight:700;color:var(--verde-escuro);}
+  input[type=number]{font-size:22px;padding:12px 12px;border:1px solid var(--creme-linha);border-radius:6px;font-family:inherit;color:var(--tinta);background:var(--creme);width:100%;}
+  select{font-size:16px;padding:12px 12px;border:1px solid var(--creme-linha);border-radius:6px;font-family:inherit;color:var(--tinta);background:var(--creme);width:100%;}
+  input:focus,select:focus,button:focus-visible{outline:2px solid var(--verde);outline-offset:1px;}
+  .sufixo{font-size:13px;color:var(--tinta-suave);margin-top:6px;}
+
+  .erro-campo{color:#B5413C;font-size:12.5px;margin-top:10px;display:none;}
+  .erro-campo.show{display:block;}
+
+  .stepnav{display:flex;gap:12px;margin-top:22px;}
+  .stepnav button{flex:1;padding:14px;border:none;border-radius:6px;font:inherit;font-weight:700;font-size:15px;cursor:pointer;}
+  .btn-voltar{background:var(--creme);color:var(--tinta);border:1px solid var(--creme-linha) !important;}
+  .btn-continuar{background:var(--terracota);color:#fff;}
+  .btn-continuar:hover{filter:brightness(1.08);}
+
+  .result-card{background:var(--verde-escuro);color:var(--creme);border-radius:10px;padding:26px 24px;}
+  .result-card h2{color:var(--creme);opacity:.75;font-size:13px;text-transform:uppercase;letter-spacing:.08em;margin:0 0 14px;}
+  .svc-results{display:grid;gap:10px;margin:18px 0 20px;}
+  .sr{background:rgba(250,250,247,.08);border-radius:4px;padding:12px 14px;border-left:4px solid var(--terracota);}
+  .sr .t{font-size:12px;text-transform:uppercase;letter-spacing:.08em;opacity:.75;}
+  .sr .v{font-family:'Cambria',serif;font-size:24px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;}
+  .sr .v small{font-family:'Calibri',sans-serif;font-size:13px;font-weight:400;opacity:.8;}
+  .sr .d{font-size:12.5px;opacity:.8;}
+  .comparativo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0 20px;}
+  .comparativo .cc{background:rgba(250,250,247,.08);border-radius:4px;padding:12px 14px;}
+  .comparativo .t{font-size:11px;text-transform:uppercase;letter-spacing:.06em;opacity:.75;}
+  .comparativo .v{font-family:'Cambria',serif;font-size:19px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;margin-top:2px;}
+  .comparativo .v.up{color:#F3B79A;}
+  .comparativo .v.down{color:#9FD9BC;}
+  .breakdown{display:grid;grid-template-columns:1fr auto;row-gap:9px;column-gap:12px;font-size:13.5px;border-top:1px solid rgba(250,250,247,.18);padding-top:16px;}
+  .breakdown .k{opacity:.85;} .breakdown .v{text-align:right;font-variant-numeric:tabular-nums;}
+  .breakdown .total{font-weight:700;color:var(--terracota);border-top:1px solid rgba(250,250,247,.25);padding-top:9px;margin-top:4px;}
+  .breakdown .total.k{opacity:1;color:#fff;}
+  .alert{margin-top:18px;font-size:12.5px;padding:10px 12px;border-radius:3px;background:rgba(181,97,60,.18);border:1px solid rgba(181,97,60,.4);color:#FCEFE9;}
+  .hora{font-size:13px;opacity:.8;margin:-8px 0 18px;}
+  .footnote{margin-top:28px;padding-top:18px;border-top:1px solid var(--creme-linha);font-size:12.5px;color:var(--tinta-suave);}
+  .cta{display:block;width:100%;margin-top:22px;padding:14px;border:none;border-radius:4px;background:var(--terracota);color:#fff;font:inherit;font-weight:700;font-size:15px;cursor:pointer;text-align:center;text-decoration:none;}
+  .cta:hover{filter:brightness(1.08);}
+  .result-actions{display:flex;flex-direction:column;gap:10px;margin-top:16px;}
+  .btn-secundario{display:block;width:100%;padding:13px;border:1px solid var(--creme-linha);border-radius:6px;background:#fff;color:var(--verde-escuro);font:inherit;font-weight:700;font-size:14px;cursor:pointer;text-align:center;text-decoration:none;}
+  .salvando-msg{font-size:13px;color:var(--tinta-suave);margin-top:14px;text-align:center;}
+  .salvar-erro{margin-top:14px;font-size:13px;padding:12px 14px;border-radius:6px;background:#FBEAE6;border:1px solid #E7B8AB;color:#7A2E1E;}
+  .salvar-erro button{margin-top:10px;padding:9px 16px;border:none;border-radius:5px;background:var(--terracota);color:#fff;font:inherit;font-weight:700;cursor:pointer;}
+
+  #cabecalhoPublico{--ph-bg:var(--creme);--ph-ink:var(--verde-escuro);--ph-accent:var(--terracota)}
+  #cabecalhoPublico .ph-header{border-bottom:1px solid var(--creme-linha)}
+  [hidden]{display:none !important;}
+</style>
+</head>
+<body>
+<div id="cabecalhoPublico"></div>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Calculadora da Psicóloga · Gratuita</div>
+    <h1>Quanto preciso cobrar para ganhar o que quero?</h1>
+    <p class="sub">Responda uma pergunta de cada vez e descubra o valor necessário por sessão para alcançar a renda que você deseja.</p>
+    <p class="sub">O cálculo considera os custos da clínica, impostos, reservas para 13º e férias, além de 10% para o caixa da empresa e um mês de férias por ano.</p>
+    <p class="sub">Ao finalizar, crie sua conta gratuita ou entre na sua conta para acessar e salvar seu resultado.</p>
+  </header>
+
+  <div id="areaPerguntas">
+    <div class="progress-wrap">
+      <div class="progress-label" id="progressoLabel">Pergunta 1 de 6</div>
+      <div class="progress-bar"><div class="progress-fill" id="progressoFill" style="width:16.67%"></div></div>
+    </div>
+    <div class="quest-card" id="questCard"></div>
+  </div>
+
+  <div id="areaResultado" hidden>
+    <div class="result-card" aria-live="polite">
+      <h2 id="resTitulo">Para ganhar R$ 10.000 por mês, você precisa cobrar</h2>
+      <div class="svc-results" id="svcResults"></div>
+      <div class="comparativo" id="comparativo"></div>
+      <div class="hora" id="valorHora"></div>
+      <div class="breakdown">
+        <div class="k">Pró-labore</div><div class="v" id="bd-prolabore">R$ 0</div>
+        <div class="k">Provisão 13º (8,33%)</div><div class="v" id="bd-decimo">R$ 0</div>
+        <div class="k">Provisão férias (11,11%)</div><div class="v" id="bd-ferias">R$ 0</div>
+        <div class="k">Custos fixos</div><div class="v" id="bd-custos">R$ 0</div>
+        <div class="k" id="bd-inss-k" hidden>INSS do pró-labore (11%)</div><div class="v" id="bd-inss" hidden>R$ 0</div>
+        <div class="k" id="bd-reserva-k">Reserva técnica / impostos</div><div class="v" id="bd-reserva">R$ 0</div>
+        <div class="k">Caixa da empresa (10%)</div><div class="v" id="bd-margem">R$ 0</div>
+        <div class="k total">Faturamento mínimo/mês</div><div class="v total" id="bd-total">R$ 0</div>
+      </div>
+
+      <div class="alert" id="alertBox" hidden></div>
+      <a class="cta" href="../compra/index.html">Quero fazer meu Mapa de 30 Dias agora →</a>
+    </div>
+
+    <div class="result-actions">
+      <div id="statusSalvamento" class="salvando-msg">Salvando seu resultado…</div>
+      <button type="button" class="btn-secundario" id="btnNovaSimulacao">Iniciar nova simulação</button>
+      <a class="btn-secundario" href="meus-calculos.html">Ver meus cálculos anteriores</a>
+    </div>
+
+    <div class="footnote" id="footnoteTexto">
+      <strong>Como a conta é feita:</strong> pró-labore + provisão de 13º (8,33%) + provisão de férias (11,11%) + custos fixos do negócio (+ INSS do pró-labore, para quem tem CNPJ com Fator R), tudo dividido por (1 − reserva técnica de impostos, conforme o seu regime − 10% de caixa da empresa) = faturamento mínimo mensal. Esse valor é dividido pela média mensal de sessões ao longo do ano, já considerando 1 mês de férias (11 meses trabalhados) — uma vez usando as sessões que você atende hoje, outra vez usando o máximo que você atenderia de forma saudável — para chegar ao valor mínimo que cada sessão individual precisa valer em cada ritmo. O valor que você diz cobrar hoje é só para comparação — ele não entra nessa conta. Os percentuais de imposto são estimativas para 2026; confirme com a sua contadora.
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
+import { montarCabecalhoPublico } from '../assets/js/site-header.js';
+
+avisarSupabaseNaoConfigurado();
+montarCabecalhoPublico({ container: document.getElementById('cabecalhoPublico'), rootPath: '..', paginaAtual: 'calculadora' });
+
+const VERSAO_REGRA = 'calculadora-publica-v3';
+const DRAFT_KEY = 'calc_publica_rascunho_v3';
+try { localStorage.removeItem('calc_publica_rascunho_v1'); localStorage.removeItem('calc_publica_rascunho_v2'); } catch { /* rascunhos de modelos antigos, não usamos mais */ }
+
+// ---- premissas fixas (não são perguntadas; ficam registradas com cada resultado) ----
+const PROVISAO_DECIMO_PCT = 8.33;   // 1/12 do pró-labore
+const PROVISAO_FERIAS_PCT = 11.11;  // 1/12 + 1/3, padrão CLT
+const CAIXA_EMPRESA_PCT = 10;       // reserva de segurança / reinvestimento
+const MESES_TRABALHADOS_ANO = 11;   // 1 mês de férias por ano
+const SEMANAS_TRABALHADAS_ANO = 52 * MESES_TRABALHADOS_ANO / 12; // conversão sessões/semana -> média mensal, já descontando o mês de férias
+
+const REGIMES = {
+  'nao-sei': { pct: 18, txt: 'Estimativa cautelosa que cobre a maioria dos casos.' },
+  'pf': { pct: 18, txt: 'Autônoma paga INSS de 20% e imposto de renda progressivo. A carga real varia com a renda: 18% é uma estimativa média.' },
+  'fatorr': { pct: 6, txt: 'Simples Nacional, Anexo III: 6% na primeira faixa (até R$ 180 mil/ano). Exige pró-labore de pelo menos 28% do faturamento, com 11% de INSS, que já entra na conta.' },
+  'anexov': { pct: 15.5, txt: 'Simples Nacional, Anexo V: a partir de 15,5%. Se o pró-labore chegar a 28% do faturamento, dá para ir para o Anexo III (6%).' },
+};
+
+const QUESTOES = [
+  { id: 'prolabore', tipo: 'moeda', titulo: 'Quanto você quer ganhar por mês', ajuda: 'O pró-labore é o que sustenta sua vida — não é "o que sobra". Informe o valor limpo, depois de pagar a clínica e os impostos.', min: 0, default: 10000 },
+  { id: 'custosFixos', tipo: 'moeda', titulo: 'Custos fixos do negócio por mês', ajuda: 'Consultório, plataforma, contador, materiais, supervisão.', min: 0, default: 1800 },
+  { id: 'regime', tipo: 'select', titulo: 'Como você recebe hoje?', ajuda: 'Isso define automaticamente a taxa de imposto usada no cálculo.', opcoes: [
+    ['nao-sei', 'Não sei / ainda não decidi'], ['pf', 'Autônoma, pessoa física (carnê-leão)'],
+    ['fatorr', 'Tenho CNPJ no Simples, com Fator R'], ['anexov', 'Tenho CNPJ no Simples, sem Fator R'],
+  ], default: 'nao-sei' },
+  { id: 'sessoesSemana', tipo: 'numero', titulo: 'Quantas sessões clínicas você atende por semana hoje', ajuda: 'Conte as sessões individuais realizadas em uma semana comum.', min: 0, max: 40, default: 18, sufixo: 'sessões' },
+  { id: 'sessoesMaxSaudavel', tipo: 'numero', titulo: 'Qual o máximo que você consegue atender de forma saudável', ajuda: 'O limite da sua agenda sem comprometer sua saúde — pode ser igual, maior ou menor que o número de hoje.', min: 0, max: 40, default: 22, sufixo: 'sessões por semana' },
+  { id: 'valorAtual', tipo: 'moeda', titulo: 'Qual o valor da sua sessão hoje?', ajuda: 'Isso não muda o cálculo do valor necessário — é só para comparar quanto falta (ou quanto já está acima).', min: 0, default: 150 },
+];
+
+function defaultAnswers() {
+  const a = {};
+  QUESTOES.forEach((q) => { a[q.id] = q.default; });
+  return a;
+}
+
+function lerRascunho() {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== 'object' || !parsed.answers) return null;
+    return parsed;
+  } catch { return null; }
+}
+function salvarRascunho(completo) {
+  try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ answers, stepIndex, completo: !!completo })); } catch { /* localStorage indisponível */ }
+}
+function limparRascunho() {
+  try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignorar */ }
+}
+
+const salvo = lerRascunho();
+// As premissas fixas nunca vêm de rascunho — só os campos do modelo atual existem aqui.
+let answers = salvo ? Object.assign(defaultAnswers(), Object.fromEntries(QUESTOES.map((q) => [q.id, salvo.answers[q.id]]).filter(([, v]) => v !== undefined))) : defaultAnswers();
+let stepIndex = salvo && Number.isInteger(salvo.stepIndex) ? salvo.stepIndex : 0;
+
+const fmt = (n) => isFinite(n) ? 'R$ ' + Math.round(n).toLocaleString('pt-BR') : '—';
+
+function conta(a) {
+  const custos = a.custosFixos;
+  const reserva = REGIMES[a.regime].pct / 100;
+  const margem = CAIXA_EMPRESA_PCT / 100;
+  const decimo = a.prolabore * PROVISAO_DECIMO_PCT / 100;
+  const ferias = a.prolabore * PROVISAO_FERIAS_PCT / 100;
+  const inss = a.regime === 'fatorr' ? a.prolabore * 0.11 : 0;
+  const denom = 1 - reserva - margem;
+  const fat = denom > 0 ? (a.prolabore + decimo + ferias + custos + inss) / denom : Infinity;
+
+  const agendadasAtual = a.sessoesSemana * SEMANAS_TRABALHADAS_ANO / 12;
+  const sessAtual = a.sessoesSemana > 0 && agendadasAtual > 0 ? fat / agendadasAtual : null;
+  const agendadasMax = a.sessoesMaxSaudavel * SEMANAS_TRABALHADAS_ANO / 12;
+  const sessMax = a.sessoesMaxSaudavel > 0 && agendadasMax > 0 ? fat / agendadasMax : null;
+
+  const diferenca = sessAtual !== null ? sessAtual - a.valorAtual : null;
+  return {
+    regime: a.regime, prolabore: a.prolabore, custos, reserva, margem, decimo, ferias, inss, denom, fat,
+    agendadasAtual, sess: sessAtual, agendadasMax, sessMax,
+    valorAtual: a.valorAtual, diferenca,
+    reservaTecnicaPct: REGIMES[a.regime].pct, provisaoDecimoPct: PROVISAO_DECIMO_PCT,
+    provisaoFeriasPct: PROVISAO_FERIAS_PCT, caixaEmpresaPct: CAIXA_EMPRESA_PCT, mesesTrabalhadosAno: MESES_TRABALHADOS_ANO,
+  };
+}
+
+function validar(q, valorBruto) {
+  if (q.tipo === 'select') {
+    const ok = q.opcoes.some(([val]) => val === valorBruto);
+    return ok ? { ok: true, valor: valorBruto } : { ok: false, msg: 'Escolha uma opção.' };
+  }
+  const v = parseFloat(valorBruto);
+  if (valorBruto === '' || valorBruto === null || isNaN(v)) return { ok: false, msg: 'Informe um valor.' };
+  if (q.min != null && v < q.min) return { ok: false, msg: `O valor mínimo é ${q.min}.` };
+  if (q.max != null && v > q.max) return { ok: false, msg: `O valor máximo é ${q.max}.` };
+  return { ok: true, valor: v };
+}
+
+const questCard = document.getElementById('questCard');
+const progressoLabel = document.getElementById('progressoLabel');
+const progressoFill = document.getElementById('progressoFill');
+
+function renderPergunta() {
+  if (stepIndex >= QUESTOES.length) stepIndex = QUESTOES.length - 1;
+  if (stepIndex < 0) stepIndex = 0;
+  const q = QUESTOES[stepIndex];
+  const total = QUESTOES.length;
+  const num = stepIndex + 1;
+  progressoLabel.textContent = `Pergunta ${num} de ${total}`;
+  progressoFill.style.width = Math.round((num / total) * 100) + '%';
+
+  let campoHtml;
+  if (q.tipo === 'select') {
+    campoHtml = `<div class="campo"><select id="campoInput">${q.opcoes.map(([val, label]) => `<option value="${val}" ${answers[q.id] === val ? 'selected' : ''}>${label}</option>`).join('')}</select></div>`;
+  } else if (q.tipo === 'moeda') {
+    campoHtml = `<div class="campo moeda-row"><span class="unit">R$</span><input type="number" id="campoInput" inputmode="decimal" min="${q.min ?? 0}" step="10" value="${answers[q.id]}"></div>`;
+  } else {
+    campoHtml = `<div class="campo"><input type="number" id="campoInput" inputmode="numeric" min="${q.min ?? 0}" ${q.max != null ? `max="${q.max}"` : ''} step="1" value="${answers[q.id]}"></div>
+       ${q.sufixo ? `<div class="sufixo">${q.sufixo}</div>` : ''}`;
+  }
+
+  questCard.innerHTML = `
+    <h2 class="quest-titulo">${q.titulo}</h2>
+    ${q.ajuda ? `<p class="quest-ajuda">${q.ajuda}</p>` : ''}
+    ${campoHtml}
+    <div class="erro-campo" id="erroCampo"></div>
+    <div class="stepnav">
+      ${stepIndex > 0 ? '<button type="button" class="btn-voltar" id="btnVoltar">Voltar</button>' : ''}
+      <button type="button" class="btn-continuar" id="btnContinuar">${stepIndex === total - 1 ? 'Ver meu resultado' : 'Continuar'}</button>
+    </div>`;
+
+  document.getElementById('btnVoltar')?.addEventListener('click', () => { stepIndex--; salvarRascunho(false); renderPergunta(); });
+  document.getElementById('btnContinuar').addEventListener('click', () => avancar(q));
+}
+
+async function avancar(q) {
+  const bruto = document.getElementById('campoInput').value;
+  const resultado = validar(q, bruto);
+  const erroEl = document.getElementById('erroCampo');
+  if (!resultado.ok) { erroEl.textContent = resultado.msg; erroEl.classList.add('show'); return; }
+  erroEl.classList.remove('show');
+
+  answers[q.id] = resultado.valor;
+
+  if (stepIndex === QUESTOES.length - 1) {
+    salvarRascunho(true);
+    await irParaResultado();
+    return;
+  }
+  stepIndex++;
+  salvarRascunho(false);
+  renderPergunta();
+}
+
+// ---- ponte com login/cadastro ----
+
+async function irParaResultado() {
+  const { data } = await supabase.auth.getSession();
+  if (!data.session) {
+    const voltar = encodeURIComponent(location.pathname + location.search);
+    location.href = `../login/index.html?redirect=${voltar}`;
+    return;
+  }
+  await finalizar(data.session);
+}
+
+// ---- resultado ----
+
+function renderResultado(r) {
+  document.getElementById('resTitulo').textContent = 'Para ganhar ' + fmt(r.prolabore) + ' por mês, você precisa cobrar';
+
+  let html = '';
+  if (r.sess !== null) html += `<div class="sr"><div class="t">No seu ritmo de hoje</div><div class="v">${fmt(r.sess)} <small>/ sessão</small></div><div class="d">${Math.round(r.agendadasAtual)} sessões em média por mês, no ritmo atual</div></div>`;
+  if (r.sessMax !== null) html += `<div class="sr"><div class="t">No máximo saudável da sua agenda</div><div class="v">${fmt(r.sessMax)} <small>/ sessão</small></div><div class="d">${Math.round(r.agendadasMax)} sessões em média por mês, no ritmo máximo</div></div>`;
+  document.getElementById('svcResults').innerHTML = html;
+
+  const comp = document.getElementById('comparativo');
+  if (r.sess !== null) {
+    const diffClasse = r.diferenca > 0 ? 'up' : r.diferenca < 0 ? 'down' : '';
+    const diffTexto = r.diferenca > 0 ? `+${fmt(r.diferenca)} a mais` : r.diferenca < 0 ? `${fmt(Math.abs(r.diferenca))} acima do necessário` : 'igual ao necessário';
+    comp.innerHTML = `
+      <div class="cc"><div class="t">Você cobra hoje</div><div class="v">${fmt(r.valorAtual)}</div></div>
+      <div class="cc"><div class="t">Diferença (ritmo de hoje)</div><div class="v ${diffClasse}">${diffTexto}</div></div>`;
+  } else {
+    comp.innerHTML = '';
+  }
+
+  document.getElementById('valorHora').textContent = isFinite(r.fat) ? 'Sua clínica precisa faturar ' + fmt(r.fat) + ' por mês' : '';
+
+  document.getElementById('bd-prolabore').textContent = fmt(r.prolabore);
+  document.getElementById('bd-decimo').textContent = fmt(r.decimo);
+  document.getElementById('bd-ferias').textContent = fmt(r.ferias);
+  document.getElementById('bd-custos').textContent = fmt(r.custos);
+  document.getElementById('bd-reserva-k').textContent = `Reserva técnica / impostos (${r.reservaTecnicaPct}%)`;
+  document.getElementById('bd-reserva').textContent = fmt(r.fat * r.reserva);
+  document.getElementById('bd-margem').textContent = fmt(r.fat * r.margem);
+  document.getElementById('bd-total').textContent = fmt(r.fat);
+  document.getElementById('bd-inss-k').hidden = document.getElementById('bd-inss').hidden = !r.inss;
+  document.getElementById('bd-inss').textContent = fmt(r.inss);
+
+  const a = document.getElementById('alertBox');
+  let msg = '';
+  if (r.agendadasAtual <= 0) msg = 'Informe quantas sessões você atende por semana para calcular o valor necessário.';
+  else if (r.regime === 'fatorr' && r.prolabore < r.fat * 0.28) msg = 'Para manter o Fator R, o pró-labore precisa ser de pelo menos 28% do faturamento (' + fmt(r.fat * 0.28) + '). Abaixo disso, o imposto sobe para o Anexo V (15,5%).';
+  else if (r.sess !== null && r.sess > 600) msg = 'O valor necessário no seu ritmo de hoje ficou bem acima da média de mercado. Vale rever os custos fixos ou a renda desejada.';
+  a.textContent = msg;
+  a.hidden = !msg;
+}
+
+let salvando = false;
+
+async function finalizar(session) {
+  const r = conta(answers);
+  document.getElementById('areaPerguntas').hidden = true;
+  document.getElementById('areaResultado').hidden = false;
+  renderResultado(r);
+
+  const statusEl = document.getElementById('statusSalvamento');
+  await salvarNoBanco(session, r, statusEl);
+}
+
+async function salvarNoBanco(session, r, statusEl) {
+  if (salvando) return;
+  salvando = true;
+  statusEl.className = 'salvando-msg';
+  statusEl.textContent = 'Salvando seu resultado…';
+
+  const { error } = await supabase.from('calculadora_publica_resultados').insert({
+    user_id: session.user.id,
+    respostas: answers,
+    resultado: r,
+    versao_regra: VERSAO_REGRA,
+  }).select('id').single();
+
+  if (error) {
+    salvando = false;
+    statusEl.className = 'salvar-erro';
+    statusEl.innerHTML = 'Não foi possível salvar o seu resultado agora. Suas respostas continuam aqui — tente novamente. <br><button type="button" id="btnTentarSalvar">Tentar salvar novamente</button>';
+    document.getElementById('btnTentarSalvar').addEventListener('click', () => salvarNoBanco(session, r, statusEl));
+    return;
+  }
+
+  limparRascunho();
+  statusEl.className = 'salvando-msg';
+  statusEl.textContent = 'Resultado salvo na sua conta.';
+}
+
+document.getElementById('btnNovaSimulacao').addEventListener('click', () => {
+  answers = defaultAnswers();
+  stepIndex = 0;
+  limparRascunho();
+  document.getElementById('areaResultado').hidden = true;
+  document.getElementById('areaPerguntas').hidden = false;
+  renderPergunta();
+});
+
+(async () => {
+  // Se voltamos de um redirecionamento de login com um rascunho já completo,
+  // vai direto para o resultado (sem repetir as perguntas).
+  if (salvo && salvo.completo) {
+    const { data } = await supabase.auth.getSession();
+    if (data.session) { await finalizar(data.session); return; }
+  }
+  renderPergunta();
+})();
+</script>
+</body>
+</html>

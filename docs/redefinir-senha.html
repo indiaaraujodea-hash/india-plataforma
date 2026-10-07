@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#173f31">
+<link rel="icon" href="/assets/img/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/img/icon-180.png">
+<title>Redefinir senha | INDIA</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="assets/css/shell.css">
+</head>
+<body>
+<div class="login-shell">
+  <div class="login-right" style="width:100%">
+    <div class="login-card">
+      <h2>Defina sua nova senha</h2>
+      <p class="sub">Escolha uma nova senha para sua conta.</p>
+      <div id="msgBox"></div>
+      <form id="formNovaSenha">
+        <div class="form-field"><label>Nova senha</label><input type="password" id="novaSenha" minlength="6" required></div>
+        <div class="form-field"><label>Confirmar nova senha</label><input type="password" id="confirmarSenha" minlength="6" required></div>
+        <button class="btn btn-primary" type="submit">Salvar nova senha</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { supabase, avisarSupabaseNaoConfigurado } from './assets/js/supabase-client.js';
+import { ativarToggleSenha } from './assets/js/senha-toggle.js';
+
+avisarSupabaseNaoConfigurado();
+ativarToggleSenha('novaSenha');
+ativarToggleSenha('confirmarSenha');
+
+const msgBox = document.getElementById('msgBox');
+const formNovaSenha = document.getElementById('formNovaSenha');
+function showMsg(text, type = 'error') {
+  msgBox.innerHTML = `<div class="alert alert-${type}">${text}</div>`;
+}
+
+// O link do e-mail de redefinição carrega um token de recuperação na própria URL.
+// O cliente Supabase processa esse token de forma assíncrona ao carregar a página —
+// checar getSession() uma única vez logo no início pode "vencer a corrida" e ler
+// null antes desse processamento terminar, mostrando "link inválido" mesmo num link
+// novo. Por isso escutamos o evento PASSWORD_RECOVERY (fluxo oficial do Supabase)
+// em vez de checar a sessão só uma vez.
+formNovaSenha.classList.add('hidden');
+showMsg('Verificando seu link de redefinição…', 'info');
+
+let sessaoPronta = false;
+function liberarFormulario() {
+  if (sessaoPronta) return;
+  sessaoPronta = true;
+  msgBox.innerHTML = '';
+  formNovaSenha.classList.remove('hidden');
+}
+
+supabase.auth.onAuthStateChange((event, session) => {
+  if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
+    liberarFormulario();
+  }
+});
+
+// Fallback: se o evento já tiver disparado antes deste listener ser registrado,
+// getSession() aqui (após o processamento inicial do cliente) ainda encontra a sessão.
+const { data } = await supabase.auth.getSession();
+if (data.session) liberarFormulario();
+
+setTimeout(() => {
+  if (!sessaoPronta) {
+    showMsg('Este link de redefinição é inválido ou expirou. Peça um novo link na tela de login.');
+  }
+}, 4000);
+
+formNovaSenha.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const senha = document.getElementById('novaSenha').value;
+  const confirmar = document.getElementById('confirmarSenha').value;
+  if (senha !== confirmar) { showMsg('As senhas não coincidem.'); return; }
+  const { error } = await supabase.auth.updateUser({ password: senha });
+  if (error) { showMsg('Não foi possível salvar: ' + error.message); return; }
+  showMsg('Senha atualizada. Redirecionando…', 'info');
+  setTimeout(() => { location.href = 'inicio/index.html'; }, 1500);
+});
+</script>
+</body>
+</html>
