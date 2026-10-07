@@ -362,7 +362,7 @@ const pathMap={
 'Crescer / diversificar':{title:'Redesenhar o modelo de crescimento',text:'A expansão pode exigir uma nova fonte de receita ou formato além do atendimento individual.',manual:20,tool:'../ferramentas/grupo.html',toolLabel:'Simular serviço em grupo'},
 'Proteger capacidade e energia':{title:'Proteger capacidade antes de crescer',text:'A prioridade é tornar a agenda sustentável antes de adicionar volume ou novas frentes.',manual:3}
 };
-function renderPath(primary){const x=pathMap[primary]||pathMap['Estruturar'];document.getElementById('pathTitle').textContent=x.title;document.getElementById('pathText').textContent=x.text;let a='';if(x.tool)a+=`<a class="btn btn-primary" href="${x.tool}">${x.toolLabel} →</a> `;a+=`<a class="btn" href="../manual/index.html?cap=${x.manual}">Abrir capítulo recomendado →</a> <a class="btn" href="../aulas/index.html">Ver aulas da trilha →</a> <a class="btn" href="../mentoria/index.html">Conversar sobre mentoria →</a> <a class="btn" href="../plano/index.html">Ir para meu plano →</a>`;document.getElementById('pathActions').innerHTML=a;}
+function renderPath(primary){const x=pathMap[primary]||pathMap['Estruturar'];document.getElementById('pathTitle').textContent=x.title;document.getElementById('pathText').textContent=x.text;let a='';if(x.tool)a+=`<a class="btn btn-primary" href="${x.tool}">${x.toolLabel} →</a> `;a+=`<a class="btn" href="../manual/index.html?cap=${x.manual}">Abrir capítulo recomendado →</a> <a class="btn" href="../plano/index.html">Ir para meu plano →</a>`;document.getElementById('pathActions').innerHTML=a;}
 
 async function sendDiagnosis(payload){
   const status=document.getElementById('saveStatus');
