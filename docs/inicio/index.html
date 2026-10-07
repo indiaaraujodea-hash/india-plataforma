@@ -25,9 +25,11 @@
 .landing-copy h1{color:var(--green,#173f31);font-family:Georgia,'Cambria',serif;font-weight:500;font-size:clamp(26px,4.6vw,48px);line-height:1.1;letter-spacing:.005em;margin:0 0 6px;text-transform:none}
 .landing-copy .hero-lede{color:var(--terracota,#9a5b34);font-family:Georgia,'Cambria',serif;font-style:italic;font-size:clamp(18px,2.4vw,22px);margin:0 0 4px;font-weight:400}
 .landing-copy p{color:#4b5148;font-size:18px;max-width:520px}
-.hero-pillars{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:26px}
-.hero-pillars span{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--terracota,#9a5b34)}
-.hero-pillars .dot{width:4px;height:4px;border-radius:50%;background:var(--line,#e5ded1)}
+.hero-calc{display:inline-flex;align-items:center;gap:10px;margin-top:26px;background:var(--terracota,#9a5b34);color:#fdfaf4;text-decoration:none;font-weight:700;font-size:clamp(13px,3.6vw,15px);white-space:nowrap;padding:13px 16px 13px 18px;border-radius:999px;box-shadow:0 6px 18px rgba(154,91,52,.28);transition:transform .15s ease,box-shadow .15s ease}
+.hero-calc:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(154,91,52,.34)}
+.hero-calc svg{flex-shrink:0}
+.hero-calc .badge{background:#fdfaf4;color:var(--terracota,#9a5b34);font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:4px 9px;border-radius:999px}
+@media(max-width:400px){.hero-calc{gap:7px;font-size:12px;padding:12px 12px 12px 14px;max-width:100%}.hero-calc svg{width:16px;height:16px}.hero-calc .badge{font-size:9px;padding:3px 7px}}
 
 /* ---- Acesso rápido: atalho compacto para os 4 produtos, sem mexer nos
    cards abaixo. 2×2 no celular, 1 linha de 4 a partir de 640px (mesmo
@@ -41,13 +43,12 @@
 
 /* ---- cards: os 3 existentes, largura ajustada para caber lado a lado ---- */
 .landing-cards{gap:18px;padding-left:24px;padding-right:24px;padding-bottom:64px;align-items:stretch}
-/* 4 cards: lado a lado no computador, 2×2 em telas médias, 1 por linha no celular */
-.landing-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));max-width:1400px}
+/* 3 cards: lado a lado no computador, 2 por linha em telas médias, 1 por linha no celular */
+.landing-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:1180px;margin-left:auto;margin-right:auto;justify-content:center}
 .product-card{width:auto;display:flex;flex-direction:column}
 @media(max-width:1180px){.landing-cards{grid-template-columns:repeat(2,minmax(0,340px))}}
 @media(max-width:640px){.landing-cards{grid-template-columns:minmax(0,1fr)}}
 .product-card .photo{height:190px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background-size:cover;background-position:center;background-repeat:no-repeat}
-.product-card .photo.p6{background-image:url('../assets/img/calculadora-card.jpg')}
 .product-card .photo.p1{background-image:url('../assets/img/mapa-30-dias.svg');background-size:cover}
 
 /* selo "Comece por aqui" no canto do card do Mapa */
@@ -85,7 +86,6 @@
 /* um card por linha (celular): o alinhamento entre cards não se aplica */
 @media(max-width:640px){.product-card .kicker,.product-card h3,.product-card .body>p,.product-card ul{min-height:0}}
 .product-card .cta{margin-top:auto;white-space:nowrap;font-size:15px;padding:14px 10px}
-.product-card.calculadora .cta{background:var(--ink-green,#173f31)}
 .product-card.mapa .cta{background:var(--terracota,#9a5b34)}
 .product-card.mentoria .cta{background:var(--ink-green2,#1f4a3a)}
 .product-card.aulas .cta{background:var(--terracota,#9a5b34)}
@@ -106,9 +106,11 @@
   <div class="landing-copy">
     <h1>Centro de Desenvolvimento de Negócio da Clínica ACP</h1>
     <p class="hero-lede">O solo fértil para ela florescer</p>
-    <div class="hero-pillars">
-      <span>Clareza</span><span class="dot"></span><span>Estratégia</span><span class="dot"></span><span>Resultados possíveis</span>
-    </div>
+    <a class="hero-calc" href="../calculadora/index.html">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><path d="M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg>
+      <span>Calcule o preço da sua sessão</span>
+      <span class="badge">Grátis</span>
+    </a>
   </div>
 
   <nav class="quick-access" aria-label="Acesso rápido aos produtos">
@@ -131,22 +133,6 @@
   </nav>
 
   <div class="landing-cards" id="produtos">
-    <div class="product-card calculadora">
-      <span class="selo-comece">Calcule o valor da sua sessão</span>
-      <div class="photo p6"></div>
-      <div class="body">
-        <div class="kicker">Gratuito</div>
-        <h3>Calculadora da Psicóloga</h3>
-        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Descubra, em poucos minutos, quanto sua sessão precisa valer.</p>
-        <ul>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a4 4 0 0 1-5.4 5.4L4 17l3 3 5.3-5.3a4 4 0 0 1 5.4-5.4z"/></svg>Simples e rápida</li>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Com seu cadastro</li>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M6 21V10M12 21V4M18 21v-7"/></svg>Resultados na hora</li>
-        </ul>
-        <a class="cta" href="../calculadora/index.html">Calcular gratuitamente →</a>
-      </div>
-    </div>
-
     <div class="product-card mapa">
       <span class="selo-comece">Saiba seu próximo passo</span>
       <a class="photo-link" href="../mapa-30-dias/index.html" aria-label="Conhecer o Mapa de 30 Dias" tabindex="-1"><div class="photo p1"></div></a>
@@ -193,6 +179,7 @@
         <a class="cta" href="../aulas/index.html" id="ctaAulas">Assistir às aulas →</a>
       </div>
     </div>
+
 
   </div>
 </div>
