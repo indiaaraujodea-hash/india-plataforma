@@ -80,7 +80,7 @@
 }
 /* card Mentoria: foto e texto no mesmo bege do fundo da foto */
 .product-card.mentoria{background:#e9e0d6}
-/* card Evento: animação da roda em loop */
+/* card Formação: animação da roda em loop (os vídeos das aulas ficam na página /aulas) */
 .product-card .photo.p7{background:#ececea;position:relative;overflow:hidden;align-items:stretch;justify-content:stretch}
 .product-card .photo.p7 .video-card{width:100%;height:100%;display:block;object-fit:cover;object-position:50% 50%}
 /* mesma grade vertical nos 3 cards: cada linha (etiqueta/título/texto/lista)
@@ -94,14 +94,16 @@
 @media(max-width:640px){.product-card .kicker,.product-card h3,.product-card .body>p,.product-card ul{min-height:0}}
 .product-card .cta{margin-top:auto;white-space:nowrap;font-size:15px;padding:14px 10px}
 .product-card.mentoria .cta{background:var(--ink-green2,#1f4a3a)}
+.product-card.formacao .cta{background:var(--terracota,#9a5b34)}
 .product-card.evento .cta{background:var(--terracota,#9a5b34)}
+.product-card .photo.p9{background-image:url('../assets/img/calculadora-card.jpg')}
 /* card Mentoria: nome e botão em destaque */
 .product-card.mentoria h3{font-size:28px}
 .product-card.mentoria .cta{font-size:16px}
 .product-card ul li:before{content:none}
 .product-card ul li svg{color:var(--terracota,#9a5b34);flex-shrink:0}
 
-/* cards Fortalecer e Formação (em breve): sem link, botão apagado */
+/* card Fortalecer (em breve): sem link, botão apagado */
 .product-card .photo.p8{background:radial-gradient(circle at 50% 60%,#efe6d8 0,#e3d6c3 70%);color:var(--ink-green,#173f31)}
 .product-card.em-breve .cta{background:#d8cbb8;color:#5a4a3a;cursor:default;pointer-events:none}
 .landing-footer{background:var(--ink-green,#173f31)}
@@ -162,16 +164,24 @@
       </div>
     </div>
 
-    <div class="product-card formacao em-breve" aria-disabled="true">
-      <span class="selo-comece">Em breve</span>
-      <div class="photo p8" aria-hidden="true">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg>
+    <div class="product-card formacao">
+      <div class="photo p7">
+        <video class="video-card" poster="../assets/img/aulas-roda-poster.jpg"
+               autoplay muted loop playsinline preload="metadata"
+               aria-label="Ilustração de um grupo de pessoas conversando em roda">
+          <source src="../assets/video/aulas-roda.mp4" type="video/mp4">
+          <source src="../assets/video/aulas-roda.webm" type="video/webm">
+        </video>
       </div>
       <div class="body">
         <div class="kicker">Aprender</div>
         <h3>Formação</h3>
         <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Aprender com liberdade.</p>
-        <span class="cta">Em breve</span>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 5.5v13l11-6.5z"/></svg>As Raízes do Negócio</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 5.5v13l11-6.5z"/></svg>A Dor Real da Clínica</li>
+        </ul>
+        <a class="cta" href="../aulas/index.html" id="ctaAulas">Assistir às aulas →</a>
       </div>
     </div>
 
@@ -186,14 +196,7 @@
     </div>
 
     <div class="product-card evento">
-      <div class="photo p7">
-        <video class="video-card" poster="../assets/img/aulas-roda-poster.jpg"
-               autoplay muted loop playsinline preload="metadata"
-               aria-label="Ilustração de um grupo de pessoas conversando em roda">
-          <source src="../assets/video/aulas-roda.mp4" type="video/mp4">
-          <source src="../assets/video/aulas-roda.webm" type="video/webm">
-        </video>
-      </div>
+      <div class="photo p9" role="img" aria-label="Mesa com café, notebook e caderno"></div>
       <div class="body">
         <div class="kicker">Evento</div>
         <h3>Café, Clínica &amp; Negócios</h3>
