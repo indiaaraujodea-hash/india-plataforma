@@ -25,9 +25,11 @@
 .landing-copy h1{color:var(--green,#173f31);font-family:Georgia,'Cambria',serif;font-weight:500;font-size:clamp(26px,4.6vw,48px);line-height:1.1;letter-spacing:.005em;margin:0 0 6px;text-transform:none}
 .landing-copy .hero-lede{color:var(--terracota,#9a5b34);font-family:Georgia,'Cambria',serif;font-style:italic;font-size:clamp(18px,2.4vw,22px);margin:0 0 4px;font-weight:400}
 .landing-copy p{color:#4b5148;font-size:18px;max-width:520px}
-.hero-pillars{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:26px}
-.hero-pillars span{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--terracota,#9a5b34)}
-.hero-pillars .dot{width:4px;height:4px;border-radius:50%;background:var(--line,#e5ded1)}
+.hero-calc{display:inline-flex;align-items:center;gap:10px;margin-top:26px;background:var(--terracota,#9a5b34);color:#fdfaf4;text-decoration:none;font-weight:700;font-size:clamp(13px,3.6vw,15px);white-space:nowrap;padding:13px 16px 13px 18px;border-radius:999px;box-shadow:0 6px 18px rgba(154,91,52,.28);transition:transform .15s ease,box-shadow .15s ease}
+.hero-calc:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(154,91,52,.34)}
+.hero-calc svg{flex-shrink:0}
+.hero-calc .badge{background:#fdfaf4;color:var(--terracota,#9a5b34);font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:4px 9px;border-radius:999px}
+@media(max-width:400px){.hero-calc{gap:7px;font-size:12px;padding:12px 12px 12px 14px;max-width:100%}.hero-calc svg{width:16px;height:16px}.hero-calc .badge{font-size:9px;padding:3px 7px}}
 
 /* ---- Acesso rápido: atalho compacto para os 4 produtos, sem mexer nos
    cards abaixo. 2×2 no celular, 1 linha de 4 a partir de 640px (mesmo
@@ -106,9 +108,11 @@
   <div class="landing-copy">
     <h1>Centro de Desenvolvimento de Negócio da Clínica ACP</h1>
     <p class="hero-lede">O solo fértil para ela florescer</p>
-    <div class="hero-pillars">
-      <span>Clareza</span><span class="dot"></span><span>Estratégia</span><span class="dot"></span><span>Resultados possíveis</span>
-    </div>
+    <a class="hero-calc" href="../calculadora/index.html">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><path d="M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg>
+      <span>Calcule o preço da sua sessão</span>
+      <span class="badge">Grátis</span>
+    </a>
   </div>
 
   <nav class="quick-access" aria-label="Acesso rápido aos produtos">
