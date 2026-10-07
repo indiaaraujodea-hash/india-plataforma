@@ -581,7 +581,7 @@ ids.forEach(id => el[id].addEventListener('input', calc));
 calc();
 </script>
 <script type="module">
-import { requireAuth, getProfile } from '../assets/js/auth.js';
+import { requireAuth, temAcessoFerramentas } from '../assets/js/auth.js';
 import { mountAppShell } from '../assets/js/app-shell.js';
 import { montarSubNavMapaClinica } from '../assets/js/mapa-clinica-nav.js';
 (async () => {
@@ -590,8 +590,7 @@ import { montarSubNavMapaClinica } from '../assets/js/mapa-clinica-nav.js';
   await mountAppShell('ferramentas', session, '..');
   montarSubNavMapaClinica('ferramentas', '..');
 
-  const profile = await getProfile(session.user.id);
-  if (!(profile?.role === 'admin' || profile?.diagnostico_liberado)) {
+  if (!(await temAcessoFerramentas(session.user.id))) {
     // Ferramenta exclusiva de quem tem acesso liberado ao Mapa/mentoria —
     // uma conta criada só na calculadora pública não abre isso sozinha.
     location.href = '../compra/index.html';

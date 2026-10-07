@@ -29,7 +29,7 @@
 
 <script type="module">
 import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
-import { requireAuth, getProfile } from '../assets/js/auth.js';
+import { requireAuth, getProfile, temAcessoFerramentas } from '../assets/js/auth.js';
 import { mountAppShell } from '../assets/js/app-shell.js';
 import { montarSubNavMapaClinica } from '../assets/js/mapa-clinica-nav.js';
 
@@ -67,12 +67,13 @@ async function buscarFerramentaRecomendada(pontoLatente) {
   await mountAppShell('ferramentas', session, '..');
   montarSubNavMapaClinica('ferramentas', '..');
 
-  const [profile, { data: diagnosticos }] = await Promise.all([
+  const [profile, { data: diagnosticos }, acesso] = await Promise.all([
     getProfile(session.user.id),
     supabase.from('diagnosticos').select('resultado_calculado').eq('user_id', session.user.id).order('criado_em', { ascending: false }).limit(1),
+    temAcessoFerramentas(session.user.id),
   ]);
   const isAdmin = profile?.role === 'admin';
-  if (!isAdmin && !profile?.diagnostico_liberado) {
+  if (!acesso) {
     // Ferramenta exclusiva de quem tem acesso liberado ao Mapa/mentoria —
     // uma conta criada só na calculadora pública não abre isso sozinha.
     location.href = '../compra/index.html';

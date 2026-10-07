@@ -37,7 +37,7 @@
 
 <script type="module">
 import { supabase, avisarSupabaseNaoConfigurado } from '../assets/js/supabase-client.js';
-import { requireAuth, getProfile } from '../assets/js/auth.js';
+import { requireAuth, temAcessoFerramentas } from '../assets/js/auth.js';
 import { mountAppShell } from '../assets/js/app-shell.js';
 import { montarSubNavMapaClinica } from '../assets/js/mapa-clinica-nav.js';
 
@@ -80,8 +80,7 @@ function renderDetalhe(reg) {
   await mountAppShell('ferramentas', session, '..');
   montarSubNavMapaClinica('ferramentas', '..');
 
-  const profile = await getProfile(session.user.id);
-  if (!(profile?.role === 'admin' || profile?.diagnostico_liberado)) {
+  if (!(await temAcessoFerramentas(session.user.id))) {
     // Ferramenta exclusiva de quem tem acesso liberado ao Mapa/mentoria —
     // uma conta criada só na calculadora pública não abre isso sozinha.
     location.href = '../compra/index.html';

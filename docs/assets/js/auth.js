@@ -24,6 +24,17 @@ export async function getProfile(userId) {
   return data;
 }
 
+// Quem pode abrir as Ferramentas (calculadoras exclusivas): admin, quem tem
+// diagnostico_liberado (comprou o Mapa de 30 Dias), OU qualquer mentorada
+// com mentoria ativa — mesmo quando foi matriculada direto pelo admin, sem
+// passar pelo fluxo de compra/diagnóstico (ex.: mentoria em grupo/turma).
+export async function temAcessoFerramentas(userId) {
+  const profile = await getProfile(userId);
+  if (profile?.role === 'admin' || profile?.diagnostico_liberado) return true;
+  const { data: mentoria } = await supabase.from('mentoria_individual').select('id').eq('user_id', userId).eq('status', 'ativa').maybeSingle();
+  return !!mentoria;
+}
+
 // Chame após requireAuth() em páginas admin-only.
 export async function requireAdmin(homePath = '../index.html', loginPath = '../login/index.html') {
   const session = await requireAuth(loginPath);
