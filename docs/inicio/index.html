@@ -43,8 +43,8 @@
 
 /* ---- cards: os 3 existentes, largura ajustada para caber lado a lado ---- */
 .landing-cards{gap:18px;padding-left:24px;padding-right:24px;padding-bottom:64px;align-items:stretch}
-/* 3 cards: lado a lado no computador, 2 por linha em telas médias, 1 por linha no celular */
-.landing-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:1180px;margin-left:auto;margin-right:auto;justify-content:center}
+/* 4 cards: lado a lado no computador, 2×2 em telas médias, 1 por linha no celular */
+.landing-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));max-width:1400px;margin-left:auto;margin-right:auto;justify-content:center}
 .product-card{width:auto;display:flex;flex-direction:column}
 @media(max-width:1180px){.landing-cards{grid-template-columns:repeat(2,minmax(0,340px))}}
 @media(max-width:640px){.landing-cards{grid-template-columns:minmax(0,1fr)}}
@@ -95,6 +95,9 @@
 .product-card ul li:before{content:none}
 .product-card ul li svg{color:var(--terracota,#9a5b34);flex-shrink:0}
 
+/* card Fortalecer (em breve): sem link, botão apagado */
+.product-card .photo.p8{background:radial-gradient(circle at 50% 60%,#efe6d8 0,#e3d6c3 70%);color:var(--ink-green,#173f31)}
+.product-card.em-breve .cta{background:#d8cbb8;color:#5a4a3a;cursor:default;pointer-events:none}
 .landing-footer{background:var(--ink-green,#173f31)}
 .landing-footer .flinks{gap:22px}
 </style>
@@ -133,6 +136,19 @@
   </nav>
 
   <div class="landing-cards" id="produtos">
+    <div class="product-card fortalecer em-breve" aria-disabled="true">
+      <span class="selo-comece">Em breve</span>
+      <div class="photo p8" aria-hidden="true">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-9"/><path d="M12 12c0-3.5 2.5-6 6.5-6 0 3.8-2.6 6-6.5 6z"/><path d="M12 14c0-3-2.2-5-5.5-5 0 3.2 2.2 5 5.5 5z"/><path d="M6 21h12"/></svg>
+      </div>
+      <div class="body">
+        <div class="kicker">Novidade</div>
+        <h3>Fortalecer</h3>
+        <p style="font-size:13px;color:#4b5148;margin:0 0 10px">Uma nova etapa da plataforma está chegando.</p>
+        <span class="cta">Em breve</span>
+      </div>
+    </div>
+
     <div class="product-card mapa">
       <span class="selo-comece">Saiba seu próximo passo</span>
       <a class="photo-link" href="../mapa-30-dias/index.html" aria-label="Conhecer o Mapa de 30 Dias" tabindex="-1"><div class="photo p1"></div></a>
