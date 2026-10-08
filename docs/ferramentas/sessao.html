@@ -482,5 +482,12 @@ function calc(){
 ids.forEach(id => el[id].addEventListener('input', calc));
 calc();
 </script>
+<script src="registro.js"></script>
+<script>
+registrarUso('Quanto vale minha sessão',()=>({
+  entradas:lerCampos({prolabore:'Pró-labore',custosFixos:'Custos fixos',reserva:'Reserva %',margem:'Margem %',decimoTerceiro:'13º %',ferias:'Férias %',sessoesSemana:'Sessões/semana',duracao:'Duração (min)',faltas:'Faltas %',semanas:'Semanas/ano'}),
+  resultado:'Valor da sessão: '+lerTexto('valorSessao')+' | '+lerTexto('valorHoraCaption')+' | Faturamento mínimo/mês: '+lerTexto('bd-total')
+}));
+</script>
 </body>
 </html>

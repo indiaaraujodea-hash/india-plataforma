@@ -578,5 +578,12 @@ function calc(){
 ids.forEach(id => el[id].addEventListener('input', calc));
 calc();
 </script>
+<script src="registro.js"></script>
+<script>
+registrarUso('Serviço em grupo',()=>({
+  entradas:lerCampos({prolabore:'Pró-labore',custosFixos:'Custos fixos',reserva:'Reserva %',margem:'Margem %',decimoTerceiro:'13º %',ferias:'Férias %',numPessoas:'Pessoas/grupo',numGrupos:'Grupos',duracao:'Duração (h)',diasMes:'Encontros/mês'}),
+  resultado:'Mensalidade por pessoa: R$ '+lerTexto('valorSessao')+' | '+lerTexto('valorHoraCaption')+' | Faturamento mínimo/mês: '+lerTexto('bd-total')
+}));
+</script>
 </body>
 </html>
