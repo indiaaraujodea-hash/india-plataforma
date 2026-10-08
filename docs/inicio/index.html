@@ -199,7 +199,7 @@
       <div class="body">
         <div class="kicker">Encontrar</div>
         <h3>Café, Clínica &amp; Negócios</h3>
-        <a class="cta" href="#" id="ctaEvento">Próxima edição →</a>
+        <a class="cta" href="../cafe/index.html">Conhecer o encontro →</a>
       </div>
     </div>
 
@@ -249,17 +249,6 @@ if (CONTATO_URL) {
   if (link) {
     link.href = CONTATO_URL;
     if (CONTATO_URL.startsWith('http') || CONTATO_URL.startsWith('mailto:')) link.target = '_blank';
-  }
-}
-
-// "Próxima edição" do evento abre o WhatsApp de contato com a pergunta pronta.
-if (CONTATO_URL) {
-  const ev = document.getElementById('ctaEvento');
-  if (ev) {
-    const texto = 'Olá! Quero saber da próxima edição do Café, Clínica & Negócios.';
-    ev.href = CONTATO_URL.includes('wa.me') ? CONTATO_URL + '?text=' + encodeURIComponent(texto) : CONTATO_URL;
-    ev.target = '_blank';
-    ev.rel = 'noopener';
   }
 }
 
