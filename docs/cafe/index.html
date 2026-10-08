@@ -9,15 +9,15 @@
 .wrap{max-width:760px;margin:0 auto}
 .top{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;background:var(--c2);border-bottom:1px solid var(--ln)}
 .top a{text-decoration:none}.top b{font-family:'Noto Serif',serif;color:var(--g);font-size:22px;letter-spacing:1px}.top span{color:var(--t);font-size:13px}
-.hero{position:relative;height:520px;background:url(../assets/img/cafe/cafe-1.jpg) center 40%/cover}
-.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,40,32,0) 30%,rgba(20,40,32,.88) 100%)}
-.hero .in{position:absolute;left:0;right:0;bottom:0;padding:26px 22px 30px;z-index:1;color:#fff}
-.k{letter-spacing:3px;font-weight:700;font-size:12px;color:var(--t)}.hero .k{color:#F2C9A8}
+.hero{background:#fefefe;border-bottom:1px solid var(--ln)}
+.hero .logo{width:100%;aspect-ratio:900/351;background:url(../assets/img/cafe/cafe-6.jpg) center/contain no-repeat}
+.hero .in{padding:10px 22px 32px;color:var(--tx)}
+.k{letter-spacing:3px;font-weight:700;font-size:12px;color:var(--t)}.hero h1{color:var(--g)}
 h1{font-family:'Noto Serif',serif;font-weight:400;font-size:38px;line-height:1.1;margin:10px 0 12px}
 .hero p{font-family:'Noto Serif',serif;font-style:italic;font-size:17px;line-height:1.5;margin:0 0 20px;opacity:.95}
 .btn{display:block;background:var(--t);color:#fff;text-align:center;border-radius:999px;padding:16px;font-weight:700;font-size:17px;text-decoration:none}
 .duas{display:grid;grid-template-columns:1fr 1fr;gap:10px}.duas .btn{font-size:15.5px;padding:15px 10px}
-.btn.claro{background:transparent;border:1.5px solid rgba(255,255,255,.85);color:#fff}
+.btn.claro{background:transparent;border:1.5px solid var(--g);color:var(--g)}
 .btn.ghost{background:transparent;border:1.5px solid var(--g);color:var(--g)}
 section{padding:44px 22px}
 h2{font-family:'Noto Serif',serif;font-weight:400;color:var(--g);font-size:28px;margin:10px 0 14px;line-height:1.2}
@@ -66,7 +66,7 @@ dialog.fm::backdrop{background:rgba(20,40,32,.55)}
 @media(max-width:480px){.fm .cps{grid-template-columns:1fr}}
 </style></head><body><div class="wrap">
 <div class="top"><a href="../inicio/index.html"><b>INDIA</b></a><a href="../inicio/index.html#cafe"><span>← Encontros</span></a></div>
-<div class="hero"><div class="in"><div class="k">ENCONTRAR · PRESENCIAL E ONLINE</div><h1>Café, Clínica &amp; Negócios</h1>
+<div class="hero"><div class="logo" role="img" aria-label="Café, Clínica &amp; Negócios — Psicologia de Valor"></div><div class="in"><div class="k">ENCONTRAR · PRESENCIAL E ONLINE</div><h1>Café, Clínica &amp; Negócios</h1>
 <p>“Como você tem atualizado a sua prática ACP diante de um mundo que muda tão rapidamente?”</p>
 <div class="duas"><a class="btn" href="#proxima" data-abrir="participar">Quero participar →</a><a class="btn claro" href="#proxima" data-abrir="contratar">Quero contratar →</a></div></div></div>
 
@@ -84,7 +84,7 @@ dialog.fm::backdrop{background:rgba(20,40,32,.55)}
 <div class="g1" style="background-position:center 0%;aspect-ratio:4/3;background-image:url(../assets/img/cafe/cafe-3.jpg)"></div>
 <div class="g2" style="background-image:url(../assets/img/cafe/cafe-4.jpg);background-position:70% 20%"></div>
 <div class="g3" style="background-image:url(../assets/img/cafe/cafe-5.jpg);background-position:30% 40%"></div>
-<div class="g4" style="background-image:url(../assets/img/cafe/cafe-6.jpg);background-size:contain;background-repeat:no-repeat;background-color:#fff;aspect-ratio:2.56/1"></div>
+<div class="g4" role="img" aria-label="Participantes da 1ª edição" style="background-image:url(../assets/img/cafe/cafe-1.jpg);background-position:center 40%;aspect-ratio:4/3"></div>
 </div>
 <div class="q"><p>“Sábado foi de reflexão e aprimoramento sobre a prática clínica. Trocas incríveis.”</p><span>— Daniel Mendes, psicólogo participante</span></div>
 </section>
