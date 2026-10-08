@@ -76,15 +76,15 @@ h2{font-family:'Noto Serif',serif;font-weight:400;color:var(--g);font-size:28px;
 <div class="next" id="proxima"><div class="im"></div><div class="in"><div class="k">PRÓXIMA EDIÇÃO</div><h2>Guarde um lugar na roda.</h2>
 <p>As vagas são limitadas para manter a conversa próxima. Deixe seu contato e avisamos a data em primeira mão.</p>
 <div class="meta"><span class="chip">Data em breve</span><span class="chip">Fortaleza</span><span class="chip">Vagas limitadas</span></div>
-<a class="btn" href="#" id="ctaParticipar">Quero participar →</a><div class="note">Você recebe a data e as informações pelo WhatsApp</div></div></div>
+<a class="btn" href="#" id="ctaParticipar">Contratar edição →</a><div class="note">Conversamos pelo WhatsApp</div></div></div>
 </div>
 <script type="module">
 import { CONTATO_URL } from '../assets/js/site-config.js';
 
-// "Quero participar" abre o WhatsApp de contato com a pergunta pronta.
+// "Contratar edição" abre o WhatsApp de contato com a mensagem pronta.
 const bt = document.getElementById('ctaParticipar');
 if (bt && CONTATO_URL) {
-  const texto = 'Olá! Quero participar da próxima edição do Café, Clínica & Negócios.';
+  const texto = 'Olá! Quero contratar uma edição do Café, Clínica & Negócios.';
   bt.href = CONTATO_URL.includes('wa.me') ? CONTATO_URL + '?text=' + encodeURIComponent(texto) : CONTATO_URL;
   bt.target = '_blank';
   bt.rel = 'noopener';
