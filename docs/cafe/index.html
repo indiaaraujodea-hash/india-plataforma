@@ -42,11 +42,31 @@ h2{font-family:'Noto Serif',serif;font-weight:400;color:var(--g);font-size:28px;
 .next .in{padding:26px 22px 28px}.next h2{color:#fff}.next .k{color:#F2C9A8}.next p{opacity:.9;line-height:1.6;margin:0 0 18px}
 .next .chip{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.25);color:#fff}
 .note{text-align:center;font-size:13px;opacity:.75;margin-top:12px}
+dialog.fm{border:0;padding:0;border-radius:24px;width:min(560px,calc(100% - 24px));background:var(--c2);color:var(--tx);box-shadow:0 30px 70px rgba(20,20,10,.3)}
+dialog.fm::backdrop{background:rgba(20,40,32,.55)}
+.fm .in{padding:28px 24px 24px;position:relative}
+.fm h2{margin:6px 0 6px}.fm .sub{margin:0 0 20px;font-size:15px;color:var(--mu);line-height:1.5}
+.fm .x{position:absolute;top:12px;right:12px;width:38px;height:38px;border-radius:50%;border:0;background:#EFE3D5;color:var(--g);font-size:20px;cursor:pointer}
+.fm .ops{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 18px;border:0;padding:0}
+.fm .ops label{position:relative;display:block;cursor:pointer}
+.fm .ops input{position:absolute;opacity:0}
+.fm .ops span{display:block;text-align:center;padding:13px 10px;border-radius:14px;border:1.5px solid var(--ln);background:#fff;font-weight:700;color:var(--g);font-size:15px}
+.fm .ops input:checked+span{background:var(--g);border-color:var(--g);color:#fff}
+.fm .ops input:focus-visible+span{outline:3px solid #b58a48;outline-offset:2px}
+.fm .cps{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.fm .cps .inteiro{grid-column:1/-1}
+.fm .f{margin-bottom:14px}.fm .f label{display:block;font-size:13.5px;font-weight:700;color:var(--g);margin-bottom:7px}
+.fm .f input{width:100%;font:inherit;font-size:16px;padding:13px 14px;border:1px solid var(--ln);border-radius:12px;background:#fff;color:var(--tx)}
+.fm .f input:focus{outline:2px solid var(--g);outline-offset:1px;border-color:transparent}
+.fm .esc{position:absolute;left:-9999px}
+.fm button.btn{width:100%;border:0;cursor:pointer;font-family:inherit;margin-top:4px}.fm button.btn:disabled{opacity:.6;cursor:default}
+.fm .msg{font-size:14px;margin:12px 0 0;text-align:center}.fm .msg.erro{color:#a33a1f}
+.fm .ok{text-align:center;padding:12px 0 6px}.fm .ok .i{width:52px;height:52px;border-radius:50%;background:var(--g);color:#fff;display:grid;place-items:center;font-size:24px;margin:0 auto 12px}
+@media(max-width:480px){.fm .cps{grid-template-columns:1fr}}
 </style></head><body><div class="wrap">
 <div class="top"><a href="../inicio/index.html"><b>INDIA</b></a><a href="../inicio/index.html#cafe"><span>← Encontros</span></a></div>
 <div class="hero"><div class="in"><div class="k">ENCONTRAR · PRESENCIAL E ONLINE</div><h1>Café, Clínica &amp; Negócios</h1>
 <p>“Como você tem atualizado a sua prática ACP diante de um mundo que muda tão rapidamente?”</p>
-<a class="btn" href="#proxima">Quero participar →</a></div></div>
+<a class="btn" href="#proxima" data-abrir="participar">Quero participar →</a></div></div>
 
 <section><div class="k">O ENCONTRO</div><h2>Uma manhã para pensar a clínica com calma, junto de quem entende.</h2>
 <p class="lead">Um encontro presencial e online para psicólogas e psicólogos da Abordagem Centrada na Pessoa conversarem sobre a prática clínica e sobre como sustentá-la — sem abrir mão da ética, da qualidade da relação e do encontro.</p>
@@ -76,18 +96,81 @@ h2{font-family:'Noto Serif',serif;font-weight:400;color:var(--g);font-size:28px;
 <div class="next" id="proxima"><div class="im"></div><div class="in"><div class="k">PRÓXIMA EDIÇÃO</div><h2>Guarde um lugar na roda.</h2>
 <p>As vagas são limitadas para manter a conversa próxima. Deixe seu contato e avisamos a data em primeira mão.</p>
 <div class="meta"><span class="chip">Data em breve</span><span class="chip">Fortaleza</span><span class="chip">Vagas limitadas</span></div>
-<a class="btn" href="#" id="ctaParticipar">Contratar edição →</a><div class="note">Conversamos pelo WhatsApp</div></div></div>
+<a class="btn" href="#proxima" data-abrir="contratar">Contratar edição →</a><div class="note">Respondemos pelo WhatsApp</div></div></div>
 </div>
+<dialog class="fm" id="formCafe" aria-labelledby="fmTitulo"><div class="in" id="fmCorpo">
+<button type="button" class="x" id="fmFechar" aria-label="Fechar">×</button>
+<div class="k">CAFÉ, CLÍNICA &amp; NEGÓCIOS</div><h2 id="fmTitulo">Deixe seu contato</h2>
+<p class="sub">A India responde pelo WhatsApp com as informações.</p>
+<form id="fmForm">
+<input type="hidden" name="_subject" value="Café, Clínica &amp; Negócios — novo contato pelo site">
+<input type="hidden" name="_template" value="table">
+<p class="esc"><label>Não preencha: <input name="_honey" tabindex="-1" autocomplete="off"></label></p>
+<fieldset class="ops"><legend class="esc">O que você quer?</legend>
+<label><input type="radio" name="interesse" value="Quero participar" id="opParticipar" checked><span>Quero participar</span></label>
+<label><input type="radio" name="interesse" value="Quero contratar" id="opContratar"><span>Quero contratar</span></label>
+</fieldset>
+<div class="cps">
+<div class="f inteiro"><label for="fmNome">Nome completo</label><input id="fmNome" name="nome" type="text" autocomplete="name" maxlength="200" required></div>
+<div class="f"><label for="fmWhats">WhatsApp com DDD</label><input id="fmWhats" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" placeholder="(00) 00000-0000" maxlength="20" required></div>
+<div class="f"><label for="fmEmail">E-mail</label><input id="fmEmail" name="email" type="email" inputmode="email" autocomplete="email" maxlength="254" required></div>
+</div>
+<button class="btn" type="submit" id="fmEnviar">Enviar →</button>
+<p class="msg" id="fmMsg" role="status"></p>
+</form></div></dialog>
 <script type="module">
-import { CONTATO_URL } from '../assets/js/site-config.js';
+import { EMAIL_INSCRICOES } from '../assets/js/site-config.js';
 
-// "Contratar edição" abre o WhatsApp de contato com a mensagem pronta.
-const bt = document.getElementById('ctaParticipar');
-if (bt && CONTATO_URL) {
-  const texto = 'Olá! Quero contratar uma edição do Café, Clínica & Negócios.';
-  bt.href = CONTATO_URL.includes('wa.me') ? CONTATO_URL + '?text=' + encodeURIComponent(texto) : CONTATO_URL;
-  bt.target = '_blank';
-  bt.rel = 'noopener';
-}
+// "Quero participar" e "Contratar edição" abrem o mesmo formulário, já com a
+// opção marcada. O envio vai pelo FormSubmit para EMAIL_INSCRICOES (igual às Aulas).
+const dlg = document.getElementById('formCafe');
+const form = document.getElementById('fmForm');
+document.querySelectorAll('[data-abrir]').forEach((bt) => bt.addEventListener('click', (e) => {
+  if (!dlg.showModal) return; // navegador sem <dialog>: segue para a seção Próxima edição
+  e.preventDefault();
+  document.getElementById(bt.dataset.abrir === 'contratar' ? 'opContratar' : 'opParticipar').checked = true;
+  dlg.showModal();
+  document.getElementById('fmNome').focus();
+}));
+document.getElementById('fmFechar').addEventListener('click', () => dlg.close());
+dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+
+// Máscara simples: (00) 00000-0000
+const whats = document.getElementById('fmWhats');
+whats.addEventListener('input', () => {
+  const d = whats.value.replace(/\D/g, '').slice(0, 11);
+  whats.value = d.length > 6 ? `(${d.slice(0, 2)}) ${d.slice(2, d.length - 4)}-${d.slice(-4)}`
+    : d.length > 2 ? `(${d.slice(0, 2)}) ${d.slice(2)}` : d;
+});
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById('fmMsg');
+  const btn = document.getElementById('fmEnviar');
+  msg.className = 'msg'; msg.textContent = '';
+  const digitos = whats.value.replace(/\D/g, '');
+  if (!form.checkValidity() || digitos.length < 10) {
+    msg.className = 'msg erro';
+    msg.textContent = digitos && digitos.length < 10 ? 'Informe o WhatsApp com DDD.' : 'Preencha nome, WhatsApp e e-mail.';
+    return;
+  }
+  btn.disabled = true; btn.textContent = 'Enviando…';
+  try {
+    const resp = await fetch(`https://formsubmit.co/ajax/${EMAIL_INSCRICOES}`, {
+      method: 'POST', headers: { Accept: 'application/json' }, body: new FormData(form),
+    });
+    const dados = await resp.json().catch(() => ({}));
+    if (!resp.ok || String(dados.success) !== 'true') throw new Error(dados.message || `HTTP ${resp.status}`);
+    document.getElementById('fmCorpo').innerHTML = `
+      <button type="button" class="x" aria-label="Fechar" onclick="this.closest('dialog').close()">×</button>
+      <div class="ok"><div class="i">✓</div><h2>Recebido!</h2>
+      <p class="sub" style="margin:0">Obrigada. A India vai te chamar no WhatsApp.</p></div>`;
+  } catch (err) {
+    console.error('Falha ao enviar contato do Café:', err);
+    msg.className = 'msg erro';
+    msg.textContent = 'Não foi possível enviar agora. Tente novamente em instantes.';
+    btn.disabled = false; btn.textContent = 'Enviar →';
+  }
+});
 </script>
 </body></html>
