@@ -113,6 +113,7 @@
 import { supabase, avisarSupabaseNaoConfigurado } from '../../../assets/js/supabase-client.js';
 import { requireAdmin } from '../../../assets/js/auth.js';
 import { mountAppShell } from '../../../assets/js/app-shell.js';
+import { carregarBloqueios, estaBloqueada, botaoBloqueio, religarBotoesBloqueio } from '../../../assets/js/admin-bloqueio.js';
 
 avisarSupabaseNaoConfigurado();
 
@@ -367,9 +368,19 @@ function abrirFormularioAdhoc(prioridadeIdx) {
 }
 
 // ---------- Ativação / vínculo de conta ----------
-function renderAtivacao(mentoria) {
+function renderAtivacao(mentoria, bloqueios) {
   if (mentoria.user_id) {
-    return `<div id="painelAtivacao" class="mi-card"><h3 style="margin:0 0 4px;color:var(--green)">Acesso à plataforma</h3><p class="small" style="margin:0">Conta vinculada e ativa — "Minha Mentoria" já aparece pra ela ao entrar.</p></div>`;
+    const bloqueada = estaBloqueada(bloqueios, mentoria.user_id);
+    const texto = bloqueada
+      ? '<b style="color:#8a2020">Bloqueada</b> — ela não consegue entrar na plataforma. Os dados dela continuam guardados.'
+      : 'Conta vinculada e ativa — "Minha Mentoria" já aparece pra ela ao entrar.';
+    return `<div id="painelAtivacao" class="mi-card">
+      <h3 style="margin:0 0 4px;color:var(--green)">Acesso à plataforma</h3>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <p class="small" style="margin:0">${texto}</p>
+        ${botaoBloqueio(bloqueios, mentoria.user_id, mentoria.nome_completo, 'padding:8px 14px;font-size:13px')}
+      </div>
+    </div>`;
   }
   if (mentoria.email_previsto) {
     const loginUrl = `${location.origin}/index.html`;
@@ -399,6 +410,8 @@ function renderAtivacao(mentoria) {
 }
 
 function religarEventosAtivacao(mentoria) {
+  const painel = document.getElementById('painelAtivacao');
+  if (painel) religarBotoesBloqueio(painel, () => carregarFicha());
   const btnAtivar = document.getElementById('btnAtivar');
   if (btnAtivar) btnAtivar.addEventListener('click', async () => {
     const email = document.getElementById('inputEmailPrevisto').value.trim();
@@ -464,6 +477,7 @@ async function carregarFicha() {
     : { data: [] };
   const { data: aulasBiblioteca } = await supabase.from('aulas_biblioteca').select('*').eq('ativo', true).order('ordem', { ascending: true });
   const { data: aulasLiberadas } = await supabase.from('mentoria_aulas_liberadas').select('*').eq('mentoria_id', mentoria.id);
+  const bloqueios = mentoria.user_id ? await carregarBloqueios() : null;
 
   contexto = { mentoriaId: mentoria.id, planoId: plano ? plano.id : null, cicloAtual: diag ? diag.ciclo : 1 };
 
@@ -486,11 +500,11 @@ async function carregarFicha() {
       </div>
       <div class="small" style="margin-top:4px">
         Status da mentoria: <b>${mentoria.status}</b> · Cadência: <b>${mentoria.cadencia_encontros}</b> ·
-        Conta na plataforma: <b>${mentoria.user_id ? 'ativada' : 'ainda não ativada'}</b>
+        Conta na plataforma: <b>${!mentoria.user_id ? 'ainda não ativada' : (estaBloqueada(bloqueios, mentoria.user_id) ? '<span style="color:#8a2020">bloqueada</span>' : 'ativada')}</b>
       </div>
     </div>
 
-    ${renderAtivacao(mentoria)}
+    ${renderAtivacao(mentoria, bloqueios)}
 
     <div class="tabs-bar no-print">
       <button type="button" class="active" data-tab="diagnostico">Diagnóstico</button>
