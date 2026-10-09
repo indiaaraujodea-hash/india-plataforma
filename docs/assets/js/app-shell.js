@@ -1,5 +1,6 @@
 import { getProfile } from './auth.js';
 import { supabase } from './supabase-client.js';
+import { instalarFonteLogo } from './site-header.js';
 
 const ICONS = {
   home: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>',
@@ -43,6 +44,7 @@ function initials(name) {
 
 // rootPath: caminho relativo até docs/ a partir da página atual ('.' na Home, '..' nas páginas de 1 nível).
 export async function mountAppShell(activeKey, session, rootPath = '..') {
+  instalarFonteLogo();
   const profile = await getProfile(session.user.id);
   const nome = profile?.nome_completo || session.user.email || 'Minha conta';
 
