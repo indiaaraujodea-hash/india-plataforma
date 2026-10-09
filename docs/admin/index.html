@@ -69,13 +69,32 @@ function csvEscape(v) {
 }
 
 // =========================================================
+// Acesso à plataforma (login) — bloqueio sem apagar dados.
+// Ver supabase/bloqueio_acesso_plataforma.sql
+// =========================================================
+
+async function carregarBloqueiosPlataforma() {
+  const { data, error } = await supabase.rpc('admin_status_bloqueio_plataforma');
+  if (error) return null; // SQL ainda não rodado: a lista funciona sem a coluna
+  return new Map((data || []).map((r) => [r.user_id, r]));
+}
+
+function badgePlataforma(bloqueios, userId) {
+  if (!bloqueios) return '—';
+  return bloqueios.get(userId)?.bloqueado
+    ? '<span class="badge" style="background:#f6d4d4;color:#8a2020">Bloqueada</span>'
+    : '<span class="badge badge-ok">Ativa</span>';
+}
+
+// =========================================================
 // Lista de clientes
 // =========================================================
 
 async function carregarLista(conteudo) {
-  const [{ data: perfis, error: perfisErr }, { data: diagnosticos }] = await Promise.all([
+  const [{ data: perfis, error: perfisErr }, { data: diagnosticos }, bloqueios] = await Promise.all([
     supabase.from('profiles').select('*').eq('role', 'client').order('criado_em', { ascending: false }),
     supabase.from('diagnosticos').select('id, user_id, criado_em, resultado_calculado').order('criado_em', { ascending: false }),
+    carregarBloqueiosPlataforma(),
   ]);
   if (perfisErr) { conteudo.innerHTML = `<div class="alert alert-error">${perfisErr.message}</div>`; return; }
 
@@ -94,10 +113,12 @@ async function carregarLista(conteudo) {
     const statusAcesso = p.diagnostico_liberado
       ? '<span class="badge badge-ok">Liberado</span>'
       : '<span class="badge badge-pending">Bloqueado</span>';
+    const plataforma = badgePlataforma(bloqueios, p.id);
     return `<tr>
       <td>${p.nome_completo || '—'}</td>
       <td>${p.email || '—'}</td>
       <td>${fmtData(p.criado_em)}</td>
+      <td>${plataforma}</td>
       <td>${statusAcesso}</td>
       <td>${ultimo ? fmtData(ultimo.criado_em) : '—'}</td>
       <td>${ciclosPorUser.get(p.id) || 0}</td>
@@ -112,7 +133,7 @@ async function carregarLista(conteudo) {
     </div>
     <div class="panel" style="overflow:auto">
       <table class="admin-table">
-        <thead><tr><th>Nome</th><th>E-mail</th><th>Cadastro</th><th>Status</th><th>Último diagnóstico</th><th>Ciclos</th><th>Ponto Latente Principal</th><th></th></tr></thead>
+        <thead><tr><th>Nome</th><th>E-mail</th><th>Cadastro</th><th>Plataforma</th><th>Diagnóstico</th><th>Último diagnóstico</th><th>Ciclos</th><th>Ponto Latente Principal</th><th></th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     </div>`;
@@ -126,12 +147,13 @@ async function carregarLista(conteudo) {
   });
 
   document.getElementById('btnExportarCsv').addEventListener('click', () => {
-    const linhas = [['Nome', 'E-mail', 'Cadastro', 'Status de acesso', 'Data de liberação', 'Último diagnóstico', 'Ciclos', 'Ponto Latente Principal'].map(csvEscape).join(',')];
+    const linhas = [['Nome', 'E-mail', 'Cadastro', 'Plataforma', 'Status de acesso', 'Data de liberação', 'Último diagnóstico', 'Ciclos', 'Ponto Latente Principal'].map(csvEscape).join(',')];
     for (const p of perfis) {
       const ultimo = ultimoDiagPorUser.get(p.id);
       const resultado = ultimo?.resultado_calculado || {};
       linhas.push([
         p.nome_completo || '', p.email || '', fmtData(p.criado_em),
+        bloqueios ? (bloqueios.get(p.id)?.bloqueado ? 'Bloqueada' : 'Ativa') : '',
         p.diagnostico_liberado ? 'Liberado' : 'Bloqueado', fmtData(p.diagnostico_liberado_em),
         ultimo ? fmtData(ultimo.criado_em) : '', ciclosPorUser.get(p.id) || 0,
         resultado.ponto_latente_principal ? (TITULOS_PONTO[resultado.ponto_latente_principal] || '') : '',
@@ -215,11 +237,13 @@ function renderCicloCard(d, campos, plano) {
 async function carregarFicha(conteudo, userId) {
   conteudo.innerHTML = '<p>Carregando ficha…</p>';
 
-  const [{ data: perfil, error: perfilErr }, { data: diagnosticos }, { data: campos }] = await Promise.all([
+  const [{ data: perfil, error: perfilErr }, { data: diagnosticos }, { data: campos }, bloqueios] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', userId).single(),
     supabase.from('diagnosticos').select('*').eq('user_id', userId).order('criado_em', { ascending: false }),
     supabase.from('diagnostic_fields').select('*').order('etapa', { ascending: true }).order('ordem', { ascending: true }),
+    carregarBloqueiosPlataforma(),
   ]);
+  const plataformaBloqueada = !!bloqueios?.get(userId)?.bloqueado;
   if (perfilErr) { conteudo.innerHTML = `<div class="alert alert-error">${perfilErr.message}</div>`; return; }
 
   const planosPorDiag = new Map();
@@ -240,6 +264,17 @@ async function carregarFicha(conteudo, userId) {
       <div class="small">Cadastro: ${fmtData(perfil.criado_em)}</div>
 
       <h3 style="color:var(--green2);margin-top:22px">Acessos</h3>
+      ${bloqueios && perfil.role !== 'admin' ? `
+      <div class="acessos-box">
+        <div>
+          <b style="display:block">Acesso à plataforma</b>
+          <span>${plataformaBloqueada
+            ? 'Bloqueada — não consegue entrar. Os dados dela continuam guardados.'
+            : 'Ativa — consegue entrar normalmente.'}</span>
+        </div>
+        <button class="btn ${plataformaBloqueada ? '' : 'alt'}" id="btnBloqueioPlataforma" style="padding:8px 14px">${plataformaBloqueada ? 'Desbloquear acesso' : 'Bloquear acesso à plataforma'}</button>
+        <span id="bloqueioPlataformaMsg" class="small"></span>
+      </div>` : ''}
       <div class="acessos-box">
         <div>
           <b style="display:block">Diagnóstico da Clínica</b>
@@ -268,6 +303,23 @@ async function carregarFicha(conteudo, userId) {
     history.pushState({}, '', location.pathname);
     carregarLista(conteudo);
   });
+
+  const btnBloqueio = document.getElementById('btnBloqueioPlataforma');
+  if (btnBloqueio) {
+    btnBloqueio.addEventListener('click', async () => {
+      const msg = document.getElementById('bloqueioPlataformaMsg');
+      const nome = perfil.nome_completo || perfil.email || 'esta cliente';
+      const bloquear = !plataformaBloqueada;
+      const ok = confirm(bloquear
+        ? `Bloquear o acesso de ${nome}?\n\nEla sai da plataforma agora e não consegue entrar de novo. Nada é apagado — você pode desbloquear quando quiser.`
+        : `Desbloquear o acesso de ${nome}?\n\nEla volta a entrar com o mesmo e-mail e senha e encontra tudo como deixou.`);
+      if (!ok) return;
+      btnBloqueio.disabled = true;
+      const { error } = await supabase.rpc('admin_definir_bloqueio_plataforma', { p_user_id: userId, p_bloquear: bloquear });
+      if (error) { msg.textContent = `Erro: ${error.message}`; btnBloqueio.disabled = false; return; }
+      carregarFicha(conteudo, userId);
+    });
+  }
 
   document.getElementById('btnToggleLiberacao').addEventListener('click', async () => {
     const msg = document.getElementById('liberacaoMsg');
