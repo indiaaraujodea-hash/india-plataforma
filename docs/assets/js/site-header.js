@@ -11,7 +11,7 @@ const CSS = `
 .ph-fixo .ph-header{box-shadow:0 1px 0 rgba(23,63,49,.04)}
 .ph-header{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;background:var(--ph-bg,#f7f3eb);position:relative;flex-wrap:wrap;gap:14px}
 .ph-brand{display:flex;flex-direction:column;text-decoration:none;line-height:1.15}
-.ph-brand b{display:block;font-family:Georgia,'Cambria',serif;font-size:20px;letter-spacing:.06em;color:var(--ph-ink,#173f31)}
+.ph-brand b{display:block;font-family:'Marcellus',Georgia,serif;font-weight:400;font-size:24px;letter-spacing:.3em;color:var(--ph-ink,#173f31)}
 .ph-brand span{display:block;font-family:Arial,Helvetica,sans-serif;font-size:10px;letter-spacing:.14em;color:var(--ph-ink,#173f31);opacity:.65;margin-top:5px;text-transform:uppercase}
 .ph-brand em{display:block;font-family:Arial,Helvetica,sans-serif;font-style:normal;font-weight:400;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ph-accent,#9a5b34);margin-top:5px}
 .ph-hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;color:var(--ph-ink,#173f31)}
@@ -40,6 +40,17 @@ function instalarEstilo() {
   style.id = ESTILO_ID;
   style.textContent = CSS;
   document.head.appendChild(style);
+  instalarFonteLogo();
+}
+
+// Fonte do "INDIA" (mesma grafia do logo).
+export function instalarFonteLogo() {
+  if (document.getElementById('fonte-logo-india')) return;
+  const link = document.createElement('link');
+  link.id = 'fonte-logo-india';
+  link.rel = 'stylesheet';
+  link.href = 'https://fonts.googleapis.com/css2?family=Marcellus&display=swap';
+  document.head.appendChild(link);
 }
 
 // container: elemento vazio (ex.: <div id="cabecalhoPublico"></div>) onde o
