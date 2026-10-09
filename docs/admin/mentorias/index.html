@@ -35,6 +35,7 @@
 import { supabase, avisarSupabaseNaoConfigurado } from '../../assets/js/supabase-client.js';
 import { requireAdmin } from '../../assets/js/auth.js';
 import { mountAppShell } from '../../assets/js/app-shell.js';
+import { carregarBloqueios, badgeAcesso, botaoBloqueio, religarBotoesBloqueio } from '../../assets/js/admin-bloqueio.js';
 
 avisarSupabaseNaoConfigurado();
 
@@ -70,14 +71,19 @@ async function carregarLista() {
   const { data, error } = await supabase.from('mentoria_individual').select('*').is('turma_id', null).order('criado_em', { ascending: false });
   if (error) { wrap.innerHTML = `<div class="alert alert-error">${error.message}</div>`; return; }
   if (!data || data.length === 0) { wrap.innerHTML = '<p class="small">Nenhuma mentoria individual ainda.</p>'; return; }
+  const bloqueios = data.some((m) => m.user_id) ? await carregarBloqueios() : null;
   wrap.innerHTML = data.map((m) => `
     <div class="mentoria-card">
       <div>
         <h3>${m.nome_completo}</h3>
-        <div class="meta">Status: ${m.status} · Cadência: ${m.cadencia_encontros} · Conta: ${m.user_id ? 'ativada' : 'aguardando ativação'}</div>
+        <div class="meta">Status: ${m.status} · Cadência: ${m.cadencia_encontros} · Conta: ${m.user_id ? (badgeAcesso(bloqueios, m.user_id) || 'ativada') : 'aguardando ativação'}</div>
       </div>
-      <a class="btn alt" href="individual/index.html?id=${m.id}" style="padding:8px 16px;font-size:13px">Abrir ficha →</a>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        ${botaoBloqueio(bloqueios, m.user_id, m.nome_completo, 'padding:8px 16px;font-size:13px')}
+        <a class="btn alt" href="individual/index.html?id=${m.id}" style="padding:8px 16px;font-size:13px">Abrir ficha →</a>
+      </div>
     </div>`).join('');
+  religarBotoesBloqueio(wrap, carregarLista);
 }
 
 (async () => {

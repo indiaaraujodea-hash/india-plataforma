@@ -48,6 +48,7 @@
 import { supabase, avisarSupabaseNaoConfigurado } from '../../../assets/js/supabase-client.js';
 import { requireAdmin } from '../../../assets/js/auth.js';
 import { mountAppShell } from '../../../assets/js/app-shell.js';
+import { carregarBloqueios, badgeAcesso, botaoBloqueio, religarBotoesBloqueio } from '../../../assets/js/admin-bloqueio.js';
 
 avisarSupabaseNaoConfigurado();
 
@@ -85,6 +86,7 @@ async function carregarFicha() {
     : { data: [] };
   const { data: encontros } = await supabase.from('turma_encontros').select('*').eq('turma_id', id).order('numero', { ascending: true });
   const { data: materiais } = await supabase.from('turma_materiais').select('*').eq('turma_id', id).order('criado_em', { ascending: false });
+  const bloqueios = (participantes || []).some((p) => p.user_id) ? await carregarBloqueios() : null;
 
   conteudo.innerHTML = `
     <div class="mi-card">
@@ -118,12 +120,15 @@ async function carregarFicha() {
             <div>
               <b>${p.nome_completo}</b>
               <div class="meta">
-                <span>Conta: ${p.user_id ? 'ativada' : 'não ativada'}</span>
+                <span>Conta: ${p.user_id ? (badgeAcesso(bloqueios, p.user_id) || 'ativada') : 'não ativada'}</span>
                 <span>Diagnóstico: ${diag ? `<span class="badge-status ${diag.status}">${diag.status}</span>` : 'não iniciado'}</span>
                 <span>Plano: ${plano ? `<span class="badge-status ${plano.status}">${plano.status}</span>` : 'pendente'}</span>
               </div>
             </div>
-            <a class="btn alt" href="../../mentorias/individual/index.html?id=${p.id}" style="padding:7px 14px;font-size:12.5px">Abrir ficha individual →</a>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              ${botaoBloqueio(bloqueios, p.user_id, p.nome_completo)}
+              <a class="btn alt" href="../../mentorias/individual/index.html?id=${p.id}" style="padding:7px 14px;font-size:12.5px">Abrir ficha individual →</a>
+            </div>
           </div>`;
         }).join('') : '<p class="small" style="margin-top:10px">Nenhuma participante ainda.</p>'}
       </div>
@@ -164,6 +169,10 @@ async function carregarFicha() {
   `;
 
   religarTabs();
+  religarBotoesBloqueio(conteudo, async () => {
+    await carregarFicha();
+    document.querySelector('.tabs-bar button[data-tab="participantes"]').click();
+  });
   religarEventosParticipantes(turma);
   religarEventosEncontros();
   religarEventosMateriais();
