@@ -1,0 +1,434 @@
+<!doctype html><html lang="pt-BR"><head><meta charset=utf8><title>Rede Fortalecer — ACP que floresce</title><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Rede Fortalecer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+/* Layout: uma página longa em faixas alternadas (creme / areia / verde), conteúdo em coluna de 1180px; a raiz desenhada no hero ecoa o card da plataforma */
+:root{
+  --bg:#F6F1E8; --bg-alt:#EFE6D8; --surface:#FCFAF5; --line:#E3D9C8;
+  --ink:#1F3A2E; --text:#3B3833; --muted:#5E584F;
+  --accent:#8A4A28; --accent-ink:#FFFFFF;
+  --deep:#1F3A2E; --deep-2:#2A4A3B; --deep-text:#E8E2D6; --deep-head:#FFFFFF; --deep-label:#E9C9A8;
+  --serif:'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --sans:'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#151C18; --bg-alt:#1B241F; --surface:#202A24; --line:#33413A;
+    --ink:#E6DCC8; --text:#D4CCBE; --muted:#A79F92;
+    --accent:#D08A5F; --accent-ink:#1A120C;
+    --deep:#0F1512; --deep-2:#1E2A23; --deep-text:#D4CCBE; --deep-head:#F3EDE2; --deep-label:#E2B48C;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#151C18; --bg-alt:#1B241F; --surface:#202A24; --line:#33413A;
+  --ink:#E6DCC8; --text:#D4CCBE; --muted:#A79F92;
+  --accent:#D08A5F; --accent-ink:#1A120C;
+  --deep:#0F1512; --deep-2:#1E2A23; --deep-text:#D4CCBE; --deep-head:#F3EDE2; --deep-label:#E2B48C;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:17px;line-height:1.6}
+a{color:var(--ink)}
+a:focus-visible,.btn:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:24px}
+h1,h2,h3{font-family:var(--serif);font-weight:400;color:var(--ink);margin:0;text-wrap:balance}
+h1{font-size:clamp(40px,6vw,64px);line-height:1.06}
+h2{font-size:clamp(30px,4vw,42px);line-height:1.15}
+h3{font-size:22px;line-height:1.3}
+p{margin:0}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.lead{font-size:20px;color:var(--muted);max-width:60ch}
+.head{display:flex;flex-direction:column;gap:12px;max-width:780px}
+.band{padding-block:88px}
+.band-alt{background:var(--bg-alt)}
+.band-deep{background:var(--deep);color:var(--deep-text)}
+.band-deep h2,.band-deep h3{color:var(--deep-head)}
+.band-deep .eyebrow{color:var(--deep-label)}
+.stack{display:flex;flex-direction:column;gap:40px}
+.grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:14px 28px;border-radius:999px;font-weight:700;font-size:16px;text-decoration:none;text-align:center;transition:transform .15s ease}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--accent);color:var(--accent-ink)}
+.btn-ghost{border:1.5px solid var(--ink);color:var(--ink)}
+@media (prefers-reduced-motion:reduce){.btn{transition:none}.btn:hover{transform:none}}
+
+/* topo */
+.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding-block:24px}
+.brand{display:flex;flex-direction:column;gap:2px}
+.brand b{font-family:var(--serif);font-weight:600;font-size:26px;letter-spacing:.12em;color:var(--ink)}
+.brand span{font-size:11px;letter-spacing:.18em;color:var(--muted)}
+.top nav{display:flex;flex-wrap:wrap;gap:20px;font-size:15px;font-weight:500}
+.top nav a{text-decoration:none}
+
+/* hero */
+.hero{display:grid;gap:48px;align-items:center;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));padding-block:40px 88px}
+.hero-copy{display:flex;flex-direction:column;gap:22px;min-width:0}
+.hero-cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:6px}
+.pioneer-tag{align-self:flex-start;background:var(--accent);color:var(--accent-ink);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:7px 14px;border-radius:999px}
+.hero-quote{margin:0;background:var(--deep);border-radius:28px;padding:36px;display:flex;flex-direction:column;gap:18px}
+.hero-quote .eyebrow{color:var(--deep-label);font-size:12px}
+.hero-quote p{font-family:var(--serif);font-size:26px;line-height:1.4;color:var(--deep-head)}
+.hero-quote span{font-size:15px;color:var(--deep-text)}
+.hero-art{background:var(--bg-alt);border-radius:28px;padding:36px 28px 28px;display:flex;flex-direction:column;align-items:center;gap:22px}
+.hero-art svg{width:min(220px,60%);height:auto}
+.quote{font-family:var(--serif);font-size:22px;line-height:1.45;color:var(--ink);text-align:center;max-width:34ch}
+.quote-by{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+/* blocos */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.card svg{width:28px;height:28px;stroke:var(--accent)}
+.gain{border-top:2px solid var(--accent);padding-top:18px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.bonus{background:var(--bg-alt);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:8px}
+.bonus .eyebrow{font-size:12px}
+.week{background:var(--deep-2);border-radius:20px;padding:26px;display:flex;flex-direction:column;gap:8px}
+.week .eyebrow{font-size:12px}
+.week p{font-size:15px}
+.person{display:flex;flex-wrap:wrap;gap:22px;align-items:flex-start}
+.person .photo{flex:0 0 112px;height:132px;border-radius:16px;background:var(--bg-alt);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--muted);text-align:center}
+.person .info{flex:1 1 220px;display:flex;flex-direction:column;gap:6px;min-width:0}
+
+/* planos */
+.pioneer{background:var(--bg);color:var(--text);border-radius:22px;padding:28px 30px;display:flex;flex-direction:column;gap:10px}
+.pioneer h3{font-size:26px}
+.pioneer ul{margin:4px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.plans{display:grid;gap:20px;align-items:stretch;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}
+.plan{background:var(--deep-2);border-radius:22px;padding:30px;display:flex;flex-direction:column;gap:14px}
+.plan .price{font-family:var(--serif);font-size:42px;line-height:1.1;color:var(--deep-head);font-variant-numeric:tabular-nums}
+.plan .price small{font-family:var(--sans);font-size:16px;color:var(--deep-text)}
+.plan .pay{font-size:15px;color:var(--deep-text)}
+.plan ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px;font-size:15px}
+.plan .btn{margin-top:auto}
+.plan-ghost{border:1.5px solid var(--deep-head);color:var(--deep-head)}
+.plan-light{background:var(--deep-head);color:var(--deep)}
+.plan.featured{background:var(--bg);color:var(--text);outline:3px solid var(--deep-label)}
+.plan.featured .price{color:var(--ink)}
+.plan.featured .price small,.plan.featured .pay{color:var(--muted)}
+.plan-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.badge{background:var(--accent);color:var(--accent-ink);font-size:12px;font-weight:700;letter-spacing:.06em;padding:6px 12px;border-radius:999px}
+.value{background:var(--bg);color:var(--text);border-radius:22px;padding:30px;display:flex;flex-direction:column;gap:18px}
+.table-box{overflow-x:auto}
+table{width:100%;min-width:600px;border-collapse:collapse;font-size:16px;font-variant-numeric:tabular-nums}
+th,td{padding:14px 16px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th[scope=row],thead th:first-child{text-align:left;white-space:normal;font-weight:400}
+thead th{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+tr.total th,tr.total td{font-weight:700;color:var(--ink)}
+tr.save th,tr.save td{font-weight:700;color:var(--accent)}
+.fine{font-size:14px;color:var(--deep-text)}
+
+/* combinados e dúvidas */
+.split{display:flex;flex-wrap:wrap;gap:40px}
+.split > div{flex:1 1 320px;min-width:0}
+.split ul{flex:2 1 480px;margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px}
+details{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px 22px}
+summary{cursor:pointer;font-weight:700;color:var(--ink);font-size:17px}
+details p{margin-top:10px;color:var(--muted)}
+.faq{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));align-items:start}
+
+.closing{background:var(--bg-alt);border-radius:28px;padding:56px 32px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center}
+footer{border-top:1px solid var(--line)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;padding-block:40px;font-size:14px;color:var(--muted)}
+footer b{font-family:var(--serif);font-weight:400;font-size:22px;color:var(--ink)}
+/* caixas claras dentro da faixa verde: títulos e rótulos voltam às cores escuras */
+.band-deep .value h2,.band-deep .value h3,.band-deep .pioneer h2,.band-deep .pioneer h3,.band-deep .plan.featured h3{color:var(--ink)}
+.band-deep .value .eyebrow,.band-deep .pioneer .eyebrow,.band-deep .plan.featured .eyebrow{color:var(--accent)}
+.band-deep .value .fine,.band-deep .pioneer .fine{color:var(--muted)}
+.band-deep .value thead th{color:var(--muted)}
+.duo{display:grid;gap:20px;align-items:center;grid-template-columns:1fr minmax(0,1.3fr) 1fr}
+.duo-photo{margin:0;border-radius:24px;overflow:hidden}
+.duo-photo img{display:block;width:100%;height:auto}
+@media (max-width:900px){.duo{grid-template-columns:1fr}.duo-photo{order:-1}}
+.gifts{border:1.5px dashed var(--deep-label);border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.gifts-label{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--deep-label)}
+.gift{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:15px;flex-wrap:wrap}
+.gift > span:last-child{white-space:nowrap}
+.gift s{opacity:.75}
+.gift b{color:var(--deep-label)}
+.gift-total{font-weight:700;font-size:15px;padding-top:8px;border-top:1px solid rgba(233,201,168,.35);color:var(--deep-head)}
+.plan.featured .gifts{border-color:var(--accent);background:var(--surface)}
+.plan.featured .gifts-label,.plan.featured .gift b,.plan.featured .gift-total{color:var(--accent)}
+.plan.featured .gift-total{border-top-color:var(--line)}
+.whats{background:var(--deep-2);border-radius:22px;padding:26px 30px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px}
+.whats > div{flex:1 1 320px;display:flex;flex-direction:column;gap:6px;min-width:0}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="../inicio/index.html" style="text-decoration:none"><b>INDIA</b><span>PESSOAS E NEGÓCIOS</span></a>
+    <nav aria-label="Seções">
+      <a href="#ganha">O que muda</a>
+      <a href="#inclui">O que está incluído</a>
+      <a href="#planos">Planos</a>
+      <a href="#duvidas">Dúvidas</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-copy">
+      <span class="pioneer-tag">Pioneiras até 14/10</span>
+      <div class="eyebrow">Rede Fortalecer · ACP que floresce</div>
+      <h1>Aqui ninguém caminha sozinha</h1>
+      <p class="lead">Uma comunidade para psicólogas da Abordagem Centrada na Pessoa cuidarem da clínica também como negócio, com apoio, troca e pertencimento o ano inteiro.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#planos">Quero ser pioneira</a>
+        <a class="btn btn-ghost" href="#inclui">Ver o que está incluído</a>
+      </div>
+    </div>
+    <figure class="hero-quote">
+      <figcaption class="eyebrow">Inspirada em Carl Rogers</figcaption>
+      <p>A pessoa tem dentro de si a força para crescer, e floresce quando encontra solo fértil: um clima seguro e de pertencimento.</p>
+      <span>A Rede é esse solo. Fortalecer para florescer.</span>
+    </figure>
+  </section>
+</div>
+
+<section class="band band-alt">
+  <div class="wrap stack">
+    <div class="head">
+      <div class="eyebrow">Por que a Rede existe</div>
+      <h2>Posicionamento e valor não se resolvem num encontro. Se sustentam no tempo.</h2>
+    </div>
+    <div class="grid">
+      <div class="card"><h3>A clínica é solitária</h3><p>Na instituição alguém te orienta. Na clínica particular, as decisões de preço, agenda e limites ficam só com você.</p></div>
+      <div class="card"><h3>Entre saber e sustentar</h3><p>Você entende o próprio valor numa aula. Sustentar esse valor diante do cliente, semana após semana, é outra coisa.</p></div>
+      <div class="card"><h3>Encontro gera encontro</h3><p>Uma profissão construída pelo encontro também precisa de encontros para continuar se desenvolvendo.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="ganha">
+  <div class="wrap stack">
+    <div class="head">
+      <div class="eyebrow">O que muda para você</div>
+      <h2>Um lugar para cuidar da clínica como negócio, sem deixar de ser quem você é</h2>
+    </div>
+    <div class="grid">
+      <div class="gain"><h3>Você não caminha sozinha</h3><p>Uma comunidade de psicólogas que falam a mesma língua, a da ACP, e enfrentam as mesmas dúvidas sobre preço, divulgação e captação.</p></div>
+      <div class="gain"><h3>Sustentação o ano todo</h3><p>Curso e evento dão energia por uma semana. A árvore só floresce se for nutrida o tempo todo, e é isso que a Rede faz.</p></div>
+      <div class="gain"><h3>Clareza sobre o seu valor</h3><p>Posicionamento, valor da sessão, organização financeira e captação, com os temas que o próprio grupo escolhe.</p></div>
+      <div class="gain"><h3>Avanço em passos pequenos</h3><p>Um micro compromisso por semana, ligado ao tema do mês, para sair da conversa e chegar à prática.</p></div>
+      <div class="gain"><h3>Dois olhares juntos</h3><p>A Marissa traz a clínica, o acolhimento e a experiência de quem já fez essa travessia. A India traz o olhar de negócio.</p></div>
+      <div class="gain"><h3>Nada se perde</h3><p>Não pôde ir ao vivo? A gravação e o mapa mental ficam na plataforma para você voltar quando quiser.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band band-alt" id="inclui">
+  <div class="wrap stack">
+    <div class="head">
+      <div class="eyebrow">O que está incluído</div>
+      <h2>Tudo o que acontece dentro da Rede</h2>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="12" r="2"/><circle cx="19" cy="12" r="2"/><circle cx="12" cy="19" r="2"/><path d="M10.5 6.5l-4 4M13.5 6.5l4 4M6.5 13.5l4 4M17.5 13.5l-4 4"/></svg>
+        <h3>Encontro Fortalecer ao vivo</h3><p>Uma roda de conversa por mês, de 1h30 a 2h, sobre negócios, posicionamento e precificação na clínica.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+        <h3>Tema votado por vocês</h3><p>Uma enquete escolhe o tema do próximo encontro: captação, valor da sessão, limites, organização financeira.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l5 3.5-5 3.5z"/></svg>
+        <h3>Gravação de cada encontro</h3><p>Todos os encontros ficam gravados na plataforma para você assistir quando quiser.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+        <h3>Mapa mental do encontro</h3><p>Logo depois de cada roda, o que foi conversado em forma de mapa mental, no grupo e na plataforma.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4L19 6"/></svg>
+        <h3>Micro compromisso semanal</h3><p>Um passo pequeno por semana, ligado ao tema do mês. Por exemplo: fazer um convite direto a quem já demonstrou interesse no seu trabalho.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 01-11.6 7.1L4 20l1-5A8 8 0 1121 12z"/></svg>
+        <h3>Comunidade com a Marissa</h3><p>O grupo da Rede no WhatsApp segue vivo durante a semana: acolhimento, troca, celebração das conquistas e apoio para quem travou.</p>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="bonus"><div class="eyebrow">Nos planos de 3 e 6 meses · vale R$ 82,90</div><h3>Aula gravada de Valor e Posicionamento</h3><p>Reconhecer o próprio valor, posicionar-se com verdade e precificar sem culpa.</p></div>
+      <div class="bonus"><div class="eyebrow">No plano de 6 meses · vale R$ 47,90</div><h3>Mapa da Sua Clínica ACP</h3><p>O diagnóstico do método: o raio-x de onde sua clínica está hoje e o mapa do seu próximo passo.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band band-deep">
+  <div class="wrap stack">
+    <div class="head">
+      <div class="eyebrow">Como é um mês na Rede</div>
+      <h2>O encontro dá o tema. As semanas seguintes sustentam o avanço.</h2>
+    </div>
+    <div class="grid">
+      <div class="week"><div class="eyebrow">Semana 1</div><h3>Encontro e insights</h3><p>A roda ao vivo, a gravação, o mapa mental e o micro compromisso. No grupo: o que você levou e qual vai ser o primeiro passo.</p></div>
+      <div class="week"><div class="eyebrow">Semana 2</div><h3>Apoio e troca</h3><p>Como está indo o compromisso da semana? Quem travou recebe apoio de quem já passou por ali.</p></div>
+      <div class="week"><div class="eyebrow">Semana 3</div><h3>Celebração e vitrine</h3><p>As conquistas ganham visibilidade, e há um momento do mês para mostrar o próprio trabalho.</p></div>
+      <div class="week"><div class="eyebrow">Semana 4</div><h3>Próximo tema</h3><p>A enquete abre e vocês escolhem o tema do próximo Encontro Fortalecer.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap stack">
+    <div class="head">
+      <div class="eyebrow">Quem caminha com você</div>
+      <h2>Dois papéis que se completam</h2>
+    </div>
+    <div class="duo">
+      <div class="card person">
+        <div class="info"><div class="eyebrow">Conduz o encontro</div><h3>India Araújo</h3><p>Estrategista de negócios para clínicas ACP. Traz posicionamento, precificação e a energia de avanço, e entrega o mapa mental e o micro compromisso de cada mês.</p></div>
+      </div>
+      <figure class="duo-photo"><img src="india-marissa.jpg" alt="India Araújo e Marissa Lima abraçadas e sorrindo" width="1080" height="718"></figure>
+      <div class="card person">
+        <div class="info"><div class="eyebrow">Nutre a comunidade</div><h3>Marissa Lima</h3><p>Psicóloga da ACP e primeira mentorada da India: viveu a travessia que você está fazendo. Acolhe quem chega, movimenta o grupo e mantém a Rede viva entre um encontro e outro.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band band-deep" id="planos">
+  <div class="wrap stack">
+    <div class="head">
+      <div class="eyebrow">Planos</div>
+      <h2>Escolha como caminhar com a gente</h2>
+    </div>
+
+    <div class="pioneer">
+      <div class="eyebrow">Pioneiras · até quarta, 14/10</div>
+      <h3>Comece nutrindo a raiz em solo fértil</h3>
+      <ul>
+        <li>Escolha com a gente o tema do primeiro Encontro Fortalecer</li>
+        <li>Entre na Comunidade antes do primeiro encontro</li>
+        <li>Mantenha o seu preço no próximo ciclo (planos de 3 e 6 meses)</li>
+      </ul>
+      <p style="color:var(--muted);font-size:15px">A sala tem cerca de 30 lugares.</p>
+    </div>
+
+    <div class="plans">
+      <div class="plan">
+        <div class="eyebrow">Mensal</div>
+        <div class="price">R$ 98,90<small>/mês</small></div>
+        <div class="pay">No Pix</div>
+        <ul>
+          <li>Encontro Fortalecer ao vivo, uma vez por mês</li>
+          <li>Gravação e mapa mental de cada encontro</li>
+          <li>Micro compromisso semanal</li>
+          <li>Comunidade da Rede com a Marissa</li>
+        </ul>
+        <a class="btn plan-ghost" href="#planos">Entrar no mensal</a>
+      </div>
+
+      <div class="plan featured">
+        <div class="plan-top"><div class="eyebrow">6 meses</div><span class="badge">Melhor escolha</span></div>
+        <div class="price"><small>6x de </small>R$ 79,90</div>
+        <div class="pay">À vista no Pix · parcelado no cartão pelo WhatsApp</div>
+        <ul>
+          <li>Tudo do mensal</li>
+          <li>Seu preço mantido no próximo ciclo</li>
+        </ul>
+        <div class="gifts">
+          <div class="gifts-label">Você ganha de presente</div>
+          <div class="gift"><span>Aula gravada de Valor e Posicionamento</span><span><s>R$ 82,90</s> <b>grátis</b></span></div>
+          <div class="gift"><span>Mapa da Sua Clínica ACP</span><span><s>R$ 47,90</s> <b>grátis</b></span></div>
+          <div class="gift-total">Você economiza R$ 244,80</div>
+        </div>
+        <a class="btn btn-primary" href="#planos">Quero os 6 meses</a>
+      </div>
+
+      <div class="plan">
+        <div class="eyebrow">3 meses</div>
+        <div class="price"><small>3x de </small>R$ 89,90</div>
+        <div class="pay">À vista no Pix · parcelado no cartão pelo WhatsApp</div>
+        <ul>
+          <li>Tudo do mensal</li>
+          <li>Seu preço mantido no próximo ciclo</li>
+        </ul>
+        <div class="gifts">
+          <div class="gifts-label">Você ganha de presente</div>
+          <div class="gift"><span>Aula gravada de Valor e Posicionamento</span><span><s>R$ 82,90</s> <b>grátis</b></span></div>
+          <div class="gift-total">Você economiza R$ 109,90</div>
+        </div>
+        <a class="btn plan-light" href="#planos">Começar com 3 meses</a>
+      </div>
+    </div>
+
+    <div class="value">
+      <div class="head">
+        <div class="eyebrow">Quanto vale o que você recebe</div>
+        <h3 style="font-size:26px">Quanto mais tempo de caminhada, mais você recebe e menos paga por mês</h3>
+      </div>
+      <div class="table-box">
+        <table>
+          <thead><tr><th scope="col">Item</th><th scope="col">Mensal</th><th scope="col">3 meses</th><th scope="col">6 meses</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">1 encontro ao vivo por mês (com gravação), mapa mental e Comunidade</th><td>R$ 98,90</td><td>R$ 296,70</td><td>R$ 593,40</td></tr>
+            <tr><th scope="row">Aula gravada de Valor e Posicionamento</th><td>—</td><td>R$ 82,90</td><td>R$ 82,90</td></tr>
+            <tr><th scope="row">Mapa da Sua Clínica ACP</th><td>—</td><td>—</td><td>R$ 47,90</td></tr>
+            <tr class="total"><th scope="row">Valor de tudo o que você recebe</th><td>R$ 98,90</td><td>R$ 379,60</td><td>R$ 724,20</td></tr>
+            <tr class="save"><th scope="row">Você economiza</th><td>—</td><td>R$ 109,90</td><td>R$ 244,80</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:15px;color:var(--muted)">No plano de 6 meses, cada mês sai por R$ 79,90: menos do que uma sessão sua, para sustentar a sua clínica o semestre inteiro. A economia considera o pagamento à vista no Pix.</p>
+    </div>
+    <div class="whats">
+      <div>
+        <h3>Prefere parcelar no cartão?</h3>
+        <p class="fine">O pagamento é no Pix. Para parcelar, ou para tirar dúvidas antes de decidir, fale com a Marissa: ela te envia o link.</p>
+      </div>
+      <a class="btn plan-light" href="https://wa.me/5585989829385?text=Oi%20Marissa%2C%20quero%20entrar%20na%20Rede%20Fortalecer%20e%20gostaria%20do%20link%20para%20parcelar%20no%20cart%C3%A3o." target="_blank" rel="noopener">Falar com a Marissa no WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap split">
+    <div class="head">
+      <div class="eyebrow">Combinados da roda</div>
+      <h2 style="font-size:34px">Um clima seguro se cuida junto</h2>
+    </div>
+    <ul>
+      <li>Prints e compartilhamentos só com autorização.</li>
+      <li>Sem divulgação de serviços ou produtos, exceto no momento de vitrine da semana 3.</li>
+      <li>Sem política partidária ou religiosa.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="band band-alt" id="duvidas">
+  <div class="wrap stack">
+    <div class="head">
+      <div class="eyebrow">Dúvidas frequentes</div>
+      <h2 style="font-size:34px">Antes de entrar</h2>
+    </div>
+    <div class="faq">
+      <details><summary>Posso entrar em qualquer momento?</summary><p>Sim. A sala é contínua e aberta, e cada mês tem um tema próprio. Você chega e já participa do próximo encontro.</p></details>
+      <details><summary>Quantas pessoas participam?</summary><p>Cerca de 30 por sala, para que a roda continue sendo uma roda, com espaço para todas falarem.</p></details>
+      <details><summary>A Rede é uma mentoria?</summary><p>Não. Na Rede o tema é coletivo. Para olhar o seu caso de perto, com plano personalizado, existe a Mentoria Clínica ACP de Valor.</p></details>
+      <details><summary>Sou mentorada. Como fico?</summary><p>Durante a mentoria você participa da Comunidade como cortesia. Quando a mentoria termina, segue na Rede como assinante.</p></details>
+      <details><summary>E se eu não puder ir ao vivo?</summary><p>Todos os encontros ficam gravados na plataforma, com o mapa mental, e o micro compromisso chega para você do mesmo jeito.</p></details>
+      <details><summary>Como posso pagar?</summary><p>No Pix. Se preferir parcelar no cartão (com acréscimo dos juros), peça o link à Marissa pelo WhatsApp (85) 98982-9385.</p></details>
+      <details><summary>Como funciona a renovação?</summary><p>Nos planos de 3 e 6 meses, seu preço fica mantido no próximo ciclo.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="closing">
+      <h2>Fortalecer para florescer</h2>
+      <p class="lead" style="max-width:52ch">Não é mais um curso. É um solo vivo para a sua clínica continuar crescendo o ano inteiro.</p>
+      <a class="btn btn-primary" href="#planos">Quero ser pioneira</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <b>Rede Fortalecer — ACP que floresce</b>
+    <span>India Araújo e Marissa Lima · Centro de Desenvolvimento de Negócios da Clínica ACP</span>
+  </div>
+</footer>
+
+</body></html>
