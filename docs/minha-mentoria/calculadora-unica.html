@@ -203,6 +203,8 @@
         </div>
         <div class="cmp"><h3>E se a meta fosse outra?</h3><div id="cmp"></div></div>
         <div class="alert" id="alertBox" hidden></div>
+        <button type="button" class="cta" id="btnSalvar">Salvar meu resultado</button>
+        <p class="hora" id="statusSalvar" style="margin-top:10px"></p>
       </div>
     </div>
   </div>
@@ -291,6 +293,19 @@ function calc(){
   else if(r.regime==='fatorr' && r.prolabore<r.fat*0.28) msg='Para manter o Fator R, o pró-labore precisa ser de pelo menos 28% do faturamento ('+fmt(r.fat*0.28)+'). Abaixo disso, o imposto sobe para o Anexo V (15,5%).';
   else if(r.sess!==null && r.sess>600) msg='O valor da sessão ficou bem acima da média de mercado. Vale rever a agenda ou somar um serviço em grupo para distribuir o faturamento.';
   a.textContent=msg; a.hidden=!msg;
+
+  window.__ultimoResultado = {
+    modelo: 'frequencia',
+    respostas: {
+      prolabore: r.prolabore, decimoTerceiro: val('decimoTerceiro'), ferias: val('ferias'),
+      custosFixos: r.custos, regime: r.regime, reserva: val('reserva'), margem: val('margem'),
+      sessoesSemana: val('sessoesSemana'), faltas: val('faltas'), semanas: val('semanas'),
+      temGrupo, tipoGrupo: temGrupo ? $('tipoGrupo').value : null,
+      numPessoas: temGrupo ? val('numPessoas') : null, numGrupos: temGrupo ? val('numGrupos') : null,
+      diasMes: temGrupo ? diasMes : null
+    },
+    resultado: r
+  };
 }
 calc();
 })();
@@ -309,7 +324,24 @@ import { mountAppShell } from '../assets/js/app-shell.js';
   const profile = await getProfile(session.user.id);
   if (profile?.role === 'admin') return;
   const { data: mentoria } = await supabase.from('mentoria_individual').select('id').eq('user_id', session.user.id).eq('status', 'ativa').maybeSingle();
-  if (!mentoria) location.href = 'index.html';
+  if (!mentoria) { location.href = 'index.html'; return; }
+
+  const btnSalvar = document.getElementById('btnSalvar');
+  const statusSalvar = document.getElementById('statusSalvar');
+  btnSalvar.addEventListener('click', async () => {
+    const ultimo = window.__ultimoResultado;
+    if (!ultimo) return;
+    btnSalvar.disabled = true;
+    statusSalvar.textContent = 'Salvando…';
+    const { error } = await supabase.from('calculadora_unica_resultados').insert({
+      user_id: session.user.id,
+      modelo: ultimo.modelo,
+      respostas: ultimo.respostas,
+      resultado: ultimo.resultado,
+    });
+    btnSalvar.disabled = false;
+    statusSalvar.textContent = error ? 'Não foi possível salvar agora. Tente novamente.' : 'Resultado salvo com sucesso.';
+  });
 })();
 </script>
 </body>
