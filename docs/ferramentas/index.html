@@ -99,8 +99,7 @@ async function buscarFerramentaRecomendada(pontoLatente) {
   const { data: mentoriaAtiva } = isAdmin ? { data: null } : await supabase.from('mentoria_individual').select('id').eq('user_id', session.user.id).eq('status', 'ativa').maybeSingle();
   if (mentoriaAtiva || isAdmin) {
     html += `<div class="kicker">Ferramentas da sua Mentoria</div>
-      <a class="tool" href="../minha-mentoria/calculadora.html" style="margin-bottom:12px"><div><strong>Quanto preciso cobrar?</strong><div class="small">Sessão individual e serviço em grupo, numa tela só.</div></div><b>→</b></a>
-      <a class="tool" href="grupo.html?origem=mentoria" style="margin-bottom:12px"><div><strong>Quanto vale meu serviço em grupo?</strong><div class="small">Simule mensalidade, tamanho do grupo e faturamento necessário.</div></div><b>→</b></a>`;
+      <a class="tool" href="../minha-mentoria/calculadora.html" style="margin-bottom:12px"><div><strong>Quanto cobrar na sessão individual e no grupo?</strong><div class="small">Uma calculadora só: sessão individual e grupo na mesma conta.</div></div><b>→</b></a>`;
   }
 
   if (recomendadas.size > 0) {
