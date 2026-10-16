@@ -587,8 +587,11 @@ import { montarSubNavMapaClinica } from '../assets/js/mapa-clinica-nav.js';
 (async () => {
   const session = await requireAuth('../login/index.html');
   if (!session) return;
-  await mountAppShell('ferramentas', session, '..');
-  montarSubNavMapaClinica('ferramentas', '..');
+  // Aberta pela aba Ferramentas da Mentoria: fica no contexto da Mentoria,
+  // sem as abas do Mapa da Clínica.
+  const daMentoria = new URLSearchParams(location.search).get('origem') === 'mentoria';
+  await mountAppShell(daMentoria ? 'mentoria' : 'ferramentas', session, '..');
+  if (!daMentoria) montarSubNavMapaClinica('ferramentas', '..');
 
   if (!(await temAcessoFerramentas(session.user.id))) {
     // Ferramenta exclusiva de quem tem acesso liberado ao Mapa/mentoria —
