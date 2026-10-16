@@ -86,8 +86,8 @@
   <header>
     <p style="margin:0 0 12px"><a href="index.html" style="color:var(--verde);font-size:13.5px;font-weight:700;text-decoration:none">← Voltar para Minha Mentoria</a></p>
     <div class="eyebrow">Mentoria · Ferramenta</div>
-    <h1>Quanto preciso cobrar para ganhar o que quero?</h1>
-    <p class="sub">Escolha quanto quer ganhar por mês e descubra quanto cobrar na sessão individual e, se tiver, no grupo terapêutico ou na supervisão. Faltas, férias, impostos e custos da clínica já entram na conta.</p>
+    <h1>Quanto cobrar na sessão individual e no grupo?</h1>
+    <p class="sub">Escolha quanto quer ganhar por mês e descubra, na mesma conta, quanto cobrar na sessão individual e no seu grupo. Faltas, férias, impostos e custos da clínica já entram na conta.</p>
   </header>
 
   <div class="grid">
@@ -150,7 +150,7 @@
         </div>
       </div>
 
-      <div class="card" id="grupoCard" hidden>
+      <div class="card" id="grupoCard">
         <div class="svc-head"><h2>3. Serviço em grupo</h2><span class="tag grupo">Grupo</span></div>
         <p class="hint">O mesmo encontro dividido entre mais pessoas reduz o valor de cada uma sem reduzir o que você precisa faturar.</p>
         <div class="field">
@@ -172,7 +172,7 @@
         <button type="button" class="remove" id="removeGrupo">Remover serviço em grupo</button>
       </div>
 
-      <button type="button" class="add" id="addGrupo">+ Adicionar serviço em grupo</button>
+      <button type="button" class="add" id="addGrupo" hidden>+ Adicionar serviço em grupo</button>
     </div>
 
     <div>
@@ -216,7 +216,7 @@ metaBtns.forEach(b=>b.addEventListener('click',()=>{$('prolabore').value=b.datas
 $('tipoGrupo').addEventListener('change',calc);
 
 
-let temGrupo=false;
+let temGrupo=true;
 $('addGrupo').addEventListener('click',()=>{temGrupo=true;$('grupoCard').hidden=false;$('addGrupo').hidden=true;calc();$('numPessoasNum').focus();});
 $('removeGrupo').addEventListener('click',()=>{temGrupo=false;$('grupoCard').hidden=true;$('addGrupo').hidden=false;calc();});
 
